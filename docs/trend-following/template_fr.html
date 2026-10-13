@@ -1,0 +1,471 @@
+<title>Trend Following Multi-Actifs</title>
+<meta name="description" content="Backtest complet d'une stratégie de trend following multi-actifs, comparée à un proxy MSCI World Value : données, calculs, corrélation, combinaison, réplication et limites.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<!--__STYLE__-->
+
+<div class="wrap">
+<nav class="toc" aria-label="Sommaire">
+  <div class="lbl">Sommaire</div>
+  <ol>
+    <li><a href="#synthese">Synthèse</a></li>
+    <li><a href="#pourquoi">Pourquoi cette stratégie</a></li>
+    <li><a href="#donnees">Données</a></li>
+    <li><a href="#methode">Méthode et formules</a></li>
+    <li><a href="#exemple">Calcul pas à pas</a></li>
+    <li><a href="#resultats">Résultats</a></li>
+    <li><a href="#correlation">Corrélation avec la value</a></li>
+    <li><a href="#combinaison">Portefeuille combiné</a></li>
+    <li><a href="#faisabilite">Faisabilité et version ETF</a></li>
+    <li><a href="#repliquer">Répliquer</a></li>
+    <li><a href="#routine">Routine mensuelle</a></li>
+    <li><a href="#limites">Biais et limites</a></li>
+    <li><a href="#glossaire">Glossaire</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+  <!--__LANG__-->
+</nav>
+
+<main>
+<header class="top">
+  <div class="eyebrow">Strategies Lab · Noah Doose · données Bloomberg du 03/01/2000 au 30/09/2026 · backtest du 13/10/2026</div>
+  <h1>Trend following multi-actifs</h1>
+  <p class="lede">Une stratégie qui achète les marchés en hausse et vend les marchés en baisse, sur 17 futures (actions, obligations d'État, matières premières, devises). Elle est étudiée ici comme complément d'un portefeuille actions value monde : ses résultats propres, sa corrélation avec ce portefeuille, ce que donne leur combinaison, et ce qu'on peut réellement mettre en place avec 5 000 à 25 000 €.</p>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<section id="synthese">
+<h2><span class="n">1</span>Synthèse</h2>
+<p>Ce qu'il faut retenir, avant le détail. Tous les chiffres sont en rendements <em>excédentaires</em> (au-dessus du taux monétaire), nets de coûts estimés, de février 2001 à septembre 2026.</p>
+<ol class="steps">
+  <li><strong>La stratégie fonctionne comme diversifiant.</strong> Sa corrélation mensuelle avec le MSCI World Value est de <span class="mono">−0,21</span> sur toute la période. Pendant les pires mois de la value (les 10 % les plus mauvais, −7,9 % en moyenne), elle gagne en moyenne <span class="mono">+2,6 %</span>.</li>
+  <li><strong>Le Sharpe ne dépasse pas 1 de manière fiable.</strong> Version de référence (moyenne des signaux 3, 6 et 12 mois) : <span class="mono">0,89</span> sur 2001-2015, <span class="mono">0,28</span> sur 2016-2026, <span class="mono">0,64</span> sur l'ensemble. La chute sur la seconde période est cohérente avec ce qu'a connu toute l'industrie du trend following dans les années 2010.</li>
+  <li><strong>La combinaison améliore le portefeuille.</strong> 70 % value et 30 % trend font passer le Sharpe de <span class="mono">0,32</span> à <span class="mono">0,50</span> sur 2001-2026, et la perte maximale de <span class="mono">−65 %</span> à <span class="mono">−43 %</span>.</li>
+  <li><strong>La version futures n'est pas réalisable avec ton capital.</strong> Avec 25 000 €, le plus petit contrat disponible représente 1,5 à 53 fois la position visée selon le marché.</li>
+  <li><strong>Une version investissable existe : ETF, acheteur ou monétaire, sans levier.</strong> Sharpe <span class="mono">0,64</span> sur l'ensemble, <span class="mono">0,54</span> sur 2016-2026, perte maximale <span class="mono">−20 %</span>. Mais elle diversifie moins : corrélation <span class="mono">+0,09</span> avec la value sur l'ensemble, <span class="mono">+0,34</span> depuis 2016, et elle ne protège plus en 2022.</li>
+  <li><strong>Ce qui reste à décider t'appartient :</strong> la part allouée, le choix entre diversification maximale (futures, irréalisable aujourd'hui) et faisabilité (ETF), et le moment où ta propre stratégie value remplacera le proxy MSCI dans ces calculs.</li>
+</ol>
+<div class="callout warn"><p><strong>Statut de ce document.</strong> Analyse de données passées, préparée par Claude à la demande de Noah. Ce n'est pas un conseil en investissement : un backtest applique des règles à des données passées, connues aujourd'hui ; il décrit ce qui se serait passé, pas ce qui se passera. Les résultats futurs peuvent être nettement inférieurs.</p></div>
+</section>
+
+<section id="pourquoi">
+<h2><span class="n">2</span>Pourquoi cette stratégie</h2>
+<p>L'objectif n'est pas de trouver la stratégie au meilleur Sharpe isolé, mais celle qui améliore le plus ton portefeuille <em>total</em>. Ton projet principal est un portefeuille actions value monde, acheteur uniquement : il a un bêta proche de 1 avec le marché actions mondial, et il souffre dans les mêmes crises que lui.</p>
+<h3>La règle mathématique qui guide le choix</h3>
+<p>Ajouter une stratégie B à un portefeuille A améliore le Sharpe du total dès que :</p>
+<div class="formula">Sharpe(B) &gt; ρ(A, B) × Sharpe(A)</div>
+<p>ρ est la corrélation entre les deux. Avec la value comme A (Sharpe 0,32 sur 2001-2026) et le trend comme B (corrélation −0,21), le seuil vaut −0,21 × 0,32 = <span class="mono">−0,07</span>. N'importe quelle stratégie au Sharpe positif et à corrélation négative améliore donc le total. À l'inverse, une seconde stratégie actions corrélée à 0,9 devrait afficher un Sharpe supérieur à 0,29 juste pour ne pas dégrader l'ensemble, tout en ajoutant peu de protection.</p>
+<h3>Pourquoi le trend following en particulier</h3>
+<ul>
+  <li><strong>Une prime documentée sur plus d'un siècle.</strong> Hurst, Ooi et Pedersen (2017) la retrouvent sur plus d'un siècle de données (depuis 1880), avec des rendements positifs dans chaque décennie. Moskowitz, Ooi et Pedersen (2012) la documentent sur 58 contrats futures liquides (actions, taux, devises, matières premières).</li>
+  <li><strong>Une explication économique.</strong> Les investisseurs réagissent lentement à l'information, puis la suivent en excès (ancrage, comportement moutonnier). Les banques centrales et les couvreurs commerciaux, qui ne cherchent pas le profit, alimentent aussi les tendances.</li>
+  <li><strong>Un profil de rendement convexe.</strong> Lors d'une crise longue (2008, 2022), les tendances baissières sur les actions ou haussières sur les taux s'installent, et la stratégie se positionne dans leur sens. On parle souvent de « crisis alpha ».</li>
+  <li><strong>Une indépendance vis-à-vis de la value.</strong> La value achète ce qui a baissé et semble bon marché ; le trend achète ce qui monte. Les deux logiques sont presque opposées.</li>
+</ul>
+</section>
+
+<section id="donnees">
+<h2><span class="n">3</span>Données</h2>
+<p>Toutes les séries viennent du terminal Bloomberg de la salle de marché SKEMA, extraites le 13/10/2026 avec le modèle Excel du projet (<code>templates/bloomberg/</code>), champ <code>PX_LAST</code> en quotidien du 03/01/2000 au 30/09/2026, puis figées en valeurs.</p>
+<h3>Univers</h3>
+<div class="tbl"><table id="t-universe"></table></div>
+<p class="cap">MSCI Émergents ne commence qu'en septembre 2009 : le marché entre dans la stratégie dès qu'il a assez d'historique. Le MSCI World Value Net TR est publié en USD ; il est converti en EUR avec <code>EURUSD Curncy</code>.</p>
+
+<h3>Le roll des futures et l'ajustement par ratio</h3>
+<p>Un future a une date d'échéance. Pour rester investi, on revend le contrat qui expire et on achète le suivant : c'est le roll. Le ticker générique (<code>CL1</code>, <code>ES1</code>…) colle bout à bout des contrats différents. Sans ajustement, chaque changement de contrat crée un faux rendement : si le contrat de novembre vaut 70 $ et celui de décembre 72 $, la série brute affiche +2,9 % le jour du roll alors que le détenteur n'a rien gagné.</p>
+<p>L'ajustement par ratio corrige cela : au roll, tout l'historique est multiplié par 72/70. Chaque variation quotidienne de la série ajustée est alors celle que le détenteur a réellement connue. Réglage utilisé : <code>GFUT &lt;GO&gt;</code> → onglet Generic Rolls → <code>Adjust</code> = Ratio.</p>
+<div class="callout note">
+<p><strong>Vérification effectuée.</strong> La première extraction (non ajustée) donnait <code>ES1</code> = 1 466,75 le 03/01/2000, soit le vrai prix de l'époque. La version ajustée donne 1 772,51 : l'historique a bien été rétro-ajusté. Le modèle Excel teste désormais cela automatiquement (<code>Controles!C6</code>).</p>
+</div>
+<p><strong>Cas du pétrole WTI.</strong> Même ajustée, la série <code>CL1</code> reste détenue jusqu'au dernier jour de cotation, ce qui donne un prix négatif le 20/04/2020 (−28,12 après ajustement, −37,63 brut). Ce jour-là, les derniers détenteurs du contrat de mai, livrable physiquement à Cushing, ont payé pour s'en débarrasser faute de stockage. Aucun gérant n'aurait encore détenu ce contrat. La stratégie utilise donc <code>CL2</code> (le contrat suivant), ce qui équivaut à rouler un mois plus tôt. Ce choix a été fait avant tout calcul de performance.</p>
+
+<h3>Contrôles de qualité</h3>
+<ul>
+  <li>Aucune erreur Bloomberg, toutes les séries vont jusqu'au 30/09/2026.</li>
+  <li>Les plus fortes variations journalières ont été vérifiées une par une. L'argent à −31 % le 30/01/2026 et le cuivre à −22 % le 31/07/2025 sont de vrais mouvements de marché, présents à l'identique sur le 1er et le 2e contrat. Ils sont conservés.</li>
+  <li>La corrélation des rendements quotidiens entre 1er et 2e contrat dépasse 0,97 sur les marchés testés (S&amp;P 500, US 10 ans, or, WTI, maïs). Les deux séries sont donc cohérentes, sans saut de roll résiduel.</li>
+  <li>Taux sans risque : Euribor 3 mois (<code>EUR003M Index</code>), converti en taux journalier (taux / 100 / 261).</li>
+</ul>
+</section>
+
+<section id="methode">
+<h2><span class="n">4</span>Méthode et formules</h2>
+<p>Toutes les règles ont été fixées le 02/10/2026, avant de voir le moindre résultat. Elles sont écrites dans <code>strategies/trend_following/config.py</code>. Le principe : chaque marché a la même voix (même risque), et seul le sens de sa tendance décide si on l'achète ou si on le vend.</p>
+
+<h3>Étape 1 · Rendements</h3>
+<p>Pour chaque marché i et chaque séance t, rendement de la série ajustée :</p>
+<div class="formula">r<sub>i,t</sub> = P<sub>i,t</sub> / P<sub>i,t−1</sub> − 1</div>
+<p>Un future ne demande qu'un dépôt de garantie : son rendement est déjà un rendement <em>excédentaire</em> (il n'inclut pas d'intérêt sur le capital). Le Sharpe se calcule donc directement, sans retrancher de taux sans risque. Pour les indices actions de référence, on retranche l'Euribor 3 mois du jour.</p>
+
+<h3>Étape 2 · Signal de tendance</h3>
+<p>Le dernier jour ouvré de chaque mois, pour chaque horizon L de 3, 6 et 12 mois (21 séances par mois) :</p>
+<div class="formula">signal<sub>i</sub>(L) = signe( P<sub>i,t</sub> / P<sub>i,t−L mois</sub> − 1 )   ∈ {−1, +1}</div>
+<p>La version de référence fait la moyenne des trois :</p>
+<div class="formula">s<sub>i</sub> = [ signal<sub>i</sub>(3) + signal<sub>i</sub>(6) + signal<sub>i</sub>(12) ] / 3   ∈ {−1, −⅓, +⅓, +1}</div>
+<p>Un marché doit avoir au moins L mois + 1 mois d'historique réel pour recevoir un signal. Moyenner trois horizons évite de dépendre d'un seul paramètre, et réduit la taille de la position quand les horizons se contredisent.</p>
+
+<h3>Étape 3 · Volatilité de chaque marché</h3>
+<div class="formula">σ<sub>i,t</sub> = √261 × écart-type EWMA( r<sub>i</sub> ), centre de masse 60 jours</div>
+<p>Une moyenne pondérée exponentielle donne plus de poids aux séances récentes. Un centre de masse de 60 jours correspond au choix de Moskowitz, Ooi et Pedersen (2012). La volatilité d'un Bund tourne autour de 5 %, celle du pétrole autour de 35 à 50 % : sans cette normalisation, le pétrole dominerait le portefeuille.</p>
+
+<h3>Étape 4 · Poids brut</h3>
+<div class="formula">w<sub>i</sub><sup>brut</sup> = s<sub>i</sub> / σ<sub>i</sub> / N</div>
+<p>N est le nombre de marchés éligibles ce mois-là. Chaque marché apporte ainsi une contribution au risque du même ordre, quelle que soit sa volatilité.</p>
+
+<h3>Étape 5 · Mise à l'échelle du portefeuille</h3>
+<p>Les marchés sont corrélés entre eux (les quatre obligations d'État, par exemple), donc la volatilité du portefeuille dépend de la covariance. On estime la volatilité ex-ante avec la matrice de covariance Σ des 261 dernières séances :</p>
+<div class="formula">σ<sub>p</sub> = √( w<sup>brut ⊤</sup> Σ w<sup>brut</sup> )      puis      w<sub>i</sub> = w<sub>i</sub><sup>brut</sup> × 10 % / σ<sub>p</sub></div>
+<p>Plafond : la somme des valeurs absolues des poids (levier brut) ne dépasse pas 4. Un levier brut de 2,4 en moyenne signifie que, pour 100 € de capital, les positions représentent 240 € de notionnel au total (acheteuses et vendeuses confondues). C'est normal pour des futures, qui ne mobilisent qu'un dépôt de garantie.</p>
+
+<h3>Étape 6 · Calendrier, sans regard vers le futur</h3>
+<p>Les poids calculés à la clôture du dernier jour du mois s'appliquent à partir de la séance suivante, jusqu'à la fin du mois suivant. Aucune information postérieure à la décision n'est utilisée (pas de look-ahead).</p>
+<div class="formula">r<sub>p,t</sub> = Σ<sub>i</sub> w<sub>i,t−1</sub> × r<sub>i,t</sub> − coûts<sub>t</sub></div>
+
+<h3>Étape 7 · Coûts</h3>
+<p>Deux coûts, en fraction du notionnel, fixés par marché dans <code>config.py</code> : 1 à 6 points de base par transaction selon la liquidité, et le roll, qui oblige à acheter et vendre à chaque échéance (4 fois par an pour les financiers, 5 à 12 fois pour les matières premières).</p>
+<div class="formula">coût<sub>mois</sub> = Σ<sub>i</sub> |Δw<sub>i</sub>| × c<sub>i</sub>      coût<sub>roll, jour</sub> = Σ<sub>i</sub> |w<sub>i</sub>| × c<sub>i</sub> × 2 × rolls<sub>i</sub> / 261</div>
+<p>Résultat : <span class="mono" id="cost-fut"></span> par an en moyenne pour la version de référence. Le test de sensibilité plus bas double et triple ces coûts.</p>
+
+<h3>Étape 8 · Variantes testées et découpage</h3>
+<p>Quatre variantes, et seulement quatre : signal 3 mois, 6 mois, 12 mois, et moyenne des trois. Toutes sont montrées. La période de conception va de février 2001 à décembre 2015, la période de validation de janvier 2016 à septembre 2026, sans aucune retouche entre les deux. Toutes les variantes démarrent le 01/02/2001 pour être comparables.</p>
+<p>La variante de référence est la moyenne des trois horizons, choisie <em>a priori</em> parce qu'elle ne parie pas sur un horizon particulier. La variante 12 mois obtient les meilleurs chiffres, mais la choisir pour cette raison serait exactement le biais de sélection qu'on cherche à éviter.</p>
+
+<h3>Mesures utilisées</h3>
+<dl class="gloss">
+  <dt>Rendement annualisé</dt><dd>(valeur finale / valeur initiale)<sup>1/années</sup> − 1</dd>
+  <dt>Volatilité</dt><dd>écart-type des rendements quotidiens × √261</dd>
+  <dt>Sharpe</dt><dd>moyenne des rendements excédentaires quotidiens × 261 / volatilité</dd>
+  <dt>Intervalle à 95 %</dt><dd>Sharpe ± 1,96 × √((1 + Sharpe²/2) / années), formule de Lo (2002) sous hypothèse de rendements indépendants</dd>
+  <dt>Sortino</dt><dd>comme le Sharpe, mais en ne pénalisant que la volatilité des jours négatifs</dd>
+  <dt>Drawdown maximal</dt><dd>plus forte baisse entre un plus haut et un plus bas ultérieur</dd>
+  <dt>Calmar</dt><dd>rendement annualisé / |drawdown maximal|</dd>
+  <dt>Asymétrie (skewness)</dt><dd>calculée sur les rendements mensuels ; positive = plus de très bons mois que de très mauvais</dd>
+</dl>
+</section>
+
+<section id="exemple">
+<h2><span class="n">5</span>Calcul pas à pas, au 30/09/2026</h2>
+<p>Voici le dernier rebalancement de la version de référence, marché par marché. C'est exactement le calcul que fait le code chaque mois, et celui que tu referais pour passer tes ordres.</p>
+<div class="tbl"><table id="t-example"></table></div>
+<p class="cap" id="example-cap"></p>
+<p><strong>Lecture d'une ligne, l'Euro Stoxx 50 :</strong> sur 3 mois le marché a baissé (−1), sur 6 et 12 mois il a monté (+1, +1). Le signal moyen vaut ⅓. Sa volatilité EWMA est de 14,4 %. Poids brut : 0,333 / 0,144 / 17 = 0,136. Le portefeuille brut aurait une volatilité de 25,9 %, d'où un facteur d'échelle de 10 % / 25,9 % = 0,386. Poids final : 0,136 × 0,386 = 0,053, soit 5,3 % du capital en position acheteuse.</p>
+<p>On voit la logique de la stratégie : à fin septembre 2026, elle est vendeuse des quatre obligations d'État (leurs prix baissent sur les trois horizons, donc les taux montent) et de l'euro contre le dollar, acheteuse des actions, du dollar australien, du cuivre, du maïs et du pétrole.</p>
+</section>
+
+<section id="resultats">
+<h2><span class="n">6</span>Résultats de la stratégie</h2>
+<h3>Les quatre variantes, par période</h3>
+<div class="tabs" role="group" aria-label="Période" data-target="stats"></div>
+<div class="tbl"><table id="t-stats"></table></div>
+<p class="cap">Rendements excédentaires, nets de coûts, en EUR pour les indices. La ligne surlignée est la version de référence. Les deux indices MSCI servent de comparaison ; le MSCI World Value est le proxy de ta stratégie value.</p>
+
+<figure>
+  <div class="fig-title">Valeur de 100 investis le 01/02/2001</div>
+  <div class="fig-sub">Échelle logarithmique : une même pente représente un même rendement en %. Fin de mois.</div>
+  <div class="legend" id="lg-nav"></div>
+  <div class="chart" id="c-nav"></div>
+</figure>
+
+<figure>
+  <div class="fig-title">Pertes depuis le plus haut précédent (drawdown)</div>
+  <div class="fig-sub">Fin de mois. En données quotidiennes, la perte maximale du MSCI World Value atteint −64,5 % (mars 2009).</div>
+  <div class="legend" id="lg-dd"></div>
+  <div class="chart" id="c-dd"></div>
+</figure>
+
+<h3>Ce que disent ces chiffres</h3>
+<ul>
+  <li><strong>Sur la période de conception, tout fonctionne</strong> : Sharpe de 0,48 à 0,97 selon l'horizon, alors que les actions mondiales ont un Sharpe de 0,13 (deux krachs, 2001-2003 et 2008).</li>
+  <li><strong>Sur la période de validation, les résultats chutent</strong> : 0,09 à 0,38. Les intervalles de confiance à 95 % de cette période incluent zéro pour toutes les variantes. On ne peut donc pas affirmer statistiquement que la stratégie a gagné de l'argent depuis 2016.</li>
+  <li><strong>Pourquoi cette chute n'est pas un signe de surapprentissage.</strong> Les règles n'ont pas été optimisées sur 2001-2015 : ce sont les paramètres standards de la littérature. La baisse correspond à un phénomène connu : taux proches de zéro, interventions des banques centrales et retournements brusques (ici 2016, 2018, 2021 et 2023 sont des années négatives) privent le trend de tendances durables. Les fonds de trend following (CTA) ont eux aussi connu une décennie 2010 difficile, avant de rebondir en 2022.</li>
+  <li><strong>Le profil d'asymétrie est l'inverse de celui des actions</strong> : skewness mensuelle positive pour le trend (+0,31 sur l'ensemble), négative pour la value (−0,64). Le trend a plus de très bons mois que de très mauvais ; les actions, l'inverse.</li>
+</ul>
+
+<h3>Rendements année par année</h3>
+<div class="tbl"><table id="t-annual"></table></div>
+<p class="cap">2026 : du 1er janvier au 30 septembre. 2001 : à partir du 1er février.</p>
+
+<h3>D'où viennent les gains : attribution par classe d'actifs</h3>
+<div class="tbl"><table id="t-classes"></table></div>
+<p class="cap">Contribution = moyenne annualisée de la somme des (poids × rendement) des marchés de la classe. Les quatre classes contribuent positivement : la stratégie ne repose pas sur un seul moteur.</p>
+
+<h3>Détail par marché</h3>
+<div class="tbl"><table id="t-markets"></table></div>
+<p class="cap">Poids moyen en valeur absolue (exposition moyenne, acheteuse ou vendeuse), part du temps à l'achat et à la vente, contribution annuelle et Sharpe de la contribution.</p>
+
+<h3>Sensibilité aux coûts</h3>
+<div class="tbl"><table id="t-costs"></table></div>
+<p class="cap">Sharpe de la version de référence quand on multiplie tous les coûts estimés. Même avec des coûts triplés, le Sharpe 2001-2026 reste à 0,51.</p>
+
+<figure>
+  <div class="fig-title">Sharpe glissant sur 36 mois</div>
+  <div class="fig-sub">Calculé sur les rendements mensuels. Montre la régularité, ou l'irrégularité, de chaque stratégie.</div>
+  <div class="legend" id="lg-rsr"></div>
+  <div class="chart" id="c-rsr"></div>
+</figure>
+</section>
+
+<section id="correlation">
+<h2><span class="n">7</span>Corrélation avec ta stratégie value</h2>
+<p>Ta stratégie value n'a pas encore d'historique : on utilise le MSCI World Value Net TR en EUR comme proxy. Ta version sera plus concentrée (40 à 50 lignes) et plus marquée value, donc probablement encore plus corrélée aux actions. Ces corrélations devront être recalculées avec ton backtest réel.</p>
+
+<h3>Matrice de corrélation mensuelle</h3>
+<div class="tabs" role="group" aria-label="Période" data-target="corr"></div>
+<div class="tbl"><table id="t-corr"></table></div>
+
+<figure>
+  <div class="fig-title">Corrélation glissante sur 36 mois avec le MSCI World Value</div>
+  <div class="fig-sub">Au-dessus de zéro, la stratégie évolue dans le même sens que la value ; en dessous, en sens inverse.</div>
+  <div class="legend" id="lg-rc"></div>
+  <div class="chart" id="c-rc"></div>
+</figure>
+
+<h3>Comportement quand la value va mal</h3>
+<p>La corrélation moyenne ne suffit pas : ce qui compte, c'est le comportement pendant les mauvais mois. Le tableau classe les 308 mois selon la performance de la value.</p>
+<div class="tbl"><table id="t-cond"></table></div>
+<p class="cap">Bêta = sensibilité du rendement mensuel de la stratégie à celui de la value (régression). Un bêta de −0,17 signifie qu'un mois à −10 % pour la value s'accompagne en moyenne d'un mois à +1,7 % pour le trend.</p>
+
+<h3>Pendant les crises</h3>
+<div class="tbl"><table id="t-crises"></table></div>
+<figure>
+  <div class="fig-title">Rendement cumulé pendant chaque crise</div>
+  <div class="legend" id="lg-cr"></div>
+  <div class="chart" id="c-cr"></div>
+</figure>
+<p>La version futures gagne dans les crises longues (2008, 2011, 2022) et pendant le Covid. Elle perd légèrement dans les chocs courts et brutaux (fin 2018, Chine 2015-2016) : un signal mensuel n'a pas le temps de se retourner. C'est la faiblesse connue du trend following.</p>
+</section>
+
+<section id="combinaison">
+<h2><span class="n">8</span>Portefeuille combiné</h2>
+<p>Hypothèse : le capital est partagé entre la value (proxy MSCI World Value) et la stratégie de trend, rebalancée chaque jour vers la répartition cible (approximation d'un rebalancement mensuel). Le trend est géré à 10 % de volatilité sur sa propre part.</p>
+<div class="tabs" role="group" aria-label="Version" data-target="combo"></div>
+<div class="tbl"><table id="t-combo"></table></div>
+<div class="grid2">
+<figure>
+  <div class="fig-title">Sharpe selon la part allouée à la value</div>
+  <div class="legend" id="lg-fs"></div>
+  <div class="chart" id="c-fs"></div>
+</figure>
+<figure>
+  <div class="fig-title">Perte maximale selon la part allouée à la value</div>
+  <div class="legend" id="lg-fd"></div>
+  <div class="chart" id="c-fd"></div>
+</figure>
+</div>
+<figure>
+  <div class="fig-title">Valeur de 100 : value seule contre combinaisons 70/30</div>
+  <div class="legend" id="lg-cmb"></div>
+  <div class="chart" id="c-cmb"></div>
+</figure>
+<h3>Comment lire et utiliser ces chiffres</h3>
+<ul>
+  <li>Sur 2001-2026, le Sharpe maximal est atteint avec seulement 30 % de value (0,76). Ce chiffre est flatté par la mauvaise décennie 2000 des actions et la bonne décennie du trend : ne pas le prendre comme une cible.</li>
+  <li>Sur 2016-2026, période défavorable au trend et favorable aux actions, toute part de trend entre 20 % et 50 % améliore quand même le Sharpe et réduit la perte maximale. C'est l'argument le plus solide : la combinaison aide même quand le trend traverse une mauvaise passe.</li>
+  <li>La réduction de la perte maximale est plus robuste que le gain de Sharpe : elle se vérifie sur les deux périodes et pour toutes les répartitions.</li>
+  <li>La part à allouer dépend de ta tolérance à une stratégie qui peut sous-performer pendant plusieurs années (2016-2019 ici), et de ta conviction dans chaque moteur. C'est ta décision.</li>
+</ul>
+</section>
+
+<section id="faisabilite">
+<h2><span class="n">9</span>Faisabilité et version ETF</h2>
+<h3>Pourquoi la version futures ne passe pas avec 5 000 à 25 000 €</h3>
+<p>Les futures se négocient par contrats entiers. Pour un capital de 25 000 €, le tableau compare la position moyenne visée par la stratégie sur les 24 derniers mois avec la valeur du plus petit contrat disponible.</p>
+<div class="tbl"><table id="t-contracts"></table></div>
+<p class="cap">Notionnel au cours du 30/09/2026, converti en EUR (EUR/USD 1,133). Spécifications de contrats à vérifier sur le site de chaque bourse ou chez Interactive Brokers avant toute utilisation. Un ratio de 12 signifie qu'un seul contrat représente 12 fois la position voulue.</p>
+<p>Avec des positions 1,5 à 53 fois trop grosses, le portefeuille réel n'aurait plus rien à voir avec le backtest : quelques marchés seraient surreprésentés, les autres absents. Ordre de grandeur du capital nécessaire pour détenir les 17 marchés avec une granularité raisonnable : plusieurs centaines de milliers d'euros, à cause des contrats obligataires.</p>
+
+<h3>La version investissable : ETF, acheteur ou monétaire</h3>
+<p>Règles fixées le 13/10/2026, avant calcul :</p>
+<ul>
+  <li>Même signal (moyenne 3/6/12 mois), mais <strong>uniquement les signaux positifs</strong> : un marché en tendance baissière est simplement absent du portefeuille, sans vente à découvert.</li>
+  <li><strong>13 marchés</strong> : les devises sont retirées, faute d'ETF de change simples pour un investisseur européen.</li>
+  <li>Même mise à l'échelle à 10 % de volatilité, mais <strong>sans levier</strong> : 100 % du capital investi au maximum, le reste en fonds monétaire.</li>
+  <li>Coûts : 0,10 % par unité de rotation (spread et commission) et 0,30 % par an de frais de gestion sur la part investie.</li>
+  <li>Les rendements excédentaires des futures servent de proxy aux ETF. C'est réaliste pour des ETF couverts en euros, détenus contre un placement monétaire en euros (voir les limites).</li>
+</ul>
+<div class="tbl"><table id="t-etf"></table></div>
+<p class="cap">Comparaison des deux versions et de la value, par période.</p>
+<p><strong>Ce que la version ETF gagne :</strong> elle est réalisable avec 5 000 à 25 000 €, elle a le même Sharpe sur l'ensemble (0,64) et un meilleur Sharpe depuis 2016 (0,54 contre 0,28), avec une perte maximale de −20 %.</p>
+<p><strong>Ce qu'elle perd :</strong> la capacité à gagner quand tout baisse. En 2022, actions et obligations ont baissé ensemble ; la version futures gagnait en vendant les obligations (+27 %), la version ETF ne pouvait qu'en sortir et perd −8,9 %. Sa corrélation avec la value passe de −0,21 à +0,09 sur l'ensemble, et à +0,34 depuis 2016. Elle reste un bon diversifiant (le portefeuille 70/30 ETF fait passer le Sharpe 2016-2026 de 0,63 à 0,70 et la perte maximale de −37 % à −27 %), mais ce n'est plus une couverture de crise.</p>
+
+<h3>Mise en œuvre pratique de la version ETF</h3>
+<ul>
+  <li><strong>Choisir des ETF couverts en euros</strong> (« EUR Hedged ») quand ils existent, pour les actions étrangères et les obligations non européennes. Sinon, le portefeuille porte un risque de change que le backtest ne contient pas.</li>
+  <li><strong>Correspondance des marchés</strong> : un ETF par indice actions (S&amp;P 500, Euro Stoxx 50, Nikkei 225, MSCI Émergents), un ETF par obligation d'État (Treasuries 7-10 ans et 20+ ans, Bund, Gilt), un ETC par matière première (or, argent, pétrole WTI, cuivre, maïs) et un ETF monétaire en euros pour la part non investie.</li>
+  <li><strong>Commissions minimales</strong> : à 25 000 €, les positions vont de 1 000 à 7 500 €. Une commission minimale de quelques euros par ordre représente 0,1 à 0,3 % de chaque transaction. À 5 000 €, l'effet est cinq fois plus fort. Une règle pratique : ne passer un ordre que si l'écart entre poids actuel et poids cible dépasse 2 points (non testée dans ce backtest).</li>
+  <li><strong>Enveloppe</strong> : la plupart de ces ETF et ETC ne sont pas éligibles au PEA, réservé aux actions européennes. Un compte-titres ordinaire est nécessaire. La fiscalité est à vérifier avec un professionnel.</li>
+</ul>
+<h3>Positions cibles au 30/09/2026</h3>
+<div class="tbl"><table id="t-pos"></table></div>
+<p class="cap">Sortie mécanique du modèle pour un capital de 25 000 €, à titre d'illustration de la routine mensuelle. Pas une recommandation.</p>
+<figure>
+  <div class="fig-title">Poids cibles au 30/09/2026, version futures</div>
+  <div class="fig-sub">À droite : position acheteuse. À gauche : position vendeuse. En % du capital.</div>
+  <div class="chart" id="c-pos"></div>
+</figure>
+</section>
+
+<section id="repliquer">
+<h2><span class="n">10</span>Répliquer la stratégie</h2>
+<h3>A. Extraire les données sur Bloomberg</h3>
+<ol class="steps">
+  <li><code>GFUT &lt;GO&gt;</code>, onglet <em>Generic Rolls</em> : <code>Adjust</code> = <strong>Ratio</strong> ; roll <strong>avant</strong> l'expiration (<code>Days</code> = 5, ou <code>With Active Futures</code>). Noter les réglages d'origine si le login est partagé, et les remettre ensuite.</li>
+  <li>Ouvrir <code>templates/bloomberg/Extract_Trend_Following_Bloomberg_FR.xlsx</code> (le fichier avec formules, jamais une copie figée), remplir les cases jaunes de l'onglet <code>Parametres</code>.</li>
+  <li>Ruban Bloomberg → <em>Refresh Workbook</em>. Si des <code>#NAME?</code> apparaissent : Ctrl+Alt+F9.</li>
+  <li>Onglet <code>Controles</code> : « Prêt à figer ? » = Oui et C6 = « Ajusté ». Comparer une ou deux valeurs à l'écran <code>GP</code>.</li>
+  <li>Enregistrer sous <code>Extract_Trend_AAAAMMJJ_valeurs.xlsx</code>, puis dans cette copie, onglets Tickers et Prix : Ctrl+A, Ctrl+C, Ctrl+Alt+V → Valeurs.</li>
+  <li>Déposer le fichier dans <code>data/</code> (jamais sur GitHub : la licence Bloomberg interdit de redistribuer les données).</li>
+</ol>
+<p>Quota : 41 tickers × 1 champ, très loin de la limite quotidienne de 500 000 hits de l'API Excel. Chaque recalcul reconsomme : figer dès que les contrôles sont verts.</p>
+
+<h3>B. Lancer le backtest</h3>
+<pre><code>git clone https://github.com/Fayzzy11/Portfolio-Project.git
+cd Portfolio-Project
+python -m venv .venv &amp;&amp; source .venv/bin/activate     # Windows : .venv\Scripts\activate
+pip install -r requirements.txt
+
+# backtest complet : écrit strategies/trend_following/results/results.json
+python -m strategies.trend_following.run data/Extract_Trend_20261013_values.xlsx
+
+# régénérer cette page à partir des résultats
+python docs/build_report.py</code></pre>
+
+<h3>C. Organisation du code</h3>
+<div class="tbl"><table>
+<thead><tr><th class="l">Fichier</th><th class="l">Rôle</th></tr></thead>
+<tbody>
+<tr><td class="l"><code>common/data.py</code></td><td class="l">Lit l'onglet Prix d'une extraction figée ; calcule les rendements excédentaires</td></tr>
+<tr><td class="l"><code>common/metrics.py</code></td><td class="l">Sharpe, intervalle de confiance, drawdown, Sortino, rendements mensuels et annuels</td></tr>
+<tr><td class="l"><code>strategies/trend_following/config.py</code></td><td class="l">Tous les paramètres : univers, coûts, horizons, volatilité cible, dates, contrats</td></tr>
+<tr><td class="l"><code>strategies/trend_following/engine.py</code></td><td class="l">Signaux, volatilité EWMA, poids, mise à l'échelle, coûts, versions futures et ETF</td></tr>
+<tr><td class="l"><code>strategies/trend_following/run.py</code></td><td class="l">Toutes les analyses de ce rapport → <code>results/results.json</code></td></tr>
+<tr><td class="l"><code>strategies/trend_following/positions.py</code></td><td class="l">Positions cibles du mois en cours, en % et en €</td></tr>
+<tr><td class="l"><code>templates/bloomberg/</code></td><td class="l">Modèles Excel d'extraction (anglais et français) et scripts qui les génèrent</td></tr>
+<tr><td class="l"><code>docs/</code></td><td class="l">Site GitHub Pages : une page par stratégie</td></tr>
+</tbody></table></div>
+
+<h3>D. Le cœur du code</h3>
+<pre><code>def signals(rets, lookbacks, month_ends):
+    cum = (1 + rets.fillna(0)).cumprod()            # indice de valeur de chaque marché
+    parts = []
+    for L in lookbacks:                             # 3, 6, 12 mois
+        c = cum.loc[month_ends]
+        parts.append(np.sign(c / c.shift(L) - 1))   # +1 si hausse sur L mois, -1 sinon
+    return sum(parts) / len(parts)                  # moyenne des signes
+
+vol = rets.ewm(com=60).std() * np.sqrt(261)         # volatilité EWMA annualisée
+raw = s / vol / n_marches                           # même risque par marché
+pvol = np.sqrt(raw @ cov_1an @ raw)                 # volatilité ex-ante du portefeuille
+w = raw * 0.10 / pvol                               # mise à l'échelle à 10 %
+W_detenu = W.reindex(jours).shift(1).ffill()        # appliqué dès le lendemain</code></pre>
+</section>
+
+<section id="routine">
+<h2><span class="n">11</span>Routine mensuelle</h2>
+<p>Si tu mets la version ETF en place, voici ce qu'il faut faire chaque mois, le dernier jour ouvré après la clôture ou le premier jour ouvré du mois suivant.</p>
+<ul class="chk">
+  <li>Mettre à jour les prix (extraction Bloomberg, ou à terme une source de données de ton courtier).</li>
+  <li>Lancer <code>python -m strategies.trend_following.positions data/&lt;fichier&gt;.xlsx &lt;capital&gt;</code>.</li>
+  <li>Comparer les poids cibles avec les poids actuels du compte.</li>
+  <li>Passer les ordres uniquement là où l'écart dépasse le seuil retenu (par exemple 2 points de pourcentage).</li>
+  <li>Placer le solde non investi sur l'ETF monétaire euro.</li>
+  <li>Noter dans un journal : date, signaux, poids, ordres passés, prix d'exécution, frais réels.</li>
+  <li>Une fois par trimestre : comparer la performance réelle au backtest du même trimestre. Un écart durable signale un problème d'exécution ou de coûts.</li>
+</ul>
+<p>Temps estimé : 20 à 30 minutes par mois une fois la chaîne en place.</p>
+</section>
+
+<section id="limites">
+<h2><span class="n">12</span>Biais et limites</h2>
+<h3>Biais contrôlés</h3>
+<ul>
+  <li><strong>Look-ahead</strong> : décision à la clôture de t, application à t+1 ; volatilité et covariance calculées uniquement sur le passé.</li>
+  <li><strong>Survivorship</strong> : sans objet pour des futures génériques sur indices et matières premières, qui ne disparaissent pas comme des actions.</li>
+  <li><strong>Surapprentissage</strong> : paramètres standards de la littérature, fixés avant calcul ; 4 variantes seulement, toutes publiées ; période de validation intacte.</li>
+  <li><strong>Roll</strong> : séries ajustées par ratio, vérifiées ; WTI sur le 2e contrat.</li>
+</ul>
+<h3>Limites qui demeurent</h3>
+<ul>
+  <li><strong>Choix de l'univers avec le recul.</strong> Les 17 marchés sont ceux qui sont liquides aujourd'hui. En 2001, un investisseur aurait pu en choisir d'autres. L'effet est faible pour des marchés aussi standards, mais pas nul.</li>
+  <li><strong>Significativité statistique limitée.</strong> Sur 2016-2026, les intervalles de confiance de toutes les variantes incluent zéro. Dix ans ne suffisent pas à distinguer un Sharpe de 0,3 d'un Sharpe nul.</li>
+  <li><strong>Proxy de la value.</strong> Le MSCI World Value n'est pas ta stratégie. Ton portefeuille sera plus concentré, avec un biais value plus marqué : sa corrélation avec le trend devra être recalculée.</li>
+  <li><strong>Change.</strong> Les rendements des futures sont pris en monnaie locale. Pour un investisseur en euros, le P&amp;L d'un future en dollars est exposé au change, mais seulement sur le gain ou la perte, pas sur le notionnel. Effet de second ordre, ignoré ici.</li>
+  <li><strong>Coûts estimés, pas mesurés.</strong> Pas d'impact de marché, pas de commissions minimales, pas de coût de financement des appels de marge. Le test de sensibilité donne une idée de la marge.</li>
+  <li><strong>Version ETF : proxy imparfait.</strong> Les ETF réels ont des écarts de suivi, des frais différents selon le produit, et parfois un historique plus court que le backtest. Certains marchés (maïs, Gilt couvert en euros) n'ont que peu de produits disponibles.</li>
+  <li><strong>Combinaison rebalancée chaque jour.</strong> En pratique, le rebalancement sera mensuel ; l'écart est faible mais existe.</li>
+  <li><strong>Régime de taux.</strong> 2001-2021 est une longue période de baisse des taux, favorable aux positions acheteuses sur obligations. Ce régime ne se répétera pas forcément.</li>
+</ul>
+</section>
+
+<section id="glossaire">
+<h2><span class="n">13</span>Glossaire</h2>
+<dl class="gloss">
+  <dt>Future</dt><dd>Contrat d'achat ou de vente à une date future, à un prix fixé aujourd'hui. Ne demande qu'un dépôt de garantie.</dd>
+  <dt>Générique (CL1, CL2)</dt><dd>Série Bloomberg qui suit le 1er (ou 2e) contrat le plus proche de l'échéance et passe au suivant à chaque roll.</dd>
+  <dt>Roll</dt><dd>Remplacement du contrat qui arrive à échéance par le suivant.</dd>
+  <dt>Ajustement par ratio</dt><dd>Multiplication de l'historique par le rapport des prix des deux contrats au roll, pour supprimer le faux saut.</dd>
+  <dt>Notionnel</dt><dd>Valeur totale de l'exposition d'un contrat : prix × multiplicateur.</dd>
+  <dt>Time-series momentum</dt><dd>Tendance d'un marché par rapport à son propre passé (à distinguer du momentum en coupe, qui compare les actifs entre eux).</dd>
+  <dt>EWMA</dt><dd>Moyenne mobile exponentielle : les observations récentes pèsent davantage.</dd>
+  <dt>Volatilité cible</dt><dd>Niveau de risque visé ; les positions sont agrandies ou réduites pour l'atteindre.</dd>
+  <dt>Levier brut</dt><dd>Somme des valeurs absolues des poids : exposition totale rapportée au capital.</dd>
+  <dt>Rendement excédentaire</dt><dd>Rendement au-dessus du taux monétaire sans risque.</dd>
+  <dt>Crisis alpha</dt><dd>Capacité d'une stratégie à gagner pendant les crises des marchés actions.</dd>
+  <dt>CTA</dt><dd>Commodity Trading Advisor : gérant spécialisé dans les stratégies sur futures, souvent de trend following.</dd>
+  <dt>ETC</dt><dd>Exchange Traded Commodity : titre coté qui suit une matière première.</dd>
+</dl>
+</section>
+
+<section id="sources">
+<h2><span class="n">14</span>Sources</h2>
+<ul>
+  <li>Moskowitz, T., Ooi, Y. H., Pedersen, L. H. (2012). <em>Time Series Momentum</em>. Journal of Financial Economics, 104(2), 228-250.</li>
+  <li>Hurst, B., Ooi, Y. H., Pedersen, L. H. (2017). <em>A Century of Evidence on Trend-Following Investing</em>. The Journal of Portfolio Management, 44(1), 15-29.</li>
+  <li>Lo, A. (2002). <em>The Statistics of Sharpe Ratios</em>. Financial Analysts Journal, 58(4), 36-52.</li>
+  <li>Bailey, D., López de Prado, M. (2014). <em>The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality</em>. The Journal of Portfolio Management, 40(5), 94-107.</li>
+  <li>Données : Bloomberg L.P., terminal SKEMA Business School, extraction du 13/10/2026. Tickers et champs dans la section Données.</li>
+</ul>
+</section>
+
+<footer>
+  Strategies Lab · Rapport généré à partir de <code>strategies/trend_following/results/results.json</code> par <code>docs/build_report.py</code>. Préparé par Claude pour Noah Doose. Ce document décrit des résultats passés et ne constitue pas un conseil en investissement.
+</footer>
+</main>
+</div>
+
+<script id="report-data" type="application/json">/*__DATA__*/</script>
+<script>
+const LANG = 'fr';
+const T = {
+  names: {'TSMOM blend 3/6/12m':'Trend futures (réf. 3/6/12 m)','TSMOM 3m':'Trend 3 mois','TSMOM 6m':'Trend 6 mois','TSMOM 12m':'Trend 12 mois','ETF long/cash version':'Trend ETF acheteur/cash','MSCI World Value (EUR)':'MSCI World Value','MSCI World (EUR)':'MSCI World','70/30 value/trend':'70 % value / 30 % trend futures','70/30 value/ETF':'70 % value / 30 % trend ETF'},
+  classes: {'Equities':'Actions','Rates':'Taux','Commodities':'Matières premières','Currencies':'Devises','Equity benchmark':'Référence actions','FX':'Change','Risk-free rate':'Taux sans risque'},
+  labels: {'MES1 Index':'MSCI Émergents','TY1 Comdty':'US 10 ans','US1 Comdty':'US 30 ans','RX1 Comdty':'Bund 10 ans','G 1 Comdty':'Gilt 10 ans','GC1 Comdty':'Or','SI1 Comdty':'Argent','CL2 Comdty':'Pétrole WTI','HG1 Comdty':'Cuivre','C 1 Comdty':'Maïs','M1WO000V Index':'MSCI World Value Net TR (USD)','MSDEWIN Index':'MSCI World Net TR (EUR)','EURUSD Curncy':'EUR/USD spot','EURJPY Curncy':'EUR/JPY spot','EURGBP Curncy':'EUR/GBP spot','EUR003M Index':'Euribor 3 mois','USGG3M Index':'Taux US 3 mois'},
+  contracts: {'ES1 Index':'Micro E-mini S&P 500 (CME)','VG1 Index':'Euro Stoxx 50 standard (Eurex)','TY1 Comdty':'US 10 ans standard (CBOT)','RX1 Comdty':'Euro-Bund standard (Eurex)','G 1 Comdty':'Long Gilt standard (ICE)','GC1 Comdty':'Micro or, 10 onces (COMEX)','SI1 Comdty':'Micro argent, 1 000 onces (COMEX)','CL2 Comdty':'Micro WTI, 100 barils (NYMEX)','HG1 Comdty':'Micro cuivre, 2 500 livres (COMEX)','C 1 Comdty':'Mini maïs, 1 000 boisseaux (CBOT)','EC1 Curncy':'Micro EUR/USD, 12 500 € (CME)','BP1 Curncy':'Micro GBP/USD, 6 250 £ (CME)','AD1 Curncy':'Micro AUD/USD, 10 000 AUD (CME)'},
+  crises: {'Global financial crisis':'Crise financière','European debt crisis':'Crise de la dette européenne','China / oil':'Chine / pétrole','Late-2018 sell-off':'Krach de fin 2018','Covid crash':'Covid','2022 (inflation, rate hikes)':'Année 2022 (inflation, hausse des taux)'},
+  crisisShort: {'Global financial crisis':'2007-09','European debt crisis':'2011','China / oil':'2015-16','Late-2018 sell-off':'Fin 2018','Covid crash':'Covid','2022 (inflation, rate hikes)':'2022'},
+  locale: 'fr-FR', pctSep: ' ', months: ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],
+  periods: [['full','2001-2026'],['design','2001-2015 (conception)'],['validation','2016-2026 (validation)']],
+  versions: ['Trend futures','Trend ETF acheteur/cash'],
+  h: {
+    kpi: ['Sharpe 2001-2026, trend futures','Corrélation mensuelle avec la value','Perte maximale, value seule','Sharpe 2001-2026, version ETF'],
+    kpiSub: (st,c,cb,REF,ETF,VAL,f)=>[`conception ${f.nf(st.design[REF].sharpe)} · validation ${f.nf(st.validation[REF].sharpe)}`, `depuis 2016 : ${f.nf(c.validation[REF][VAL])}`, `70/30 avec trend futures : ${f.pct(cb[REF][7].full.max_drawdown,1)}`, `investissable dès 5 000 € · corrélation ${f.nf(c.full[ETF][VAL])}`],
+    universe: ['Marché','Ticker Bloomberg','Classe','Début','Points'],
+    example: ['Marché','3 mois','6 mois','12 mois','Signal s','Vol. σ','Poids brut s/σ/N','Poids final'],
+    exampleCap: (E,f)=>`N = ${E.n_markets} marchés. Volatilité ex-ante du portefeuille brut : ${f.pct(E.raw_ex_ante_vol,1)}. Facteur d'échelle : 10 % / ${f.pct(E.raw_ex_ante_vol,1)} = ${f.nf(E.scale_factor,3)}. Levier brut final : ${f.nf(E.final_gross_leverage,2)}.`,
+    stats: ['Stratégie','Rendement annualisé','Volatilité','Sharpe','IC 95 % du Sharpe','Sortino','Perte max.','Calmar','Mois positifs','Asymétrie'],
+    year: 'Année',
+    classes: ['Classe','Contribution annuelle 2001-2026','Sharpe de la contribution','Contribution annuelle 2016-2026'],
+    markets: ['Marché','Classe','Poids moyen |w|','Temps acheteur','Temps vendeur','Contribution annuelle','Sharpe contribution'],
+    costs: ['Coûts','Sharpe 2001-2026','Sharpe 2001-2015','Sharpe 2016-2026'], costRows: ['Sans coûts','Coûts estimés','Coûts × 2','Coûts × 3'],
+    cond: ['Mesure'], condRows: (v)=>['Bêta par rapport à la value',`Rendement moyen pendant les 10 % pires mois de la value (value : ${v})`,'Rendement moyen pendant les 10 % meilleurs mois de la value','Rendement moyen quand la value baisse','Rendement moyen quand la value monte','Corrélation pendant les mois de baisse de la value','Corrélation pendant les mois de hausse de la value'],
+    crises: ['Crise','Période'],
+    combo: ['Value / trend','Sharpe 2001-2026','Rendement 2001-2026','Volatilité 2001-2026','Perte max. 2001-2026','Sharpe 2016-2026','Perte max. 2016-2026'],
+    contracts: ['Marché','Plus petit contrat',"Notionnel d'un contrat",'Position visée (25 000 €)','Contrat / position'],
+    etf: ['Période','Version','Sharpe','Rendement','Volatilité','Perte max.','Corrélation avec la value'],
+    pos: ['Marché','Classe','Signal','Futures : poids','Futures : montant','ETF : poids','ETF : montant'], notTraded: 'non traité',
+    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF',
+  }
+};
+</script>
+<!--__SCRIPT__-->

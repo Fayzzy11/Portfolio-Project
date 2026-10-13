@@ -1,0 +1,6 @@
+# Raw Bloomberg data: licence does not allow redistribution, never publish it
+data/*.xlsx
+data/*.csv
+__pycache__/
+*.pyc
+.venv/

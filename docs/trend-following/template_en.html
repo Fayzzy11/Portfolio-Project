@@ -1,0 +1,468 @@
+<title>Multi-Asset Trend Following</title>
+<meta name="description" content="Full backtest of a multi-asset trend-following strategy, compared with an MSCI World Value proxy: data, calculations, correlation, combination, replication and limitations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<!--__STYLE__-->
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="lbl">Contents</div>
+  <ol>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#why">Why this strategy</a></li>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#method">Method and formulas</a></li>
+    <li><a href="#example">Worked example</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#correlation">Correlation with value</a></li>
+    <li><a href="#combination">Combined portfolio</a></li>
+    <li><a href="#feasibility">Feasibility and ETF version</a></li>
+    <li><a href="#replicate">Replicate</a></li>
+    <li><a href="#routine">Monthly routine</a></li>
+    <li><a href="#limits">Biases and limitations</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+  <!--__LANG__-->
+</nav>
+
+<main>
+<header class="top">
+  <div class="eyebrow">Strategies Lab · Noah Doose · Bloomberg data from 3 Jan 2000 to 30 Sep 2026 · backtest of 13 Oct 2026</div>
+  <h1>Multi-asset trend following</h1>
+  <p class="lede">A strategy that buys rising markets and sells falling ones, across 17 futures (equity indices, government bonds, commodities, currencies). It is studied here as a complement to a global value equity portfolio: its own results, its correlation with that portfolio, what the combination delivers, and what can actually be implemented with €5,000 to €25,000.</p>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<section id="summary">
+<h2><span class="n">1</span>Summary</h2>
+<p>The key points before the detail. All figures are <em>excess</em> returns (above the money-market rate), net of estimated costs, from February 2001 to September 2026.</p>
+<ol class="steps">
+  <li><strong>The strategy works as a diversifier.</strong> Its monthly correlation with MSCI World Value is <span class="mono">−0.21</span> over the whole period. In value's worst months (the bottom 10%, −7.9% on average), it gains <span class="mono">+2.6%</span> on average.</li>
+  <li><strong>The Sharpe ratio does not reliably exceed 1.</strong> Reference version (average of the 3, 6 and 12-month signals): <span class="mono">0.89</span> over 2001-2015, <span class="mono">0.28</span> over 2016-2026, <span class="mono">0.64</span> overall. The drop in the second period is consistent with what the whole trend-following industry went through in the 2010s.</li>
+  <li><strong>The combination improves the portfolio.</strong> 70% value and 30% trend lift the Sharpe ratio from <span class="mono">0.32</span> to <span class="mono">0.50</span> over 2001-2026, and cut the maximum drawdown from <span class="mono">−65%</span> to <span class="mono">−43%</span>.</li>
+  <li><strong>The futures version cannot be implemented with this capital.</strong> With €25,000, the smallest available contract is 1.5 to 53 times the target position, depending on the market.</li>
+  <li><strong>An investable version exists: ETFs, long or cash, no leverage.</strong> Sharpe <span class="mono">0.64</span> overall, <span class="mono">0.54</span> over 2016-2026, maximum drawdown <span class="mono">−20%</span>. But it diversifies less: correlation of <span class="mono">+0.09</span> with value overall, <span class="mono">+0.34</span> since 2016, and it no longer protects in 2022.</li>
+  <li><strong>The remaining decisions are Noah's:</strong> how much to allocate, the trade-off between maximum diversification (futures, not feasible today) and feasibility (ETFs), and when the actual value strategy replaces the MSCI proxy in these calculations.</li>
+</ol>
+<div class="callout warn"><p><strong>Status of this document.</strong> An analysis of past data, prepared by Claude at Noah's request. It is not investment advice: a backtest applies rules to past data that is known today; it describes what would have happened, not what will happen. Future results may be markedly lower.</p></div>
+</section>
+
+<section id="why">
+<h2><span class="n">2</span>Why this strategy</h2>
+<p>The goal is not the strategy with the best stand-alone Sharpe ratio, but the one that improves the <em>total</em> portfolio the most. The main project is a long-only global value equity portfolio: its beta to the global equity market is close to 1, and it suffers in the same crises.</p>
+<h3>The rule that drives the choice</h3>
+<p>Adding a strategy B to a portfolio A improves the Sharpe ratio of the total as soon as:</p>
+<div class="formula">Sharpe(B) &gt; ρ(A, B) × Sharpe(A)</div>
+<p>ρ is the correlation between the two. With value as A (Sharpe 0.32 over 2001-2026) and trend as B (correlation −0.21), the threshold is −0.21 × 0.32 = <span class="mono">−0.07</span>. Any strategy with a positive Sharpe and a negative correlation therefore improves the total. Conversely, a second equity strategy correlated at 0.9 would need a Sharpe above 0.29 just to avoid degrading the whole, while adding little protection.</p>
+<h3>Why trend following in particular</h3>
+<ul>
+  <li><strong>A premium documented over more than a century.</strong> Hurst, Ooi and Pedersen (2017) find it in more than a century of data (from 1880), with positive returns in every decade. Moskowitz, Ooi and Pedersen (2012) document it across 58 liquid futures contracts (equities, rates, currencies, commodities).</li>
+  <li><strong>An economic explanation.</strong> Investors react slowly to information, then follow it too far (anchoring, herding). Central banks and commercial hedgers, who are not profit-seeking, also feed trends.</li>
+  <li><strong>A convex return profile.</strong> In a long crisis (2008, 2022), downtrends in equities or uptrends in yields settle in, and the strategy positions itself in their direction. This is often called "crisis alpha".</li>
+  <li><strong>Independence from value.</strong> Value buys what has fallen and looks cheap; trend buys what is rising. The two logics are almost opposite.</li>
+</ul>
+</section>
+
+<section id="data">
+<h2><span class="n">3</span>Data</h2>
+<p>Every series comes from the Bloomberg terminal of the SKEMA trading room, extracted on 13 October 2026 with the project's Excel template (<code>templates/bloomberg/</code>), field <code>PX_LAST</code>, daily, from 3 January 2000 to 30 September 2026, then frozen as values.</p>
+<h3>Universe</h3>
+<div class="tbl"><table id="t-universe"></table></div>
+<p class="cap">MSCI Emerging Markets futures only start in September 2009: the market enters the strategy as soon as it has enough history. MSCI World Value Net TR is published in USD; it is converted to EUR with <code>EURUSD Curncy</code>.</p>
+
+<h3>Rolling futures and ratio adjustment</h3>
+<p>A futures contract has an expiry date. To stay invested, the expiring contract is sold and the next one bought: this is the roll. A generic ticker (<code>CL1</code>, <code>ES1</code>…) stitches different contracts together. Without adjustment, every contract change creates a fake return: if the November contract is at $70 and December at $72, the raw series shows +2.9% on roll day even though the holder made nothing.</p>
+<p>Ratio adjustment fixes this: at the roll, the whole history is multiplied by 72/70. Every daily change in the adjusted series is then the one the holder actually experienced. Setting used: <code>GFUT &lt;GO&gt;</code> → Generic Rolls tab → <code>Adjust</code> = Ratio.</p>
+<div class="callout note">
+<p><strong>Check performed.</strong> The first (unadjusted) extraction gave <code>ES1</code> = 1,466.75 on 3 January 2000, the actual price at the time. The adjusted version gives 1,772.51: the history has indeed been back-adjusted. The Excel template now tests this automatically (<code>Checks!C6</code>).</p>
+</div>
+<p><strong>The WTI case.</strong> Even adjusted, the <code>CL1</code> series holds each contract until its last trading day, which produces a negative price on 20 April 2020 (−28.12 after adjustment, −37.63 raw). That day, the last holders of the May contract, physically deliverable in Cushing, paid to get rid of it for lack of storage. No manager would still have held that contract. The strategy therefore uses <code>CL2</code> (the next contract), which amounts to rolling one month earlier. This choice was made before computing any performance.</p>
+
+<h3>Quality checks</h3>
+<ul>
+  <li>No Bloomberg error; every series runs to 30 September 2026.</li>
+  <li>The largest daily moves were checked one by one. Silver at −31% on 30 January 2026 and copper at −22% on 31 July 2025 are real market moves, identical on the 1st and 2nd contracts. They are kept.</li>
+  <li>The correlation of daily returns between 1st and 2nd contracts exceeds 0.97 on the markets tested (S&amp;P 500, US 10-year, gold, WTI, corn). Both series are therefore consistent, with no residual roll jump.</li>
+  <li>Risk-free rate: 3-month Euribor (<code>EUR003M Index</code>), converted to a daily rate (rate / 100 / 261).</li>
+</ul>
+</section>
+
+<section id="method">
+<h2><span class="n">4</span>Method and formulas</h2>
+<p>Every rule was fixed on 2 October 2026, before seeing any result. They are written in <code>strategies/trend_following/config.py</code>. The principle: each market has the same voice (same risk), and only the direction of its trend decides whether it is bought or sold.</p>
+
+<h3>Step 1 · Returns</h3>
+<p>For each market i and each session t, return of the adjusted series:</p>
+<div class="formula">r<sub>i,t</sub> = P<sub>i,t</sub> / P<sub>i,t−1</sub> − 1</div>
+<p>A futures position only requires a margin deposit: its return is already an <em>excess</em> return (it includes no interest on the capital). The Sharpe ratio is therefore computed directly, without subtracting a risk-free rate. For the equity benchmark indices, the day's 3-month Euribor is subtracted.</p>
+
+<h3>Step 2 · Trend signal</h3>
+<p>On the last business day of each month, for each look-back L of 3, 6 and 12 months (21 sessions per month):</p>
+<div class="formula">signal<sub>i</sub>(L) = sign( P<sub>i,t</sub> / P<sub>i,t−L months</sub> − 1 )   ∈ {−1, +1}</div>
+<p>The reference version averages the three:</p>
+<div class="formula">s<sub>i</sub> = [ signal<sub>i</sub>(3) + signal<sub>i</sub>(6) + signal<sub>i</sub>(12) ] / 3   ∈ {−1, −⅓, +⅓, +1}</div>
+<p>A market needs at least L months + 1 month of actual history to get a signal. Averaging three horizons avoids depending on a single parameter, and shrinks the position when horizons disagree.</p>
+
+<h3>Step 3 · Volatility of each market</h3>
+<div class="formula">σ<sub>i,t</sub> = √261 × EWMA standard deviation( r<sub>i</sub> ), 60-day centre of mass</div>
+<p>An exponentially weighted average gives more weight to recent sessions. A 60-day centre of mass is the choice of Moskowitz, Ooi and Pedersen (2012). A Bund's volatility is around 5%, crude oil's around 35 to 50%: without this normalisation, oil would dominate the portfolio.</p>
+
+<h3>Step 4 · Raw weight</h3>
+<div class="formula">w<sub>i</sub><sup>raw</sup> = s<sub>i</sub> / σ<sub>i</sub> / N</div>
+<p>N is the number of eligible markets that month. Each market thus contributes a similar amount of risk, whatever its volatility.</p>
+
+<h3>Step 5 · Portfolio scaling</h3>
+<p>Markets are correlated with each other (the four government bonds, for instance), so portfolio volatility depends on the covariance. Ex-ante volatility is estimated with the covariance matrix Σ of the last 261 sessions:</p>
+<div class="formula">σ<sub>p</sub> = √( w<sup>raw ⊤</sup> Σ w<sup>raw</sup> )      then      w<sub>i</sub> = w<sub>i</sub><sup>raw</sup> × 10% / σ<sub>p</sub></div>
+<p>Cap: the sum of the absolute weights (gross leverage) does not exceed 4. An average gross leverage of 2.4 means that, for €100 of capital, positions add up to €240 of notional (long and short combined). This is normal for futures, which only tie up a margin deposit.</p>
+
+<h3>Step 6 · Timing, with no look-ahead</h3>
+<p>Weights computed at the close of the last day of the month apply from the next session until the end of the following month. No information after the decision is used.</p>
+<div class="formula">r<sub>p,t</sub> = Σ<sub>i</sub> w<sub>i,t−1</sub> × r<sub>i,t</sub> − costs<sub>t</sub></div>
+
+<h3>Step 7 · Costs</h3>
+<p>Two costs, as a fraction of notional, set per market in <code>config.py</code>: 1 to 6 basis points per trade depending on liquidity, and the roll, which forces a sale and a purchase at every expiry (4 times a year for financials, 5 to 12 times for commodities).</p>
+<div class="formula">cost<sub>month</sub> = Σ<sub>i</sub> |Δw<sub>i</sub>| × c<sub>i</sub>      cost<sub>roll, day</sub> = Σ<sub>i</sub> |w<sub>i</sub>| × c<sub>i</sub> × 2 × rolls<sub>i</sub> / 261</div>
+<p>Result: <span class="mono" id="cost-fut"></span> per year on average for the reference version. The sensitivity test below doubles and triples these costs.</p>
+
+<h3>Step 8 · Variants tested and sample split</h3>
+<p>Four variants, and only four: 3-month, 6-month and 12-month signals, and the average of the three. All are shown. The design period runs from February 2001 to December 2015, the validation period from January 2016 to September 2026, with no change in between. All variants start on 1 February 2001 to be comparable.</p>
+<p>The reference variant is the average of the three horizons, chosen <em>a priori</em> because it does not bet on any particular horizon. The 12-month variant gets the best numbers, but choosing it for that reason would be exactly the selection bias this process is meant to avoid.</p>
+
+<h3>Metrics used</h3>
+<dl class="gloss">
+  <dt>Annualised return</dt><dd>(final value / initial value)<sup>1/years</sup> − 1</dd>
+  <dt>Volatility</dt><dd>standard deviation of daily returns × √261</dd>
+  <dt>Sharpe ratio</dt><dd>mean daily excess return × 261 / volatility</dd>
+  <dt>95% interval</dt><dd>Sharpe ± 1.96 × √((1 + Sharpe²/2) / years), Lo (2002) formula assuming independent returns</dd>
+  <dt>Sortino ratio</dt><dd>like the Sharpe ratio, but only penalising the volatility of negative days</dd>
+  <dt>Maximum drawdown</dt><dd>largest fall from a peak to a subsequent trough</dd>
+  <dt>Calmar ratio</dt><dd>annualised return / |maximum drawdown|</dd>
+  <dt>Skewness</dt><dd>computed on monthly returns; positive = more very good months than very bad ones</dd>
+</dl>
+</section>
+
+<section id="example">
+<h2><span class="n">5</span>Worked example, 30 September 2026</h2>
+<p>This is the latest rebalancing of the reference version, market by market. It is exactly the calculation the code performs every month, and the one used to place orders.</p>
+<div class="tbl"><table id="t-example"></table></div>
+<p class="cap" id="example-cap"></p>
+<p><strong>Reading one row, the Euro Stoxx 50:</strong> over 3 months the market fell (−1), over 6 and 12 months it rose (+1, +1). The average signal is ⅓. Its EWMA volatility is 14.4%. Raw weight: 0.333 / 0.144 / 17 = 0.136. The raw portfolio would have a volatility of 25.9%, hence a scale factor of 10% / 25.9% = 0.386. Final weight: 0.136 × 0.386 = 0.053, i.e. a long position of 5.3% of capital.</p>
+<p>The logic of the strategy shows: at the end of September 2026, it is short the four government bonds (their prices are falling on all three horizons, so yields are rising) and short the euro against the dollar, and long equities, the Australian dollar, copper, corn and crude oil.</p>
+</section>
+
+<section id="results">
+<h2><span class="n">6</span>Strategy results</h2>
+<h3>The four variants, by period</h3>
+<div class="tabs" role="group" aria-label="Period" data-target="stats"></div>
+<div class="tbl"><table id="t-stats"></table></div>
+<p class="cap">Excess returns, net of costs, in EUR for the indices. The highlighted row is the reference version. The two MSCI indices are shown for comparison; MSCI World Value is the proxy for the value strategy.</p>
+
+<figure>
+  <div class="fig-title">Value of 100 invested on 1 February 2001</div>
+  <div class="fig-sub">Log scale: the same slope means the same percentage return. Month end.</div>
+  <div class="legend" id="lg-nav"></div>
+  <div class="chart" id="c-nav"></div>
+</figure>
+
+<figure>
+  <div class="fig-title">Loss from the previous peak (drawdown)</div>
+  <div class="fig-sub">Month end. On daily data, the maximum drawdown of MSCI World Value reaches −64.5% (March 2009).</div>
+  <div class="legend" id="lg-dd"></div>
+  <div class="chart" id="c-dd"></div>
+</figure>
+
+<h3>What these figures say</h3>
+<ul>
+  <li><strong>In the design period, everything works</strong>: Sharpe of 0.48 to 0.97 depending on the horizon, while global equities had a Sharpe of 0.13 (two crashes, 2001-2003 and 2008).</li>
+  <li><strong>In the validation period, results drop</strong>: 0.09 to 0.38. The 95% confidence intervals of this period include zero for every variant. It cannot be stated statistically that the strategy made money since 2016.</li>
+  <li><strong>Why this drop is not a sign of overfitting.</strong> The rules were not optimised on 2001-2015: they are the standard parameters of the literature. The decline matches a known phenomenon: near-zero rates, central bank interventions and sharp reversals (here 2016, 2018, 2021 and 2023 are negative years) deprive trend following of lasting trends. Trend-following funds (CTAs) also had a difficult 2010s, before rebounding in 2022.</li>
+  <li><strong>The skewness profile is the opposite of equities</strong>: positive monthly skewness for trend (+0.31 overall), negative for value (−0.64). Trend has more very good months than very bad ones; equities the reverse.</li>
+</ul>
+
+<h3>Calendar-year returns</h3>
+<div class="tbl"><table id="t-annual"></table></div>
+<p class="cap">2026: 1 January to 30 September. 2001: from 1 February.</p>
+
+<h3>Where the gains come from: attribution by asset class</h3>
+<div class="tbl"><table id="t-classes"></table></div>
+<p class="cap">Contribution = annualised average of the sum of (weight × return) of the markets in the class. All four classes contribute positively: the strategy does not rely on a single engine.</p>
+
+<h3>Detail by market</h3>
+<div class="tbl"><table id="t-markets"></table></div>
+<p class="cap">Average absolute weight (average exposure, long or short), share of time long and short, annual contribution and Sharpe ratio of the contribution.</p>
+
+<h3>Cost sensitivity</h3>
+<div class="tbl"><table id="t-costs"></table></div>
+<p class="cap">Sharpe ratio of the reference version when all estimated costs are multiplied. Even with tripled costs, the 2001-2026 Sharpe stays at 0.51.</p>
+
+<figure>
+  <div class="fig-title">Rolling 36-month Sharpe ratio</div>
+  <div class="fig-sub">Computed on monthly returns. Shows how steady, or unsteady, each strategy is.</div>
+  <div class="legend" id="lg-rsr"></div>
+  <div class="chart" id="c-rsr"></div>
+</figure>
+</section>
+
+<section id="correlation">
+<h2><span class="n">7</span>Correlation with the value strategy</h2>
+<p>The value strategy has no track record yet: MSCI World Value Net TR in EUR is used as a proxy. The actual portfolio will be more concentrated (40 to 50 stocks) with a stronger value tilt, so probably even more correlated with equities. These correlations will have to be recomputed with the actual backtest.</p>
+
+<h3>Monthly correlation matrix</h3>
+<div class="tabs" role="group" aria-label="Period" data-target="corr"></div>
+<div class="tbl"><table id="t-corr"></table></div>
+
+<figure>
+  <div class="fig-title">Rolling 36-month correlation with MSCI World Value</div>
+  <div class="fig-sub">Above zero, the strategy moves with value; below, against it.</div>
+  <div class="legend" id="lg-rc"></div>
+  <div class="chart" id="c-rc"></div>
+</figure>
+
+<h3>Behaviour when value does badly</h3>
+<p>Average correlation is not enough: what matters is behaviour in bad months. The table sorts the 308 months by value's performance.</p>
+<div class="tbl"><table id="t-cond"></table></div>
+<p class="cap">Beta = sensitivity of the strategy's monthly return to value's (regression). A beta of −0.17 means that a −10% month for value comes, on average, with a +1.7% month for trend.</p>
+
+<h3>During crises</h3>
+<div class="tbl"><table id="t-crises"></table></div>
+<figure>
+  <div class="fig-title">Cumulative return during each crisis</div>
+  <div class="legend" id="lg-cr"></div>
+  <div class="chart" id="c-cr"></div>
+</figure>
+<p>The futures version gains in long crises (2008, 2011, 2022) and during the Covid crash. It loses slightly in short, sharp shocks (late 2018, China 2015-2016): a monthly signal does not have time to turn. This is the known weakness of trend following.</p>
+</section>
+
+<section id="combination">
+<h2><span class="n">8</span>Combined portfolio</h2>
+<p>Assumption: capital is split between value (MSCI World Value proxy) and the trend strategy, rebalanced daily to the target mix (an approximation of monthly rebalancing). Trend is run at 10% volatility on its own share.</p>
+<div class="tabs" role="group" aria-label="Version" data-target="combo"></div>
+<div class="tbl"><table id="t-combo"></table></div>
+<div class="grid2">
+<figure>
+  <div class="fig-title">Sharpe ratio by share allocated to value</div>
+  <div class="legend" id="lg-fs"></div>
+  <div class="chart" id="c-fs"></div>
+</figure>
+<figure>
+  <div class="fig-title">Maximum drawdown by share allocated to value</div>
+  <div class="legend" id="lg-fd"></div>
+  <div class="chart" id="c-fd"></div>
+</figure>
+</div>
+<figure>
+  <div class="fig-title">Value of 100: value alone vs 70/30 combinations</div>
+  <div class="legend" id="lg-cmb"></div>
+  <div class="chart" id="c-cmb"></div>
+</figure>
+<h3>How to read and use these figures</h3>
+<ul>
+  <li>Over 2001-2026, the maximum Sharpe is reached with only 30% value (0.76). That figure is flattered by equities' poor 2000s and trend's good decade: it should not be taken as a target.</li>
+  <li>Over 2016-2026, a period unfavourable to trend and favourable to equities, any trend share between 20% and 50% still improves the Sharpe ratio and reduces the maximum drawdown. This is the strongest argument: the combination helps even when trend goes through a bad patch.</li>
+  <li>The drawdown reduction is more robust than the Sharpe gain: it holds in both periods and for every mix.</li>
+  <li>The share to allocate depends on tolerance for a strategy that can underperform for several years (2016-2019 here), and on conviction in each engine. It is Noah's decision.</li>
+</ul>
+</section>
+
+<section id="feasibility">
+<h2><span class="n">9</span>Feasibility and ETF version</h2>
+<h3>Why the futures version does not work with €5,000 to €25,000</h3>
+<p>Futures trade in whole contracts. For €25,000 of capital, the table compares the strategy's average target position over the last 24 months with the value of the smallest available contract.</p>
+<div class="tbl"><table id="t-contracts"></table></div>
+<p class="cap">Notional at the 30 September 2026 price, converted to EUR (EUR/USD 1.133). Contract specifications to be checked on each exchange's website or at Interactive Brokers before any use. A ratio of 12 means one contract is 12 times the desired position.</p>
+<p>With positions 1.5 to 53 times too large, the real portfolio would have nothing in common with the backtest: a few markets would be over-represented, the others absent. Order of magnitude of the capital needed to hold all 17 markets with reasonable granularity: several hundred thousand euros, because of the bond contracts.</p>
+
+<h3>The investable version: ETFs, long or cash</h3>
+<p>Rules fixed on 13 October 2026, before computing:</p>
+<ul>
+  <li>Same signal (3/6/12-month average), but <strong>positive signals only</strong>: a market in a downtrend is simply left out, with no short selling.</li>
+  <li><strong>13 markets</strong>: currencies are removed, for lack of simple currency ETFs for a European investor.</li>
+  <li>Same 10% volatility scaling, but <strong>no leverage</strong>: at most 100% of capital invested, the rest in a money-market fund.</li>
+  <li>Costs: 0.10% per unit of turnover (spread and commission) and 0.30% per year in management fees on the invested share.</li>
+  <li>Futures excess returns serve as a proxy for ETFs. This is realistic for EUR-hedged ETFs held against a euro money-market investment (see limitations).</li>
+</ul>
+<div class="tbl"><table id="t-etf"></table></div>
+<p class="cap">Comparison of the two versions and value, by period.</p>
+<p><strong>What the ETF version gains:</strong> it can be implemented with €5,000 to €25,000, it has the same Sharpe overall (0.64) and a better Sharpe since 2016 (0.54 vs 0.28), with a maximum drawdown of −20%.</p>
+<p><strong>What it loses:</strong> the ability to make money when everything falls. In 2022, equities and bonds fell together; the futures version gained by shorting bonds (+27%), the ETF version could only exit them and lost −8.9%. Its correlation with value goes from −0.21 to +0.09 overall, and +0.34 since 2016. It remains a good diversifier (the 70/30 ETF mix lifts the 2016-2026 Sharpe from 0.63 to 0.70 and cuts the maximum drawdown from −37% to −27%), but it is no longer a crisis hedge.</p>
+
+<h3>Implementing the ETF version in practice</h3>
+<ul>
+  <li><strong>Choose EUR-hedged ETFs</strong> where they exist, for foreign equities and non-European bonds. Otherwise the portfolio carries a currency risk that the backtest does not contain.</li>
+  <li><strong>Market mapping</strong>: one ETF per equity index (S&amp;P 500, Euro Stoxx 50, Nikkei 225, MSCI Emerging Markets), one ETF per government bond (US Treasuries 7-10 years and 20+ years, Bund, Gilt), one ETC per commodity (gold, silver, WTI crude, copper, corn) and a euro money-market ETF for the uninvested share.</li>
+  <li><strong>Minimum commissions</strong>: at €25,000, positions range from €1,000 to €7,500. A minimum commission of a few euros per order is 0.1 to 0.3% of each trade. At €5,000, the effect is five times larger. A practical rule: only trade when the gap between current and target weight exceeds 2 percentage points (not tested in this backtest).</li>
+  <li><strong>Account type (France)</strong>: most of these ETFs and ETCs are not eligible for the PEA, which is reserved for European equities. A standard brokerage account (compte-titres) is needed. Tax treatment should be checked with a professional.</li>
+</ul>
+<h3>Target positions at 30 September 2026</h3>
+<div class="tbl"><table id="t-pos"></table></div>
+<p class="cap">Mechanical model output for €25,000 of capital, as an illustration of the monthly routine. Not a recommendation.</p>
+<figure>
+  <div class="fig-title">Target weights at 30 September 2026, futures version</div>
+  <div class="fig-sub">Right: long position. Left: short position. As % of capital.</div>
+  <div class="chart" id="c-pos"></div>
+</figure>
+</section>
+
+<section id="replicate">
+<h2><span class="n">10</span>Replicate the strategy</h2>
+<h3>A. Extract the data on Bloomberg</h3>
+<ol class="steps">
+  <li><code>GFUT &lt;GO&gt;</code>, <em>Generic Rolls</em> tab: <code>Adjust</code> = <strong>Ratio</strong>; roll <strong>before</strong> expiry (<code>Days</code> = 5, or <code>With Active Futures</code>). On a shared login, write down the original settings and restore them afterwards.</li>
+  <li>Open <code>templates/bloomberg/Extract_Trend_Following_Bloomberg_EN.xlsx</code> (the file with formulas, never a frozen copy) and fill in the yellow cells of the <code>Parameters</code> sheet.</li>
+  <li>Bloomberg ribbon → <em>Refresh Workbook</em>. If <code>#NAME?</code> appears: Ctrl+Alt+F9.</li>
+  <li><code>Checks</code> sheet: "Ready to freeze?" = Yes and C6 = "Adjusted". Compare one or two values with the <code>GP</code> screen.</li>
+  <li>Save as <code>Extract_Trend_YYYYMMDD_values.xlsx</code>, then in that copy, Tickers and Prices sheets: Ctrl+A, Ctrl+C, Ctrl+Alt+V → Values.</li>
+  <li>Put the file in <code>data/</code> (never on GitHub: the Bloomberg licence forbids redistributing the data).</li>
+</ol>
+<p>Quota: 41 tickers × 1 field, far from the 500,000-hit daily limit of the Excel API. Each recalculation uses quota again: freeze as soon as the checks are green.</p>
+
+<h3>B. Run the backtest</h3>
+<pre><code>git clone https://github.com/Fayzzy11/Portfolio-Project.git
+cd Portfolio-Project
+python -m venv .venv &amp;&amp; source .venv/bin/activate     # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# full backtest: writes strategies/trend_following/results/results.json
+python -m strategies.trend_following.run data/Extract_Trend_20261013_values.xlsx
+
+# rebuild this page from the results
+python docs/build_report.py</code></pre>
+
+<h3>C. Code layout</h3>
+<div class="tbl"><table>
+<thead><tr><th class="l">File</th><th class="l">Role</th></tr></thead>
+<tbody>
+<tr><td class="l"><code>common/data.py</code></td><td class="l">Reads the price sheet of a frozen extract; computes excess returns</td></tr>
+<tr><td class="l"><code>common/metrics.py</code></td><td class="l">Sharpe ratio, confidence interval, drawdown, Sortino, monthly and annual returns</td></tr>
+<tr><td class="l"><code>strategies/trend_following/config.py</code></td><td class="l">Every parameter: universe, costs, horizons, volatility target, dates, contracts</td></tr>
+<tr><td class="l"><code>strategies/trend_following/engine.py</code></td><td class="l">Signals, EWMA volatility, weights, scaling, costs, futures and ETF versions</td></tr>
+<tr><td class="l"><code>strategies/trend_following/run.py</code></td><td class="l">Every analysis in this report → <code>results/results.json</code></td></tr>
+<tr><td class="l"><code>strategies/trend_following/positions.py</code></td><td class="l">Current month's target positions, in % and €</td></tr>
+<tr><td class="l"><code>templates/bloomberg/</code></td><td class="l">Excel extraction templates (English and French) and the scripts that generate them</td></tr>
+<tr><td class="l"><code>docs/</code></td><td class="l">GitHub Pages website: one page per strategy</td></tr>
+</tbody></table></div>
+
+<h3>D. The core of the code</h3>
+<pre><code>def signals(rets, lookbacks, month_ends):
+    cum = (1 + rets.fillna(0)).cumprod()            # value index of each market
+    parts = []
+    for L in lookbacks:                             # 3, 6, 12 months
+        c = cum.loc[month_ends]
+        parts.append(np.sign(c / c.shift(L) - 1))   # +1 if up over L months, -1 otherwise
+    return sum(parts) / len(parts)                  # average of the signs
+
+vol = rets.ewm(com=60).std() * np.sqrt(261)         # annualised EWMA volatility
+raw = s / vol / n_markets                           # same risk per market
+pvol = np.sqrt(raw @ cov_1y @ raw)                  # ex-ante portfolio volatility
+w = raw * 0.10 / pvol                               # scaled to 10%
+W_held = W.reindex(days).shift(1).ffill()           # applied from the next day</code></pre>
+</section>
+
+<section id="routine">
+<h2><span class="n">11</span>Monthly routine</h2>
+<p>If the ETF version is implemented, this is what to do every month, on the last business day after the close or the first business day of the next month.</p>
+<ul class="chk">
+  <li>Update prices (Bloomberg extract, or eventually a data source from the broker).</li>
+  <li>Run <code>python -m strategies.trend_following.positions data/&lt;file&gt;.xlsx &lt;capital&gt;</code>.</li>
+  <li>Compare target weights with the account's current weights.</li>
+  <li>Only place orders where the gap exceeds the chosen threshold (for example 2 percentage points).</li>
+  <li>Put the uninvested balance in the euro money-market ETF.</li>
+  <li>Keep a log: date, signals, weights, orders placed, execution prices, actual fees.</li>
+  <li>Once a quarter: compare actual performance with the backtest for the same quarter. A lasting gap signals an execution or cost problem.</li>
+</ul>
+<p>Estimated time: 20 to 30 minutes a month once the process is in place.</p>
+</section>
+
+<section id="limits">
+<h2><span class="n">12</span>Biases and limitations</h2>
+<h3>Biases controlled</h3>
+<ul>
+  <li><strong>Look-ahead</strong>: decision at the close of t, applied at t+1; volatility and covariance computed on past data only.</li>
+  <li><strong>Survivorship</strong>: not applicable to generic futures on indices and commodities, which do not disappear the way stocks do.</li>
+  <li><strong>Overfitting</strong>: standard parameters from the literature, fixed before computing; only 4 variants, all published; untouched validation period.</li>
+  <li><strong>Roll</strong>: ratio-adjusted series, checked; WTI on the 2nd contract.</li>
+</ul>
+<h3>Remaining limitations</h3>
+<ul>
+  <li><strong>Universe chosen with hindsight.</strong> The 17 markets are the ones that are liquid today. In 2001, an investor might have chosen others. The effect is small for such standard markets, but not zero.</li>
+  <li><strong>Limited statistical significance.</strong> Over 2016-2026, every variant's confidence interval includes zero. Ten years are not enough to tell a 0.3 Sharpe ratio from zero.</li>
+  <li><strong>Value proxy.</strong> MSCI World Value is not the actual strategy. The portfolio will be more concentrated, with a stronger value tilt: its correlation with trend will need to be recomputed.</li>
+  <li><strong>Currency.</strong> Futures returns are taken in local currency. For a euro investor, the P&amp;L of a dollar future is exposed to the exchange rate, but only on the gain or loss, not on the notional. A second-order effect, ignored here.</li>
+  <li><strong>Estimated, not measured, costs.</strong> No market impact, no minimum commissions, no cost of funding margin calls. The sensitivity test gives an idea of the margin of safety.</li>
+  <li><strong>ETF version: imperfect proxy.</strong> Real ETFs have tracking differences, product-specific fees, and sometimes a shorter history than the backtest. Some markets (corn, EUR-hedged Gilts) have few products available.</li>
+  <li><strong>Combination rebalanced daily.</strong> In practice, rebalancing will be monthly; the gap is small but real.</li>
+  <li><strong>Rate regime.</strong> 2001-2021 is a long period of falling yields, favourable to long bond positions. That regime may not repeat.</li>
+</ul>
+</section>
+
+<section id="glossary">
+<h2><span class="n">13</span>Glossary</h2>
+<dl class="gloss">
+  <dt>Future</dt><dd>A contract to buy or sell at a future date, at a price fixed today. Only requires a margin deposit.</dd>
+  <dt>Generic (CL1, CL2)</dt><dd>A Bloomberg series that follows the 1st (or 2nd) contract closest to expiry and moves to the next one at each roll.</dd>
+  <dt>Roll</dt><dd>Replacing the contract about to expire with the next one.</dd>
+  <dt>Ratio adjustment</dt><dd>Multiplying the history by the ratio of the two contracts' prices at the roll, to remove the fake jump.</dd>
+  <dt>Notional</dt><dd>Total exposure value of a contract: price × multiplier.</dd>
+  <dt>Time-series momentum</dt><dd>A market's trend relative to its own past (as opposed to cross-sectional momentum, which compares assets with each other).</dd>
+  <dt>EWMA</dt><dd>Exponentially weighted moving average: recent observations weigh more.</dd>
+  <dt>Volatility target</dt><dd>The risk level aimed for; positions are scaled up or down to reach it.</dd>
+  <dt>Gross leverage</dt><dd>Sum of the absolute weights: total exposure relative to capital.</dd>
+  <dt>Excess return</dt><dd>Return above the risk-free money-market rate.</dd>
+  <dt>Crisis alpha</dt><dd>A strategy's ability to make money during equity market crises.</dd>
+  <dt>CTA</dt><dd>Commodity Trading Advisor: a manager specialised in futures strategies, often trend following.</dd>
+  <dt>ETC</dt><dd>Exchange Traded Commodity: a listed security that tracks a commodity.</dd>
+</dl>
+</section>
+
+<section id="sources">
+<h2><span class="n">14</span>Sources</h2>
+<ul>
+  <li>Moskowitz, T., Ooi, Y. H., Pedersen, L. H. (2012). <em>Time Series Momentum</em>. Journal of Financial Economics, 104(2), 228-250.</li>
+  <li>Hurst, B., Ooi, Y. H., Pedersen, L. H. (2017). <em>A Century of Evidence on Trend-Following Investing</em>. The Journal of Portfolio Management, 44(1), 15-29.</li>
+  <li>Lo, A. (2002). <em>The Statistics of Sharpe Ratios</em>. Financial Analysts Journal, 58(4), 36-52.</li>
+  <li>Bailey, D., López de Prado, M. (2014). <em>The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality</em>. The Journal of Portfolio Management, 40(5), 94-107.</li>
+  <li>Data: Bloomberg L.P., SKEMA Business School terminal, extraction of 13 October 2026. Tickers and fields in the Data section.</li>
+</ul>
+</section>
+
+<footer>
+  Strategies Lab · Report generated from <code>strategies/trend_following/results/results.json</code> by <code>docs/build_report.py</code>. Prepared by Claude for Noah Doose. This document describes past results and is not investment advice.
+</footer>
+</main>
+</div>
+
+<script id="report-data" type="application/json">/*__DATA__*/</script>
+<script>
+const LANG = 'en';
+const T = {
+  names: {'TSMOM blend 3/6/12m':'Trend futures (ref. 3/6/12m)','TSMOM 3m':'Trend 3m','TSMOM 6m':'Trend 6m','TSMOM 12m':'Trend 12m','ETF long/cash version':'Trend ETF long/cash','MSCI World Value (EUR)':'MSCI World Value','MSCI World (EUR)':'MSCI World','70/30 value/trend':'70% value / 30% trend futures','70/30 value/ETF':'70% value / 30% trend ETF'},
+  classes: {}, labels: {}, contracts: {}, crises: {},
+  crisisShort: {'Global financial crisis':'2007-09','European debt crisis':'2011','China / oil':'2015-16','Late-2018 sell-off':'Late 2018','Covid crash':'Covid','2022 (inflation, rate hikes)':'2022'},
+  locale: 'en-GB', pctSep: '', months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+  periods: [['full','2001-2026'],['design','2001-2015 (design)'],['validation','2016-2026 (validation)']],
+  versions: ['Trend futures','Trend ETF long/cash'],
+  h: {
+    kpi: ['2001-2026 Sharpe, trend futures','Monthly correlation with value','Maximum drawdown, value alone','2001-2026 Sharpe, ETF version'],
+    kpiSub: (st,c,cb,REF,ETF,VAL,f)=>[`design ${f.nf(st.design[REF].sharpe)} · validation ${f.nf(st.validation[REF].sharpe)}`, `since 2016: ${f.nf(c.validation[REF][VAL])}`, `70/30 with trend futures: ${f.pct(cb[REF][7].full.max_drawdown,1)}`, `investable from €5,000 · correlation ${f.nf(c.full[ETF][VAL])}`],
+    universe: ['Market','Bloomberg ticker','Asset class','Start','Points'],
+    example: ['Market','3m','6m','12m','Signal s','Vol. σ','Raw weight s/σ/N','Final weight'],
+    exampleCap: (E,f)=>`N = ${E.n_markets} markets. Ex-ante volatility of the raw portfolio: ${f.pct(E.raw_ex_ante_vol,1)}. Scale factor: 10% / ${f.pct(E.raw_ex_ante_vol,1)} = ${f.nf(E.scale_factor,3)}. Final gross leverage: ${f.nf(E.final_gross_leverage,2)}.`,
+    stats: ['Strategy','Annualised return','Volatility','Sharpe','95% CI of Sharpe','Sortino','Max. drawdown','Calmar','Positive months','Skewness'],
+    year: 'Year',
+    classes: ['Asset class','Annual contribution 2001-2026','Sharpe of contribution','Annual contribution 2016-2026'],
+    markets: ['Market','Asset class','Avg. weight |w|','Time long','Time short','Annual contribution','Contribution Sharpe'],
+    costs: ['Costs','Sharpe 2001-2026','Sharpe 2001-2015','Sharpe 2016-2026'], costRows: ['No costs','Estimated costs','Costs × 2','Costs × 3'],
+    cond: ['Measure'], condRows: (v)=>['Beta to value',`Average return in value's worst 10% of months (value: ${v})`,"Average return in value's best 10% of months",'Average return when value falls','Average return when value rises','Correlation in months when value falls','Correlation in months when value rises'],
+    crises: ['Crisis','Period'],
+    combo: ['Value / trend','Sharpe 2001-2026','Return 2001-2026','Volatility 2001-2026','Max. DD 2001-2026','Sharpe 2016-2026','Max. DD 2016-2026'],
+    contracts: ['Market','Smallest contract','Notional of one contract','Target position (€25,000)','Contract / position'],
+    etf: ['Period','Version','Sharpe','Return','Volatility','Max. drawdown','Correlation with value'],
+    pos: ['Market','Asset class','Signal','Futures: weight','Futures: amount','ETF: weight','ETF: amount'], notTraded: 'not traded',
+    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF',
+  }
+};
+</script>
+<!--__SCRIPT__-->

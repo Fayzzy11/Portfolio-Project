@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strategies Lab</title>
+<style>
+:root{--bg:#f5f6f8;--surface:#fff;--fg:#13161b;--muted:#5d6470;--rule:#d9dde3;--accent:#1d4f7a}
+@media (prefers-color-scheme: dark){:root{--bg:#121417;--surface:#1a1d21;--fg:#eceef1;--muted:#9aa2ad;--rule:#2f343b;--accent:#8cb8e6;color-scheme:dark}}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,"Segoe UI",Arial,sans-serif;margin:0;line-height:1.6}
+main{max-width:760px;margin:0 auto;padding:48px 20px}
+h1{font-size:38px;margin:0 0 6px}
+p{color:var(--muted)}
+a{color:var(--accent)}
+.card{display:block;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px;margin:14px 0;color:inherit;text-decoration:none}
+a.card:hover{border-color:var(--accent)}
+.card b{font-size:18px}
+.tag{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>Strategies Lab</h1>
+<p>Systematic investment strategies by Noah Doose, backtested on Bloomberg data. Parameters fixed before results, untouched validation period, costs included, every variant published.</p>
+<a class="card" href="trend-following/">
+  <b>Multi-asset trend following</b><br>
+  <span class="tag">17 futures · 2001-2026 · Sharpe 0.64 · correlation −0.21 with value</span>
+  <p>Buys rising markets, sells falling ones; compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
+</a>
+<p class="tag">French version of the report: <a href="trend-following/fr/">trend-following/fr/</a></p>
+<div class="card" style="opacity:.7">
+  <b>Global value equities</b><br>
+  <span class="tag">in progress</span>
+  <p>A portfolio of 40 to 50 MSCI World stocks selected on a composite value score.</p>
+</div>
+<p class="tag">These pages describe past results and are not investment advice.</p>
+</main>
+</body>
+</html>

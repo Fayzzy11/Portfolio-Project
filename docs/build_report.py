@@ -1,0 +1,66 @@
+"""Build the trend-following report pages from results.json and the templates.
+
+Usage (from the project root):  python docs/build_report.py
+
+Writes:
+  docs/trend-following/index.html      English report (main page)
+  docs/trend-following/fr/index.html   French report
+Pass --fragments DIR to also write skeleton-free copies (used for previews).
+"""
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from strategies.trend_following import config as C  # noqa: E402
+
+DIR = ROOT / "docs" / "trend-following"
+res = json.loads((ROOT / "strategies/trend_following/results/results.json").read_text())
+
+refs = {C.VALUE_PROXY: ("MSCI World Value Net TR (USD)", "Equity benchmark"),
+        C.WORLD: ("MSCI World Net TR (EUR)", "Equity benchmark"),
+        C.EURUSD: ("EUR/USD spot", "FX"), "EURJPY Curncy": ("EUR/JPY spot", "FX"),
+        C.EURGBP: ("EUR/GBP spot", "FX"), C.RF_EUR: ("3-month Euribor", "Risk-free rate"),
+        "USGG3M Index": ("US 3-month yield", "Risk-free rate")}
+universe = []
+for t in list(C.FUTURES) + list(refs):
+    d = res["data_inventory"].get(t)
+    if d:
+        label, cls = (C.LABELS[t], C.FUTURES[t][0]) if t in C.FUTURES else refs[t]
+        universe.append({"ticker": t, "label": label, "asset_class": cls, **d})
+
+keep = ["meta", "stats", "annual", "nav", "drawdown", "monthly_correlation", "rolling_36m", "conditional",
+        "crises", "attribution", "cost_sensitivity", "combinations", "latest_positions", "worked_example", "contracts"]
+data = {k: res[k] for k in keep} | {"universe": universe}
+payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+style = "<style>\n" + (DIR / "report.css").read_text() + "</style>"
+script = "<script>\n" + (DIR / "report.js").read_text() + "</script>"
+LINKS = {"en": '<a class="lang" href="fr/" hreflang="fr">Version française</a>',
+         "fr": '<a class="lang" href="../" hreflang="en">English version</a>'}
+
+
+def render(lang, with_link=True):
+    s = (DIR / f"template_{lang}.html").read_text()
+    return (s.replace("<!--__STYLE__-->", style).replace("<!--__SCRIPT__-->", script)
+             .replace("/*__DATA__*/", payload).replace("<!--__LANG__-->", LINKS[lang] if with_link else ""))
+
+
+def full_page(frag, lang):
+    head, rest = frag.split("</style>", 1)
+    return (f'<!doctype html>\n<html lang="{lang}">\n<head>\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            + head + "</style>\n</head>\n<body>\n" + rest + "\n</body>\n</html>\n")
+
+
+(DIR / "fr").mkdir(exist_ok=True)
+(DIR / "index.html").write_text(full_page(render("en"), "en"))
+(DIR / "fr" / "index.html").write_text(full_page(render("fr"), "fr"))
+print("written:", DIR / "index.html", "and", DIR / "fr" / "index.html")
+
+if "--fragments" in sys.argv:
+    out = Path(sys.argv[sys.argv.index("--fragments") + 1])
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "trend_following_report_en.html").write_text(render("en", with_link=False))
+    (out / "trend_following_report_fr.html").write_text(render("fr", with_link=False))
+    print("fragments in", out)
