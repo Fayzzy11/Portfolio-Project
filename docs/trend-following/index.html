@@ -115,11 +115,47 @@ footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--rule);font-si
 nav.toc .lang{display:inline-block;margin-top:14px;padding:4px 8px;font-size:13px;border:1px solid var(--rule);border-radius:4px;text-decoration:none;color:var(--fg2)}
 nav.toc .lang:hover,nav.toc .lang:focus-visible{border-color:var(--accent);color:var(--fg)}
 td.l:first-child{min-width:16ch}
+/* ---- app bar, navigation and resources (v2 interface) ---- */
+.appbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule);padding-top:env(safe-area-inset-top,0px)}
+.appbar-in{max-width:1180px;margin:0 auto;padding-inline:20px;height:56px;display:flex;align-items:center;gap:14px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--fg);text-decoration:none;letter-spacing:.01em;white-space:nowrap}
+.crumb{color:var(--muted);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.crumb::before{content:"/";margin:0 10px 0 0;color:var(--rule)}
+.actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:13px;font-weight:500;line-height:1;padding:8px 12px;border-radius:6px;border:1px solid var(--rule);background:var(--surface);color:var(--fg);text-decoration:none;cursor:pointer;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--accent)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+.btn .mono{font-size:11.5px;opacity:.75;font-weight:400}
+@media (max-width:640px){.crumb{display:none}.appbar-in{padding-inline:16px;gap:8px}.btn{padding:7px 9px}}
+nav.toc{top:76px;max-height:calc(100vh - 96px)}
+nav.toc a.active{background:var(--accent-soft);color:var(--fg);font-weight:600;box-shadow:inset 2px 0 0 var(--accent)}
+h2{scroll-margin-top:76px}
+section{padding-bottom:8px}
+section+section{border-top:1px solid var(--rule);margin-top:40px}
+section+section>h2:first-child{margin-top:36px}
+.secnav{display:flex;justify-content:space-between;gap:12px;margin:28px 0 8px;flex-wrap:wrap}
+.secnav a{display:flex;flex-direction:column;gap:2px;max-width:48%;min-width:0;padding:10px 14px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);text-decoration:none;color:var(--fg);font-size:14px}
+.secnav a:hover,.secnav a:focus-visible{border-color:var(--accent)}
+.secnav a small{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.secnav a.next{margin-left:auto;text-align:right}
+.totop{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:15;width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);background:var(--surface);color:var(--fg);display:grid;place-items:center;font-size:18px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.totop:hover{border-color:var(--accent)}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin:16px 0}
+.dl-card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dl-card h3{margin:0;font-size:17px}
+.dl-card p{font-size:14px;color:var(--fg2);margin:0;flex:1}
+.dl-card .btn{align-self:flex-start;flex-wrap:wrap}
+.dl-tag{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+header.top{padding-top:8px}
+section[id]{scroll-margin-top:64px}
 </style>
 </head>
 <body>
 
 
+<header class="appbar" id="top"><div class="appbar-in"><a class="brand" href="https://fayzzy11.github.io/Portfolio-Project/">Strategies Lab</a><span class="crumb">Multi-asset trend following</span><nav class="actions" aria-label="Page actions"><a class="btn primary" href="#resources">Templates</a><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a><a class="btn lang" href="fr/" hreflang="fr">FR</a></nav></div></header>
 <div class="wrap">
 <nav class="toc" aria-label="Contents">
   <div class="lbl">Contents</div>
@@ -135,11 +171,11 @@ td.l:first-child{min-width:16ch}
     <li><a href="#feasibility">Feasibility and ETF version</a></li>
     <li><a href="#replicate">Replicate</a></li>
     <li><a href="#routine">Monthly routine</a></li>
+    <li><a href="#resources">Resources & templates</a></li>
     <li><a href="#limits">Biases and limitations</a></li>
     <li><a href="#glossary">Glossary</a></li>
     <li><a href="#sources">Sources</a></li>
   </ol>
-  <a class="lang" href="fr/" hreflang="fr">Version française</a>
 </nav>
 
 <main>
@@ -491,8 +527,14 @@ W_held = W.reindex(days).shift(1).ffill()           # applied from the next day<
 <p>Estimated time: 20 to 30 minutes a month once the process is in place.</p>
 </section>
 
+<section id="resources">
+<h2><span class="n">12</span>Resources and templates</h2>
+<p>Everything needed to reproduce the study and to track a real portfolio. Files open in Excel; the Bloomberg versions need a terminal with the Excel add-in.</p>
+<div class="dl-grid"><div class="dl-card"><div class="dl-tag">Excel · BDP / BDH</div><h3>Portfolio tracker · Bloomberg</h3><p>Dashboard, holdings, transactions, monthly history, risk metrics (VaR, ES, Sharpe, Sortino, beta, tracking error…), allocation vs targets and a decision journal. Prices, FX, benchmark and risk-free rate pulled with BDP/BDH.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Portfolio_Tracker_Bloomberg.xlsx" target="_blank" rel="noopener">Download <span class="mono">Portfolio_Tracker_Bloomberg.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · no add-in</div><h3>Portfolio tracker · manual</h3><p>The same workbook without Bloomberg: type prices, FX and benchmark levels. Works anywhere.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Portfolio_Tracker_Manual.xlsx" target="_blank" rel="noopener">Download <span class="mono">Portfolio_Tracker_Manual.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · BDH / BDP</div><h3>Bloomberg extraction template (EN)</h3><p>The 41 tickers of this study with BDH formulas and built-in data checks (roll adjustment test, gaps, suspicious jumps).</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Extract_Trend_Following_Bloomberg_EN.xlsx" target="_blank" rel="noopener">Download <span class="mono">Extract_Trend_Following_Bloomberg_EN.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · BDH / BDP</div><h3>Bloomberg extraction template (FR)</h3><p>French version of the extraction template.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Extract_Trend_Following_Bloomberg_FR.xlsx" target="_blank" rel="noopener">Download <span class="mono">Extract_Trend_Following_Bloomberg_FR.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">GitHub</div><h3>Source code on GitHub</h3><p>Python engine, configuration, results and the scripts that build this page and the templates.</p><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">Open repository</a></div></div>
+</section>
+
 <section id="limits">
-<h2><span class="n">12</span>Biases and limitations</h2>
+<h2><span class="n">13</span>Biases and limitations</h2>
 <h3>Biases controlled</h3>
 <ul>
   <li><strong>Look-ahead</strong>: decision at the close of t, applied at t+1; volatility and covariance computed on past data only.</li>
@@ -514,7 +556,7 @@ W_held = W.reindex(days).shift(1).ffill()           # applied from the next day<
 </section>
 
 <section id="glossary">
-<h2><span class="n">13</span>Glossary</h2>
+<h2><span class="n">14</span>Glossary</h2>
 <dl class="gloss">
   <dt>Future</dt><dd>A contract to buy or sell at a future date, at a price fixed today. Only requires a margin deposit.</dd>
   <dt>Generic (CL1, CL2)</dt><dd>A Bloomberg series that follows the 1st (or 2nd) contract closest to expiry and moves to the next one at each roll.</dd>
@@ -533,7 +575,7 @@ W_held = W.reindex(days).shift(1).ffill()           # applied from the next day<
 </section>
 
 <section id="sources">
-<h2><span class="n">14</span>Sources</h2>
+<h2><span class="n">15</span>Sources</h2>
 <ul>
   <li>Moskowitz, T., Ooi, Y. H., Pedersen, L. H. (2012). <em>Time Series Momentum</em>. Journal of Financial Economics, 104(2), 228-250.</li>
   <li>Hurst, B., Ooi, Y. H., Pedersen, L. H. (2017). <em>A Century of Evidence on Trend-Following Investing</em>. The Journal of Portfolio Management, 44(1), 15-29.</li>
@@ -576,7 +618,7 @@ const T = {
     contracts: ['Market','Smallest contract','Notional of one contract','Target position (€25,000)','Contract / position'],
     etf: ['Period','Version','Sharpe','Return','Volatility','Max. drawdown','Correlation with value'],
     pos: ['Market','Asset class','Signal','Futures: weight','Futures: amount','ETF: weight','ETF: amount'], notTraded: 'not traded',
-    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF',
+    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF', prev: 'Previous', next: 'Next', top: 'Back to top',
   }
 };
 </script>
@@ -770,6 +812,31 @@ drawAll();
 let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(drawAll,150);});
 if(window.matchMedia){ const mq=matchMedia('(prefers-color-scheme: dark)'); if(mq.addEventListener) mq.addEventListener('change',drawAll); }
 new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+
+// ---------- navigation: active section in the contents, previous / next buttons, back to top
+(function(){
+  const H2 = T.h;
+  const secs = [...document.querySelectorAll('main section[id]')];
+  const links = new Map([...document.querySelectorAll('nav.toc a[href^="#"]')].map(a=>[a.getAttribute('href').slice(1), a]));
+  const title = s => { const h=s.querySelector('h2'); if(!h) return s.id; const c=h.cloneNode(true); const n=c.querySelector('.n'); if(n) n.remove(); return c.textContent.trim(); };
+  secs.forEach((s,i)=>{
+    const nav=document.createElement('div'); nav.className='secnav';
+    if(i>0) nav.insertAdjacentHTML('beforeend', `<a class="prev" href="#${secs[i-1].id}"><small>← ${H2.prev}</small>${title(secs[i-1])}</a>`);
+    if(i<secs.length-1) nav.insertAdjacentHTML('beforeend', `<a class="next" href="#${secs[i+1].id}"><small>${H2.next} →</small>${title(secs[i+1])}</a>`);
+    s.appendChild(nav);
+  });
+  const top=document.createElement('a'); top.className='totop'; top.href='#top'; top.setAttribute('aria-label',H2.top); top.title=H2.top; top.textContent='↑'; top.hidden=true;
+  document.body.appendChild(top);
+  window.addEventListener('scroll',()=>{ top.hidden = window.scrollY < 700; },{passive:true});
+  if('IntersectionObserver' in window){
+    let current=null;
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ current=e.target.id; } });
+      links.forEach((a,id)=>a.classList.toggle('active', id===current));
+    },{rootMargin:'-80px 0px -70% 0px'});
+    secs.forEach(s=>io.observe(s));
+  }
 })();
 </script>
 

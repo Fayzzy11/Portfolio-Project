@@ -2,38 +2,78 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Strategies Lab</title>
+<meta name="description" content="Systematic investment strategies by Noah Doose, backtested on Bloomberg data, with reports, code and Excel templates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-:root{--bg:#f5f6f8;--surface:#fff;--fg:#13161b;--muted:#5d6470;--rule:#d9dde3;--accent:#1d4f7a}
-@media (prefers-color-scheme: dark){:root{--bg:#121417;--surface:#1a1d21;--fg:#eceef1;--muted:#9aa2ad;--rule:#2f343b;--accent:#8cb8e6;color-scheme:dark}}
-body{background:var(--bg);color:var(--fg);font-family:-apple-system,"Segoe UI",Arial,sans-serif;margin:0;line-height:1.6}
-main{max-width:760px;margin:0 auto;padding:48px 20px}
-h1{font-size:38px;margin:0 0 6px}
-p{color:var(--muted)}
-a{color:var(--accent)}
-.card{display:block;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px;margin:14px 0;color:inherit;text-decoration:none}
-a.card:hover{border-color:var(--accent)}
-.card b{font-size:18px}
-.tag{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted)}
+/* Lab home: same tokens as the reports. Single column, strategy cards then downloads. */
+:root{--bg:#f5f6f8;--surface:#fff;--sunk:#eef0f3;--fg:#13161b;--fg2:#4a515d;--muted:#6b7280;--rule:#d9dde3;--accent:#1d4f7a;--accent-soft:#e3ecf5;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;--f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121417;--surface:#1a1d21;--sunk:#202429;--fg:#eceef1;--fg2:#b9c0ca;--muted:#8f97a3;--rule:#2f343b;--accent:#8cb8e6;--accent-soft:#1d2a38;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121417;--surface:#1a1d21;--sunk:#202429;--fg:#eceef1;--fg2:#b9c0ca;--muted:#8f97a3;--rule:#2f343b;--accent:#8cb8e6;--accent-soft:#1d2a38;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;margin:0}
+.appbar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+.appbar-in{max-width:960px;margin:0 auto;padding-inline:20px;height:56px;display:flex;align-items:center;gap:14px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--fg);text-decoration:none}
+.actions{margin-left:auto;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;line-height:1;padding:8px 12px;border-radius:6px;border:1px solid var(--rule);background:var(--surface);color:var(--fg);text-decoration:none}
+.btn:hover{border-color:var(--accent)} .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)} .btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+main{max-width:960px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
+h1{font-family:var(--f-display);font-size:clamp(34px,6vw,52px);line-height:1.05;margin:0 0 12px;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--fg2);max-width:62ch;margin:0 0 8px}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.rules li{font-family:var(--f-mono);font-size:12px;color:var(--fg2);background:var(--sunk);border-radius:999px;padding:4px 10px}
+h2{font-family:var(--f-display);font-size:24px;margin:48px 0 12px;scroll-margin-top:72px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{margin:0;font-family:var(--f-display);font-size:20px}
+.card p{margin:0;color:var(--fg2);font-size:14.5px;flex:1}
+.tag{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px;color:var(--fg2)}
+.stats b{display:block;font-size:20px;color:var(--fg);font-weight:500}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.muted{opacity:.7}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
+<header class="appbar"><div class="appbar-in">
+  <a class="brand" href="./">Strategies Lab</a>
+  <nav class="actions" aria-label="Site"><a class="btn primary" href="#templates">Templates</a><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a></nav>
+</div></header>
 <main>
-<h1>Strategies Lab</h1>
-<p>Systematic investment strategies by Noah Doose, backtested on Bloomberg data. Parameters fixed before results, untouched validation period, costs included, every variant published.</p>
-<a class="card" href="trend-following/">
-  <b>Multi-asset trend following</b><br>
-  <span class="tag">17 futures · 2001-2026 · Sharpe 0.64 · correlation −0.21 with value</span>
-  <p>Buys rising markets, sells falling ones; compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
-</a>
-<p class="tag">French version of the report: <a href="trend-following/fr/">trend-following/fr/</a></p>
-<div class="card" style="opacity:.7">
-  <b>Global value equities</b><br>
-  <span class="tag">in progress</span>
-  <p>A portfolio of 40 to 50 MSCI World stocks selected on a composite value score.</p>
-</div>
-<p class="tag">These pages describe past results and are not investment advice.</p>
+  <h1>Strategies Lab</h1>
+  <p class="lede">Systematic investment strategies by Noah Doose, backtested on Bloomberg data. Each study comes with its full report, its code and the Excel templates needed to reproduce it.</p>
+  <ul class="rules"><li>parameters fixed before results</li><li>untouched validation period</li><li>costs included</li><li>every variant published</li></ul>
+
+  <h2>Strategies</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="tag">Backtest complete · data to 30 Sep 2026</div>
+      <h3>Multi-asset trend following</h3>
+      <p>Buys rising markets and sells falling ones across 17 futures; compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
+      <div class="stats"><span><b>0.64</b>Sharpe 2001-26</span><span><b>−0.21</b>corr. with value</span><span><b>17</b>markets</span></div>
+      <div class="links"><a class="btn primary" href="trend-following/">Read the report</a><a class="btn" href="trend-following/fr/">Version française</a></div>
+    </div>
+    <div class="card muted">
+      <div class="tag">In progress</div>
+      <h3>Global value equities</h3>
+      <p>A portfolio of 40 to 50 MSCI World stocks selected on a composite value score, with historical index membership and a 3-month accounting lag.</p>
+    </div>
+  </div>
+
+  <h2 id="templates">Excel templates</h2>
+  <div class="grid">
+    <div class="card"><div class="tag">Excel · BDP / BDH</div><h3>Portfolio tracker · Bloomberg</h3><p>Dashboard, holdings, transactions, monthly history, risk metrics (VaR, ES, Sharpe, Sortino, beta, tracking error), allocation vs targets and a decision journal, fed by Bloomberg.</p><div class="links"><a class="btn primary" href="downloads/Portfolio_Tracker_Bloomberg.xlsx">Download</a></div></div>
+    <div class="card"><div class="tag">Excel · no add-in</div><h3>Portfolio tracker · manual</h3><p>The same workbook without Bloomberg: type prices, FX and benchmark levels.</p><div class="links"><a class="btn primary" href="downloads/Portfolio_Tracker_Manual.xlsx">Download</a></div></div>
+    <div class="card"><div class="tag">Excel · BDH / BDP</div><h3>Trend-following data extraction</h3><p>The 41 tickers of the trend study with built-in data checks, in English and French.</p><div class="links"><a class="btn primary" href="downloads/Extract_Trend_Following_Bloomberg_EN.xlsx">English</a><a class="btn" href="downloads/Extract_Trend_Following_Bloomberg_FR.xlsx">Français</a></div></div>
+  </div>
+  <footer>These pages describe past results and are not investment advice. Raw Bloomberg data is not published.</footer>
 </main>
 </body>
 </html>

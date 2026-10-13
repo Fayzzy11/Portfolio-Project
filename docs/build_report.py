@@ -36,8 +36,8 @@ data = {k: res[k] for k in keep} | {"universe": universe}
 payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 style = "<style>\n" + (DIR / "report.css").read_text() + "</style>"
 script = "<script>\n" + (DIR / "report.js").read_text() + "</script>"
-LINKS = {"en": '<a class="lang" href="fr/" hreflang="fr">Version française</a>',
-         "fr": '<a class="lang" href="../" hreflang="en">English version</a>'}
+LINKS = {"en": '<a class="btn lang" href="fr/" hreflang="fr">FR</a>',
+         "fr": '<a class="btn lang" href="../" hreflang="en">EN</a>'}
 
 
 def render(lang, with_link=True):

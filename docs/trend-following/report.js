@@ -188,3 +188,28 @@ let rt; window.addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(dr
 if(window.matchMedia){ const mq=matchMedia('(prefers-color-scheme: dark)'); if(mq.addEventListener) mq.addEventListener('change',drawAll); }
 new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 })();
+
+// ---------- navigation: active section in the contents, previous / next buttons, back to top
+(function(){
+  const H2 = T.h;
+  const secs = [...document.querySelectorAll('main section[id]')];
+  const links = new Map([...document.querySelectorAll('nav.toc a[href^="#"]')].map(a=>[a.getAttribute('href').slice(1), a]));
+  const title = s => { const h=s.querySelector('h2'); if(!h) return s.id; const c=h.cloneNode(true); const n=c.querySelector('.n'); if(n) n.remove(); return c.textContent.trim(); };
+  secs.forEach((s,i)=>{
+    const nav=document.createElement('div'); nav.className='secnav';
+    if(i>0) nav.insertAdjacentHTML('beforeend', `<a class="prev" href="#${secs[i-1].id}"><small>← ${H2.prev}</small>${title(secs[i-1])}</a>`);
+    if(i<secs.length-1) nav.insertAdjacentHTML('beforeend', `<a class="next" href="#${secs[i+1].id}"><small>${H2.next} →</small>${title(secs[i+1])}</a>`);
+    s.appendChild(nav);
+  });
+  const top=document.createElement('a'); top.className='totop'; top.href='#top'; top.setAttribute('aria-label',H2.top); top.title=H2.top; top.textContent='↑'; top.hidden=true;
+  document.body.appendChild(top);
+  window.addEventListener('scroll',()=>{ top.hidden = window.scrollY < 700; },{passive:true});
+  if('IntersectionObserver' in window){
+    let current=null;
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ current=e.target.id; } });
+      links.forEach((a,id)=>a.classList.toggle('active', id===current));
+    },{rootMargin:'-80px 0px -70% 0px'});
+    secs.forEach(s=>io.observe(s));
+  }
+})();

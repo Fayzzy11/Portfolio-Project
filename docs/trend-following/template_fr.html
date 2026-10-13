@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <!--__STYLE__-->
 
+<header class="appbar" id="top"><div class="appbar-in"><a class="brand" href="https://fayzzy11.github.io/Portfolio-Project/">Strategies Lab</a><span class="crumb">Trend following multi-actifs</span><nav class="actions" aria-label="Page actions"><a class="btn primary" href="#resources">Modèles</a><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a><!--__LANG__--></nav></div></header>
 <div class="wrap">
 <nav class="toc" aria-label="Sommaire">
   <div class="lbl">Sommaire</div>
@@ -20,11 +21,11 @@
     <li><a href="#faisabilite">Faisabilité et version ETF</a></li>
     <li><a href="#repliquer">Répliquer</a></li>
     <li><a href="#routine">Routine mensuelle</a></li>
+    <li><a href="#resources">Ressources et modèles</a></li>
     <li><a href="#limites">Biais et limites</a></li>
     <li><a href="#glossaire">Glossaire</a></li>
     <li><a href="#sources">Sources</a></li>
   </ol>
-  <!--__LANG__-->
 </nav>
 
 <main>
@@ -376,8 +377,14 @@ W_detenu = W.reindex(jours).shift(1).ffill()        # appliqué dès le lendemai
 <p>Temps estimé : 20 à 30 minutes par mois une fois la chaîne en place.</p>
 </section>
 
+<section id="resources">
+<h2><span class="n">12</span>Ressources et modèles</h2>
+<p>Tout ce qu'il faut pour reproduire l'étude et suivre un vrai portefeuille. Les fichiers s'ouvrent dans Excel ; les versions Bloomberg demandent un terminal avec le complément Excel.</p>
+<div class="dl-grid"><div class="dl-card"><div class="dl-tag">Excel · BDP / BDH</div><h3>Suivi de portefeuille · Bloomberg</h3><p>Tableau de bord, positions, transactions, historique mensuel, métriques de risque (VaR, ES, Sharpe, Sortino, bêta, tracking error…), allocation par rapport aux cibles et journal de décisions. Prix, change, indice de référence et taux sans risque récupérés par BDP/BDH.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Portfolio_Tracker_Bloomberg.xlsx" target="_blank" rel="noopener">Télécharger <span class="mono">Portfolio_Tracker_Bloomberg.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · sans complément</div><h3>Suivi de portefeuille · manuel</h3><p>Le même classeur sans Bloomberg : prix, change et niveaux de l'indice saisis à la main. Fonctionne partout.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Portfolio_Tracker_Manual.xlsx" target="_blank" rel="noopener">Télécharger <span class="mono">Portfolio_Tracker_Manual.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · BDH / BDP</div><h3>Modèle d'extraction Bloomberg (EN)</h3><p>Les 41 tickers de l'étude avec formules BDH et contrôles intégrés (test d'ajustement du roll, trous, sauts suspects).</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Extract_Trend_Following_Bloomberg_EN.xlsx" target="_blank" rel="noopener">Télécharger <span class="mono">Extract_Trend_Following_Bloomberg_EN.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">Excel · BDH / BDP</div><h3>Modèle d'extraction Bloomberg (FR)</h3><p>Version française du modèle d'extraction.</p><a class="btn primary" href="https://fayzzy11.github.io/Portfolio-Project/downloads/Extract_Trend_Following_Bloomberg_FR.xlsx" target="_blank" rel="noopener">Télécharger <span class="mono">Extract_Trend_Following_Bloomberg_FR.xlsx</span></a></div><div class="dl-card"><div class="dl-tag">GitHub</div><h3>Code source sur GitHub</h3><p>Moteur Python, configuration, résultats et scripts qui génèrent cette page et les modèles.</p><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">Ouvrir le dépôt</a></div></div>
+</section>
+
 <section id="limites">
-<h2><span class="n">12</span>Biais et limites</h2>
+<h2><span class="n">13</span>Biais et limites</h2>
 <h3>Biais contrôlés</h3>
 <ul>
   <li><strong>Look-ahead</strong> : décision à la clôture de t, application à t+1 ; volatilité et covariance calculées uniquement sur le passé.</li>
@@ -399,7 +406,7 @@ W_detenu = W.reindex(jours).shift(1).ffill()        # appliqué dès le lendemai
 </section>
 
 <section id="glossaire">
-<h2><span class="n">13</span>Glossaire</h2>
+<h2><span class="n">14</span>Glossaire</h2>
 <dl class="gloss">
   <dt>Future</dt><dd>Contrat d'achat ou de vente à une date future, à un prix fixé aujourd'hui. Ne demande qu'un dépôt de garantie.</dd>
   <dt>Générique (CL1, CL2)</dt><dd>Série Bloomberg qui suit le 1er (ou 2e) contrat le plus proche de l'échéance et passe au suivant à chaque roll.</dd>
@@ -418,7 +425,7 @@ W_detenu = W.reindex(jours).shift(1).ffill()        # appliqué dès le lendemai
 </section>
 
 <section id="sources">
-<h2><span class="n">14</span>Sources</h2>
+<h2><span class="n">15</span>Sources</h2>
 <ul>
   <li>Moskowitz, T., Ooi, Y. H., Pedersen, L. H. (2012). <em>Time Series Momentum</em>. Journal of Financial Economics, 104(2), 228-250.</li>
   <li>Hurst, B., Ooi, Y. H., Pedersen, L. H. (2017). <em>A Century of Evidence on Trend-Following Investing</em>. The Journal of Portfolio Management, 44(1), 15-29.</li>
@@ -464,7 +471,7 @@ const T = {
     contracts: ['Marché','Plus petit contrat',"Notionnel d'un contrat",'Position visée (25 000 €)','Contrat / position'],
     etf: ['Période','Version','Sharpe','Rendement','Volatilité','Perte max.','Corrélation avec la value'],
     pos: ['Marché','Classe','Signal','Futures : poids','Futures : montant','ETF : poids','ETF : montant'], notTraded: 'non traité',
-    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF',
+    lines: ['2001-2026','2016-2026'], futures: 'Futures', etfShort: 'ETF', prev: 'Précédent', next: 'Suivant', top: 'Haut de page',
   }
 };
 </script>

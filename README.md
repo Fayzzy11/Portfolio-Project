@@ -21,8 +21,9 @@ strategies/
     positions.py            monthly routine: this month's target positions
     results/                aggregated results (no raw data)
 templates/bloomberg/        Excel extraction templates (BDH/BDP formulas + checks), English and French
+templates/portfolio_tracker/ portfolio tracking workbooks (Bloomberg and manual) and the script that builds them
 data/                       frozen extracts (excluded from Git)
-docs/                       GitHub Pages website (one page per strategy)
+docs/                       GitHub Pages website (one page per strategy, downloads/ for the Excel templates)
 ```
 
 ## Quick start
@@ -35,6 +36,17 @@ python -m strategies.trend_following.run data/Extract_Trend_20261013_values.xlsx
 python -m strategies.trend_following.positions data/Extract_Trend_20261013_values.xlsx 25000
 python docs/build_report.py                              # rebuilds the report pages
 ```
+
+## Excel templates
+
+| File | Use |
+|---|---|
+| `templates/portfolio_tracker/Portfolio_Tracker_Bloomberg.xlsx` | Portfolio tracker fed by Bloomberg (BDP/BDH): dashboard, holdings, transactions, monthly history, risk metrics, allocation, journal |
+| `templates/portfolio_tracker/Portfolio_Tracker_Manual.xlsx` | Same tracker without Bloomberg (prices, FX and benchmark typed by hand) |
+| `templates/bloomberg/Extract_Trend_Following_Bloomberg_EN.xlsx` | Data extraction for the trend-following study (French version alongside) |
+
+Rebuild them with `python templates/portfolio_tracker/build_tracker.py` and `python templates/bloomberg/build_template_en.py`.
+Copies for download live in `docs/downloads/`.
 
 ## Adding a strategy
 
