@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strategies Lab</title>
+<meta name="description" content="Systematic investment strategies by Noah Doose, backtested on Bloomberg data, with full reports, code and Excel templates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Investment-bank identity: midnight navy bands, brass accent, validated chart colours.
+   Layout: navy app bar → navy hero (copy + live chart) → stats strip → strategies → method → templates → navy footer. */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --sunk:#eaeef3; --fg:#0f1a26; --fg2:#45505e; --muted:#6a7482; --rule:#d7dde5;
+  --navy:#0b1f33; --navy-2:#12304d; --navy-3:#1a3d61; --on-navy:#eef3f8; --on-navy-2:#a9b8c8; --navy-rule:rgba(255,255,255,.12);
+  --gold:#d9a939; --gold-ink:#8a6610; --gold-soft:#fbf3dd;
+  --blue:#2a78d6; --blue-soft:#e4effb; --teal:#1baf7a; --teal-soft:#e2f6ee; --orange:#eb6834;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c131b; --surface:#131d28; --sunk:#192532; --fg:#e9eef4; --fg2:#b3bfcc; --muted:#8693a2; --rule:#25313e;
+  --gold-ink:#e2b955; --gold-soft:#2a2414; --blue-soft:#14263a; --teal-soft:#10291f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c131b; --surface:#131d28; --sunk:#192532; --fg:#e9eef4; --fg2:#b3bfcc; --muted:#8693a2; --rule:#25313e;
+  --gold-ink:#e2b955; --gold-soft:#2a2414; --blue-soft:#14263a; --teal-soft:#10291f; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;margin:0}
+a{color:inherit}
+.in{max-width:1140px;margin:0 auto;padding-inline:20px}
+/* app bar */
+.appbar{position:sticky;top:0;z-index:10;background:var(--navy);color:var(--on-navy);border-bottom:1px solid var(--navy-rule);padding-top:env(safe-area-inset-top,0px)}
+.appbar .in{height:60px;display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:.01em}
+.brand svg{flex-shrink:0}
+.menu{display:flex;gap:4px;margin-left:8px}
+.menu a{text-decoration:none;color:var(--on-navy-2);font-size:14px;padding:6px 10px;border-radius:6px}
+.menu a:hover,.menu a:focus-visible{color:var(--on-navy);background:var(--navy-2)}
+.bar-actions{margin-left:auto;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:14px;font-weight:600;line-height:1;padding:11px 16px;border-radius:8px;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn-gold{background:var(--gold);color:var(--navy)} .btn-gold:hover{background:#e6b94a}
+.btn-ghost{border-color:var(--navy-rule);color:var(--on-navy)} .btn-ghost:hover{border-color:var(--gold)}
+.btn-line{border-color:var(--rule);color:var(--fg);background:var(--surface)} .btn-line:hover{border-color:var(--blue)}
+.btn-sm{padding:8px 12px;font-size:13px}
+@media (max-width:760px){.menu{display:none}.appbar .in{gap:10px}.bar-actions .btn-ghost{display:none}}
+/* hero */
+.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--navy-rule) 1px,transparent 1px),linear-gradient(90deg,var(--navy-rule) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:linear-gradient(180deg,#000 0%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%)}
+.hero .in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:48px;align-items:center;padding-block:64px 72px}
+@media (max-width:900px){.hero .in{grid-template-columns:minmax(0,1fr);gap:32px;padding-block:44px 52px}}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,5.4vw,60px);line-height:1.02;margin:14px 0 16px;letter-spacing:-.015em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p.lede{font-size:18px;color:var(--on-navy-2);max-width:52ch;margin:0 0 26px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.chart-card{background:var(--navy-2);border:1px solid var(--navy-rule);border-radius:14px;padding:18px 18px 12px;box-shadow:0 24px 60px rgba(0,0,0,.35);min-width:0}
+.chart-card .t{font-weight:600;font-size:15px}
+.chart-card .s{font-size:12.5px;color:var(--on-navy-2);margin-bottom:8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--on-navy-2);margin-bottom:4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+#hero-chart{position:relative}
+#hero-chart svg{display:block;width:100%;height:auto}
+#hero-chart text{font-family:var(--f-mono);font-size:11px;fill:var(--on-navy-2)}
+.tip{position:absolute;pointer-events:none;background:var(--navy);border:1px solid var(--navy-rule);border-radius:6px;padding:7px 9px;font-size:12px;min-width:170px;color:var(--on-navy);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.tip .r{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono)}
+/* stats strip */
+.strip{background:var(--surface);border-bottom:1px solid var(--rule)}
+.strip .in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.stat{padding:26px 20px;border-left:1px solid var(--rule);min-width:0}
+.stat:first-child{border-left:0;padding-left:0}
+.stat b{display:block;font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13.5px;color:var(--fg2)}
+.stat.gold b{color:var(--gold-ink)} .stat.blue b{color:var(--blue)} .stat.teal b{color:var(--teal)}
+@media (max-width:760px){.strip .in{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{border-left:0;padding-left:0;border-top:1px solid var(--rule)}.stat:nth-child(-n+2){border-top:0}}
+/* sections */
+section.block{padding-block:72px 8px}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.sec-head h2{font-family:var(--f-display);font-size:clamp(28px,3.4vw,38px);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+.sec-head p{color:var(--fg2);max-width:56ch;margin:6px 0 0}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;position:relative;overflow:hidden}
+.card.accent-blue{border-top:4px solid var(--blue)} .card.accent-gold{border-top:4px solid var(--gold)} .card.accent-teal{border-top:4px solid var(--teal)}
+.card h3{font-family:var(--f-display);font-size:23px;margin:0;line-height:1.15}
+.card p{margin:0;color:var(--fg2);font-size:15px;flex:1}
+.pill{align-self:flex-start;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.pill.blue{background:var(--blue-soft);color:var(--blue)} .pill.gold{background:var(--gold-soft);color:var(--gold-ink)} .pill.teal{background:var(--teal-soft);color:var(--teal)}
+.kv{display:flex;gap:22px;flex-wrap:wrap;padding-top:6px;border-top:1px solid var(--rule)}
+.kv div{font-size:12.5px;color:var(--muted)} .kv b{display:block;font-family:var(--f-mono);font-size:18px;font-weight:500;color:var(--fg)}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.card.muted{background:repeating-linear-gradient(135deg,var(--surface) 0 12px,var(--sunk) 12px 13px)}
+/* method */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;counter-reset:st;list-style:none;padding:0;margin:0}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:minmax(0,1fr)}}
+.steps li{counter-increment:st;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px;min-width:0}
+.steps li::before{content:counter(st,decimal-leading-zero);display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--navy);color:var(--gold);font-family:var(--f-mono);font-weight:500;margin-bottom:12px}
+.steps h3{margin:0 0 6px;font-size:17px}
+.steps p{margin:0;color:var(--fg2);font-size:14.5px}
+/* templates */
+.tpl-icon{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal)}
+.tpl-icon.gold{background:var(--gold-soft);color:var(--gold-ink)} .tpl-icon.blue{background:var(--blue-soft);color:var(--blue)}
+/* footer */
+footer{margin-top:88px;background:var(--navy);color:var(--on-navy-2);font-size:13.5px}
+footer .in{padding-block:36px;display:flex;gap:24px;justify-content:space-between;flex-wrap:wrap}
+footer b{color:var(--on-navy);font-family:var(--f-display);font-size:16px}
+footer a{color:var(--on-navy)}
+</style>
+</head>
+<body>
+<header class="appbar"><div class="in">
+  <a class="brand" href="./" aria-label="Strategies Lab home">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#12304d"/><rect x="6" y="15" width="3.5" height="7" rx="1" fill="#3987e5"/><rect x="12.25" y="10" width="3.5" height="12" rx="1" fill="#199e70"/><rect x="18.5" y="6" width="3.5" height="16" rx="1" fill="#d9a939"/></svg>
+    Strategies Lab
+  </a>
+  <nav class="menu" aria-label="Sections"><a href="#strategies">Strategies</a><a href="#method">Method</a><a href="#templates">Templates</a></nav>
+  <div class="bar-actions"><a class="btn btn-ghost btn-sm" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a><a class="btn btn-gold btn-sm" href="trend-following/">Read the report</a></div>
+</div></header>
+
+<section class="hero"><div class="in">
+  <div>
+    <div class="eyebrow">Systematic strategies · Bloomberg data · 2001–2026</div>
+    <h1>Strategies tested with <em>discipline</em>, not hindsight.</h1>
+    <p class="lede">Strategies Lab is Noah Doose's research lab: every strategy has its rules fixed before the backtest, costs included, an untouched validation period and every variant published. The first study shows how trend following diversifies a value equity portfolio.</p>
+    <div class="cta"><a class="btn btn-gold" href="trend-following/">Read the trend-following report</a><a class="btn btn-ghost" href="#templates">Download the Excel templates</a></div>
+  </div>
+  <div class="chart-card">
+    <div class="t">Growth of 100 since February 2001</div>
+    <div class="s">Monthly, log scale, excess returns in EUR, net of estimated costs</div>
+    <div class="legend" id="hero-legend"></div>
+    <div id="hero-chart"></div>
+  </div>
+</div></section>
+
+<div class="strip"><div class="in">
+  <div class="stat blue"><b id="st-sharpe">0.64</b><span>Sharpe ratio of trend following, 2001-2026</span></div>
+  <div class="stat teal"><b id="st-corr">−0.21</b><span>monthly correlation with MSCI World Value</span></div>
+  <div class="stat gold"><b id="st-dd">−64.5% → −43.0%</b><span>max drawdown, value alone vs 70/30 with trend</span></div>
+  <div class="stat"><b>17</b><span>futures markets across four asset classes</span></div>
+</div></div>
+
+<main class="in">
+  <section class="block" id="strategies">
+    <div class="sec-head"><div><div class="kicker">Research</div><h2>Strategies</h2></div><p>Each study comes with a full report: data, formulas, results, correlation, replication and limitations.</p></div>
+    <div class="cards">
+      <article class="card accent-blue">
+        <span class="pill blue">Backtest complete · data to 30 Sep 2026</span>
+        <h3>Multi-asset trend following</h3>
+        <p>Buys rising markets and sells falling ones across equity indices, government bonds, commodities and currencies. Compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
+        <div class="kv"><div><b>0.64</b>Sharpe</div><div><b>−0.21</b>corr. with value</div><div><b>+27%</b>in 2022</div></div>
+        <div class="links"><a class="btn btn-line btn-sm" href="trend-following/">Read the report</a><a class="btn btn-line btn-sm" href="trend-following/fr/">Version française</a></div>
+      </article>
+      <article class="card accent-gold muted">
+        <span class="pill gold">In progress</span>
+        <h3>Global value equities</h3>
+        <p>40 to 50 MSCI World stocks selected on a composite value score (EV/EBIT, P/B, FCF yield, EV/Sales), with historical index membership and a 3-month accounting lag.</p>
+        <div class="kv"><div><b>MSCI World</b>universe</div><div><b>semi-annual</b>rebalancing</div></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="method">
+    <div class="sec-head"><div><div class="kicker">Process</div><h2>How every strategy is tested</h2></div><p>The same four steps for each study, so results can be trusted and compared.</p></div>
+    <ol class="steps">
+      <li><h3>Economic hypothesis</h3><p>A documented reason for the premium to exist, backed by the academic literature.</p></li>
+      <li><h3>Rules fixed in advance</h3><p>Universe, signals, sizing, costs and sample split written in the code before any result is seen.</p></li>
+      <li><h3>Backtest with costs</h3><p>Bloomberg data with roll adjustment checks, no look-ahead, trading and roll costs included.</p></li>
+      <li><h3>Out-of-sample validation</h3><p>A period never used in design, every variant published, and a frank list of limitations.</p></li>
+    </ol>
+  </section>
+
+  <section class="block" id="templates">
+    <div class="sec-head"><div><div class="kicker">Tools</div><h2>Excel templates</h2></div><p>Free to download. The Bloomberg versions need a terminal with the Excel add-in.</p></div>
+    <div class="cards">
+      <article class="card">
+        <div class="tpl-icon gold" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+        <h3>Portfolio tracker · Bloomberg</h3>
+        <p>Dashboard, holdings, transactions, monthly history, 33 risk metrics (VaR, ES, Sharpe, Sortino, beta, tracking error…), allocation vs targets and a decision journal, fed by BDP/BDH.</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Portfolio_Tracker_Bloomberg.xlsx">Download .xlsx</a></div>
+      </article>
+      <article class="card">
+        <div class="tpl-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Portfolio tracker · manual</h3>
+        <p>The same workbook without Bloomberg: type prices, exchange rates and benchmark levels. Works anywhere.</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Portfolio_Tracker_Manual.xlsx">Download .xlsx</a></div>
+      </article>
+      <article class="card">
+        <div class="tpl-icon blue" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></div>
+        <h3>Trend-following data extraction</h3>
+        <p>The 41 tickers of the trend study with BDH formulas and built-in data checks (roll adjustment test, gaps, suspicious jumps).</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Extract_Trend_Following_Bloomberg_EN.xlsx">English</a><a class="btn btn-line btn-sm" href="downloads/Extract_Trend_Following_Bloomberg_FR.xlsx">Français</a></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer><div class="in">
+  <div><b>Strategies Lab</b><br>Noah Doose · MSc Financial Markets &amp; Investments, SKEMA Business School</div>
+  <div>Past results, not investment advice. Raw Bloomberg data is not published.<br><a href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">Source code on GitHub</a></div>
+</div></footer>
+
+<script id="home-data" type="application/json">/*__HOME__*/</script>
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById('home-data').textContent);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const fmt = (x,d=2) => (x<0?'−':'')+Math.abs(x).toFixed(d);
+  document.getElementById('st-sharpe').textContent = fmt(D.sharpe);
+  document.getElementById('st-corr').textContent = fmt(D.corr);
+  document.getElementById('st-dd').textContent = `${fmt(D.dd_value*100,1)}% → ${fmt(D.dd_combo*100,1)}%`;
+  const S = [{n:'Trend following', c:'--c1', v:D.trend},{n:'MSCI World Value', c:'--c2', v:D.value},{n:'70% value / 30% trend', c:'--c3', v:D.combo}];
+  document.getElementById('hero-legend').innerHTML = S.map(s=>`<span><i style="background:${css(s.c)}"></i>${s.n}</span>`).join('');
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  function draw(){
+    const host=document.getElementById('hero-chart'); host.innerHTML='';
+    const W=Math.max(300,host.clientWidth||520), H=Math.round(W*0.58), m={l:40,r:10,t:8,b:24};
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Growth of 100 since 2001'},host);
+    const all=S.flatMap(s=>s.v); const lo=Math.log10(Math.min(...all)*0.92), hi=Math.log10(Math.max(...all)*1.05);
+    const n=D.dates.length, xs=i=>m.l+(W-m.l-m.r)*i/(n-1), ys=v=>m.t+(H-m.t-m.b)*(1-(Math.log10(v)-lo)/(hi-lo));
+    [50,100,200,400,600].filter(t=>Math.log10(t)>lo&&Math.log10(t)<hi).forEach(t=>{const y=ys(t);el('line',{x1:m.l,x2:W-m.r,y1:y,y2:y,stroke:'rgba(255,255,255,.10)'},svg);const tx=el('text',{x:m.l-6,y:y+4,'text-anchor':'end'},svg);tx.textContent=t;});
+    D.dates.forEach((d,i)=>{const y=+d.slice(0,4); if(d.slice(5,7)==='01'&&y%5===0){const tx=el('text',{x:xs(i),y:H-6,'text-anchor':'middle'},svg);tx.textContent=y;}});
+    S.forEach(s=>{const d=s.v.map((v,i)=>(i?'L':'M')+xs(i).toFixed(1)+' '+ys(v).toFixed(1)).join('');el('path',{d,fill:'none',stroke:css(s.c),'stroke-width':2.2,'stroke-linejoin':'round'},svg);
+      const i=n-1; el('circle',{cx:xs(i),cy:ys(s.v[i]),r:4,fill:css(s.c),stroke:css('--navy-2'),'stroke-width':2},svg);});
+    const tip=document.createElement('div');tip.className='tip';tip.hidden=true;host.appendChild(tip);
+    const cross=el('line',{y1:m.t,y2:H-m.b,stroke:'rgba(255,255,255,.35)','stroke-dasharray':'3 3',visibility:'hidden'},svg);
+    const ov=el('rect',{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:'transparent'},svg);
+    const mv=e=>{const r=svg.getBoundingClientRect();const px=(e.clientX-r.left)*W/r.width;let i=Math.round((px-m.l)/(W-m.l-m.r)*(n-1));i=Math.max(0,Math.min(n-1,i));
+      cross.setAttribute('x1',xs(i));cross.setAttribute('x2',xs(i));cross.setAttribute('visibility','visible');
+      const [y,mo]=D.dates[i].split('-');tip.innerHTML=`<div style="color:var(--on-navy-2);font-family:var(--f-mono)">${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mo-1]} ${y}</div>`+S.map(s=>`<div class="r"><span>${s.n}</span><b>${s.v[i].toFixed(0)}</b></div>`).join('');
+      tip.hidden=false;const hw=host.clientWidth,tx=xs(i)/W*hw;tip.style.left=(tx>hw*.55?tx-tip.offsetWidth-10:tx+10)+'px';tip.style.top='6px';};
+    ov.addEventListener('pointermove',mv);ov.addEventListener('pointerdown',mv);ov.addEventListener('pointerleave',()=>{tip.hidden=true;cross.setAttribute('visibility','hidden');});
+  }
+  draw(); let t; addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(draw,150);});
+})();
+</script>
+</body>
+</html>

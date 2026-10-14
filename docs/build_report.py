@@ -64,3 +64,19 @@ if "--fragments" in sys.argv:
     (out / "trend_following_report_en.html").write_text(render("en", with_link=False))
     (out / "trend_following_report_fr.html").write_text(render("fr", with_link=False))
     print("fragments in", out)
+
+# ---------------------------------------------------------------- lab home page
+REF, VAL, COMBO = C.REFERENCE_VARIANT, "MSCI World Value (EUR)", "70/30 value/trend"
+home = {
+    "dates": res["nav"]["dates"],
+    "trend": [round(v, 1) for v in res["nav"]["series"][REF]],
+    "value": [round(v, 1) for v in res["nav"]["series"][VAL]],
+    "combo": [round(v, 1) for v in res["nav"]["series"][COMBO]],
+    "sharpe": res["stats"]["full"][REF]["sharpe"],
+    "corr": res["monthly_correlation"]["full"][REF][VAL],
+    "dd_value": res["stats"]["full"][VAL]["max_drawdown"],
+    "dd_combo": next(r["full"]["max_drawdown"] for r in res["combinations"][REF] if abs(r["value_weight"] - 0.7) < 1e-9),
+}
+(ROOT / "docs" / "index.html").write_text(
+    (ROOT / "docs" / "home_template.html").read_text().replace("/*__HOME__*/", json.dumps(home, separators=(",", ":"))))
+print("written:", ROOT / "docs" / "index.html")

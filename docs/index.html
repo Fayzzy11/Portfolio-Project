@@ -4,76 +4,242 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Strategies Lab</title>
-<meta name="description" content="Systematic investment strategies by Noah Doose, backtested on Bloomberg data, with reports, code and Excel templates.">
+<meta name="description" content="Systematic investment strategies by Noah Doose, backtested on Bloomberg data, with full reports, code and Excel templates.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Lab home: same tokens as the reports. Single column, strategy cards then downloads. */
-:root{--bg:#f5f6f8;--surface:#fff;--sunk:#eef0f3;--fg:#13161b;--fg2:#4a515d;--muted:#6b7280;--rule:#d9dde3;--accent:#1d4f7a;--accent-soft:#e3ecf5;
-  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;--f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121417;--surface:#1a1d21;--sunk:#202429;--fg:#eceef1;--fg2:#b9c0ca;--muted:#8f97a3;--rule:#2f343b;--accent:#8cb8e6;--accent-soft:#1d2a38;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#121417;--surface:#1a1d21;--sunk:#202429;--fg:#eceef1;--fg2:#b9c0ca;--muted:#8f97a3;--rule:#2f343b;--accent:#8cb8e6;--accent-soft:#1d2a38;color-scheme:dark}
+/* Investment-bank identity: midnight navy bands, brass accent, validated chart colours.
+   Layout: navy app bar → navy hero (copy + live chart) → stats strip → strategies → method → templates → navy footer. */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --sunk:#eaeef3; --fg:#0f1a26; --fg2:#45505e; --muted:#6a7482; --rule:#d7dde5;
+  --navy:#0b1f33; --navy-2:#12304d; --navy-3:#1a3d61; --on-navy:#eef3f8; --on-navy-2:#a9b8c8; --navy-rule:rgba(255,255,255,.12);
+  --gold:#d9a939; --gold-ink:#8a6610; --gold-soft:#fbf3dd;
+  --blue:#2a78d6; --blue-soft:#e4effb; --teal:#1baf7a; --teal-soft:#e2f6ee; --orange:#eb6834;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c131b; --surface:#131d28; --sunk:#192532; --fg:#e9eef4; --fg2:#b3bfcc; --muted:#8693a2; --rule:#25313e;
+  --gold-ink:#e2b955; --gold-soft:#2a2414; --blue-soft:#14263a; --teal-soft:#10291f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c131b; --surface:#131d28; --sunk:#192532; --fg:#e9eef4; --fg2:#b3bfcc; --muted:#8693a2; --rule:#25313e;
+  --gold-ink:#e2b955; --gold-soft:#2a2414; --blue-soft:#14263a; --teal-soft:#10291f; color-scheme:dark}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;margin:0}
-.appbar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
-.appbar-in{max-width:960px;margin:0 auto;padding-inline:20px;height:56px;display:flex;align-items:center;gap:14px}
-.brand{font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--fg);text-decoration:none}
-.actions{margin-left:auto;display:flex;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;line-height:1;padding:8px 12px;border-radius:6px;border:1px solid var(--rule);background:var(--surface);color:var(--fg);text-decoration:none}
-.btn:hover{border-color:var(--accent)} .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)} .btn.primary:hover{background:var(--accent);border-color:var(--accent)}
-main{max-width:960px;margin:0 auto;padding-inline:20px;padding-block:40px 64px}
-h1{font-family:var(--f-display);font-size:clamp(34px,6vw,52px);line-height:1.05;margin:0 0 12px;letter-spacing:-.01em}
-.lede{font-size:18px;color:var(--fg2);max-width:62ch;margin:0 0 8px}
-.rules{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
-.rules li{font-family:var(--f-mono);font-size:12px;color:var(--fg2);background:var(--sunk);border-radius:999px;padding:4px 10px}
-h2{font-family:var(--f-display);font-size:24px;margin:48px 0 12px;scroll-margin-top:72px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.card h3{margin:0;font-family:var(--f-display);font-size:20px}
-.card p{margin:0;color:var(--fg2);font-size:14.5px;flex:1}
-.tag{font-family:var(--f-mono);font-size:11.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
-.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px;color:var(--fg2)}
-.stats b{display:block;font-size:20px;color:var(--fg);font-weight:500}
-.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.muted{opacity:.7}
-footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+a{color:inherit}
+.in{max-width:1140px;margin:0 auto;padding-inline:20px}
+/* app bar */
+.appbar{position:sticky;top:0;z-index:10;background:var(--navy);color:var(--on-navy);border-bottom:1px solid var(--navy-rule);padding-top:env(safe-area-inset-top,0px)}
+.appbar .in{height:60px;display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:.01em}
+.brand svg{flex-shrink:0}
+.menu{display:flex;gap:4px;margin-left:8px}
+.menu a{text-decoration:none;color:var(--on-navy-2);font-size:14px;padding:6px 10px;border-radius:6px}
+.menu a:hover,.menu a:focus-visible{color:var(--on-navy);background:var(--navy-2)}
+.bar-actions{margin-left:auto;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:14px;font-weight:600;line-height:1;padding:11px 16px;border-radius:8px;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn-gold{background:var(--gold);color:var(--navy)} .btn-gold:hover{background:#e6b94a}
+.btn-ghost{border-color:var(--navy-rule);color:var(--on-navy)} .btn-ghost:hover{border-color:var(--gold)}
+.btn-line{border-color:var(--rule);color:var(--fg);background:var(--surface)} .btn-line:hover{border-color:var(--blue)}
+.btn-sm{padding:8px 12px;font-size:13px}
+@media (max-width:760px){.menu{display:none}.appbar .in{gap:10px}.bar-actions .btn-ghost{display:none}}
+/* hero */
+.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--navy-rule) 1px,transparent 1px),linear-gradient(90deg,var(--navy-rule) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:linear-gradient(180deg,#000 0%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%)}
+.hero .in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:48px;align-items:center;padding-block:64px 72px}
+@media (max-width:900px){.hero .in{grid-template-columns:minmax(0,1fr);gap:32px;padding-block:44px 52px}}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,5.4vw,60px);line-height:1.02;margin:14px 0 16px;letter-spacing:-.015em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p.lede{font-size:18px;color:var(--on-navy-2);max-width:52ch;margin:0 0 26px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.chart-card{background:var(--navy-2);border:1px solid var(--navy-rule);border-radius:14px;padding:18px 18px 12px;box-shadow:0 24px 60px rgba(0,0,0,.35);min-width:0}
+.chart-card .t{font-weight:600;font-size:15px}
+.chart-card .s{font-size:12.5px;color:var(--on-navy-2);margin-bottom:8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--on-navy-2);margin-bottom:4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+#hero-chart{position:relative}
+#hero-chart svg{display:block;width:100%;height:auto}
+#hero-chart text{font-family:var(--f-mono);font-size:11px;fill:var(--on-navy-2)}
+.tip{position:absolute;pointer-events:none;background:var(--navy);border:1px solid var(--navy-rule);border-radius:6px;padding:7px 9px;font-size:12px;min-width:170px;color:var(--on-navy);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.tip .r{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono)}
+/* stats strip */
+.strip{background:var(--surface);border-bottom:1px solid var(--rule)}
+.strip .in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.stat{padding:26px 20px;border-left:1px solid var(--rule);min-width:0}
+.stat:first-child{border-left:0;padding-left:0}
+.stat b{display:block;font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13.5px;color:var(--fg2)}
+.stat.gold b{color:var(--gold-ink)} .stat.blue b{color:var(--blue)} .stat.teal b{color:var(--teal)}
+@media (max-width:760px){.strip .in{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{border-left:0;padding-left:0;border-top:1px solid var(--rule)}.stat:nth-child(-n+2){border-top:0}}
+/* sections */
+section.block{padding-block:72px 8px}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.sec-head h2{font-family:var(--f-display);font-size:clamp(28px,3.4vw,38px);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+.sec-head p{color:var(--fg2);max-width:56ch;margin:6px 0 0}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;position:relative;overflow:hidden}
+.card.accent-blue{border-top:4px solid var(--blue)} .card.accent-gold{border-top:4px solid var(--gold)} .card.accent-teal{border-top:4px solid var(--teal)}
+.card h3{font-family:var(--f-display);font-size:23px;margin:0;line-height:1.15}
+.card p{margin:0;color:var(--fg2);font-size:15px;flex:1}
+.pill{align-self:flex-start;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.pill.blue{background:var(--blue-soft);color:var(--blue)} .pill.gold{background:var(--gold-soft);color:var(--gold-ink)} .pill.teal{background:var(--teal-soft);color:var(--teal)}
+.kv{display:flex;gap:22px;flex-wrap:wrap;padding-top:6px;border-top:1px solid var(--rule)}
+.kv div{font-size:12.5px;color:var(--muted)} .kv b{display:block;font-family:var(--f-mono);font-size:18px;font-weight:500;color:var(--fg)}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.card.muted{background:repeating-linear-gradient(135deg,var(--surface) 0 12px,var(--sunk) 12px 13px)}
+/* method */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;counter-reset:st;list-style:none;padding:0;margin:0}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:minmax(0,1fr)}}
+.steps li{counter-increment:st;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px;min-width:0}
+.steps li::before{content:counter(st,decimal-leading-zero);display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--navy);color:var(--gold);font-family:var(--f-mono);font-weight:500;margin-bottom:12px}
+.steps h3{margin:0 0 6px;font-size:17px}
+.steps p{margin:0;color:var(--fg2);font-size:14.5px}
+/* templates */
+.tpl-icon{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal)}
+.tpl-icon.gold{background:var(--gold-soft);color:var(--gold-ink)} .tpl-icon.blue{background:var(--blue-soft);color:var(--blue)}
+/* footer */
+footer{margin-top:88px;background:var(--navy);color:var(--on-navy-2);font-size:13.5px}
+footer .in{padding-block:36px;display:flex;gap:24px;justify-content:space-between;flex-wrap:wrap}
+footer b{color:var(--on-navy);font-family:var(--f-display);font-size:16px}
+footer a{color:var(--on-navy)}
 </style>
 </head>
 <body>
-<header class="appbar"><div class="appbar-in">
-  <a class="brand" href="./">Strategies Lab</a>
-  <nav class="actions" aria-label="Site"><a class="btn primary" href="#templates">Templates</a><a class="btn" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a></nav>
+<header class="appbar"><div class="in">
+  <a class="brand" href="./" aria-label="Strategies Lab home">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#12304d"/><rect x="6" y="15" width="3.5" height="7" rx="1" fill="#3987e5"/><rect x="12.25" y="10" width="3.5" height="12" rx="1" fill="#199e70"/><rect x="18.5" y="6" width="3.5" height="16" rx="1" fill="#d9a939"/></svg>
+    Strategies Lab
+  </a>
+  <nav class="menu" aria-label="Sections"><a href="#strategies">Strategies</a><a href="#method">Method</a><a href="#templates">Templates</a></nav>
+  <div class="bar-actions"><a class="btn btn-ghost btn-sm" href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">GitHub</a><a class="btn btn-gold btn-sm" href="trend-following/">Read the report</a></div>
 </div></header>
-<main>
-  <h1>Strategies Lab</h1>
-  <p class="lede">Systematic investment strategies by Noah Doose, backtested on Bloomberg data. Each study comes with its full report, its code and the Excel templates needed to reproduce it.</p>
-  <ul class="rules"><li>parameters fixed before results</li><li>untouched validation period</li><li>costs included</li><li>every variant published</li></ul>
 
-  <h2>Strategies</h2>
-  <div class="grid">
-    <div class="card">
-      <div class="tag">Backtest complete · data to 30 Sep 2026</div>
-      <h3>Multi-asset trend following</h3>
-      <p>Buys rising markets and sells falling ones across 17 futures; compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
-      <div class="stats"><span><b>0.64</b>Sharpe 2001-26</span><span><b>−0.21</b>corr. with value</span><span><b>17</b>markets</span></div>
-      <div class="links"><a class="btn primary" href="trend-following/">Read the report</a><a class="btn" href="trend-following/fr/">Version française</a></div>
-    </div>
-    <div class="card muted">
-      <div class="tag">In progress</div>
-      <h3>Global value equities</h3>
-      <p>A portfolio of 40 to 50 MSCI World stocks selected on a composite value score, with historical index membership and a 3-month accounting lag.</p>
-    </div>
+<section class="hero"><div class="in">
+  <div>
+    <div class="eyebrow">Systematic strategies · Bloomberg data · 2001–2026</div>
+    <h1>Strategies tested with <em>discipline</em>, not hindsight.</h1>
+    <p class="lede">Strategies Lab is Noah Doose's research lab: every strategy has its rules fixed before the backtest, costs included, an untouched validation period and every variant published. The first study shows how trend following diversifies a value equity portfolio.</p>
+    <div class="cta"><a class="btn btn-gold" href="trend-following/">Read the trend-following report</a><a class="btn btn-ghost" href="#templates">Download the Excel templates</a></div>
   </div>
+  <div class="chart-card">
+    <div class="t">Growth of 100 since February 2001</div>
+    <div class="s">Monthly, log scale, excess returns in EUR, net of estimated costs</div>
+    <div class="legend" id="hero-legend"></div>
+    <div id="hero-chart"></div>
+  </div>
+</div></section>
 
-  <h2 id="templates">Excel templates</h2>
-  <div class="grid">
-    <div class="card"><div class="tag">Excel · BDP / BDH</div><h3>Portfolio tracker · Bloomberg</h3><p>Dashboard, holdings, transactions, monthly history, risk metrics (VaR, ES, Sharpe, Sortino, beta, tracking error), allocation vs targets and a decision journal, fed by Bloomberg.</p><div class="links"><a class="btn primary" href="downloads/Portfolio_Tracker_Bloomberg.xlsx">Download</a></div></div>
-    <div class="card"><div class="tag">Excel · no add-in</div><h3>Portfolio tracker · manual</h3><p>The same workbook without Bloomberg: type prices, FX and benchmark levels.</p><div class="links"><a class="btn primary" href="downloads/Portfolio_Tracker_Manual.xlsx">Download</a></div></div>
-    <div class="card"><div class="tag">Excel · BDH / BDP</div><h3>Trend-following data extraction</h3><p>The 41 tickers of the trend study with built-in data checks, in English and French.</p><div class="links"><a class="btn primary" href="downloads/Extract_Trend_Following_Bloomberg_EN.xlsx">English</a><a class="btn" href="downloads/Extract_Trend_Following_Bloomberg_FR.xlsx">Français</a></div></div>
-  </div>
-  <footer>These pages describe past results and are not investment advice. Raw Bloomberg data is not published.</footer>
+<div class="strip"><div class="in">
+  <div class="stat blue"><b id="st-sharpe">0.64</b><span>Sharpe ratio of trend following, 2001-2026</span></div>
+  <div class="stat teal"><b id="st-corr">−0.21</b><span>monthly correlation with MSCI World Value</span></div>
+  <div class="stat gold"><b id="st-dd">−64.5% → −43.0%</b><span>max drawdown, value alone vs 70/30 with trend</span></div>
+  <div class="stat"><b>17</b><span>futures markets across four asset classes</span></div>
+</div></div>
+
+<main class="in">
+  <section class="block" id="strategies">
+    <div class="sec-head"><div><div class="kicker">Research</div><h2>Strategies</h2></div><p>Each study comes with a full report: data, formulas, results, correlation, replication and limitations.</p></div>
+    <div class="cards">
+      <article class="card accent-blue">
+        <span class="pill blue">Backtest complete · data to 30 Sep 2026</span>
+        <h3>Multi-asset trend following</h3>
+        <p>Buys rising markets and sells falling ones across equity indices, government bonds, commodities and currencies. Compared and combined with an MSCI World Value proxy, with an investable ETF version.</p>
+        <div class="kv"><div><b>0.64</b>Sharpe</div><div><b>−0.21</b>corr. with value</div><div><b>+27%</b>in 2022</div></div>
+        <div class="links"><a class="btn btn-line btn-sm" href="trend-following/">Read the report</a><a class="btn btn-line btn-sm" href="trend-following/fr/">Version française</a></div>
+      </article>
+      <article class="card accent-gold muted">
+        <span class="pill gold">In progress</span>
+        <h3>Global value equities</h3>
+        <p>40 to 50 MSCI World stocks selected on a composite value score (EV/EBIT, P/B, FCF yield, EV/Sales), with historical index membership and a 3-month accounting lag.</p>
+        <div class="kv"><div><b>MSCI World</b>universe</div><div><b>semi-annual</b>rebalancing</div></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="method">
+    <div class="sec-head"><div><div class="kicker">Process</div><h2>How every strategy is tested</h2></div><p>The same four steps for each study, so results can be trusted and compared.</p></div>
+    <ol class="steps">
+      <li><h3>Economic hypothesis</h3><p>A documented reason for the premium to exist, backed by the academic literature.</p></li>
+      <li><h3>Rules fixed in advance</h3><p>Universe, signals, sizing, costs and sample split written in the code before any result is seen.</p></li>
+      <li><h3>Backtest with costs</h3><p>Bloomberg data with roll adjustment checks, no look-ahead, trading and roll costs included.</p></li>
+      <li><h3>Out-of-sample validation</h3><p>A period never used in design, every variant published, and a frank list of limitations.</p></li>
+    </ol>
+  </section>
+
+  <section class="block" id="templates">
+    <div class="sec-head"><div><div class="kicker">Tools</div><h2>Excel templates</h2></div><p>Free to download. The Bloomberg versions need a terminal with the Excel add-in.</p></div>
+    <div class="cards">
+      <article class="card">
+        <div class="tpl-icon gold" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+        <h3>Portfolio tracker · Bloomberg</h3>
+        <p>Dashboard, holdings, transactions, monthly history, 33 risk metrics (VaR, ES, Sharpe, Sortino, beta, tracking error…), allocation vs targets and a decision journal, fed by BDP/BDH.</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Portfolio_Tracker_Bloomberg.xlsx">Download .xlsx</a></div>
+      </article>
+      <article class="card">
+        <div class="tpl-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Portfolio tracker · manual</h3>
+        <p>The same workbook without Bloomberg: type prices, exchange rates and benchmark levels. Works anywhere.</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Portfolio_Tracker_Manual.xlsx">Download .xlsx</a></div>
+      </article>
+      <article class="card">
+        <div class="tpl-icon blue" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></div>
+        <h3>Trend-following data extraction</h3>
+        <p>The 41 tickers of the trend study with BDH formulas and built-in data checks (roll adjustment test, gaps, suspicious jumps).</p>
+        <div class="links"><a class="btn btn-line btn-sm" href="downloads/Extract_Trend_Following_Bloomberg_EN.xlsx">English</a><a class="btn btn-line btn-sm" href="downloads/Extract_Trend_Following_Bloomberg_FR.xlsx">Français</a></div>
+      </article>
+    </div>
+  </section>
 </main>
+
+<footer><div class="in">
+  <div><b>Strategies Lab</b><br>Noah Doose · MSc Financial Markets &amp; Investments, SKEMA Business School</div>
+  <div>Past results, not investment advice. Raw Bloomberg data is not published.<br><a href="https://github.com/Fayzzy11/Portfolio-Project" target="_blank" rel="noopener">Source code on GitHub</a></div>
+</div></footer>
+
+<script id="home-data" type="application/json">{"dates":["2001-02-28","2001-03-31","2001-04-30","2001-05-31","2001-06-30","2001-07-31","2001-08-31","2001-09-30","2001-10-31","2001-11-30","2001-12-31","2002-01-31","2002-02-28","2002-03-31","2002-04-30","2002-05-31","2002-06-30","2002-07-31","2002-08-31","2002-09-30","2002-10-31","2002-11-30","2002-12-31","2003-01-31","2003-02-28","2003-03-31","2003-04-30","2003-05-31","2003-06-30","2003-07-31","2003-08-31","2003-09-30","2003-10-31","2003-11-30","2003-12-31","2004-01-31","2004-02-29","2004-03-31","2004-04-30","2004-05-31","2004-06-30","2004-07-31","2004-08-31","2004-09-30","2004-10-31","2004-11-30","2004-12-31","2005-01-31","2005-02-28","2005-03-31","2005-04-30","2005-05-31","2005-06-30","2005-07-31","2005-08-31","2005-09-30","2005-10-31","2005-11-30","2005-12-31","2006-01-31","2006-02-28","2006-03-31","2006-04-30","2006-05-31","2006-06-30","2006-07-31","2006-08-31","2006-09-30","2006-10-31","2006-11-30","2006-12-31","2007-01-31","2007-02-28","2007-03-31","2007-04-30","2007-05-31","2007-06-30","2007-07-31","2007-08-31","2007-09-30","2007-10-31","2007-11-30","2007-12-31","2008-01-31","2008-02-29","2008-03-31","2008-04-30","2008-05-31","2008-06-30","2008-07-31","2008-08-31","2008-09-30","2008-10-31","2008-11-30","2008-12-31","2009-01-31","2009-02-28","2009-03-31","2009-04-30","2009-05-31","2009-06-30","2009-07-31","2009-08-31","2009-09-30","2009-10-31","2009-11-30","2009-12-31","2010-01-31","2010-02-28","2010-03-31","2010-04-30","2010-05-31","2010-06-30","2010-07-31","2010-08-31","2010-09-30","2010-10-31","2010-11-30","2010-12-31","2011-01-31","2011-02-28","2011-03-31","2011-04-30","2011-05-31","2011-06-30","2011-07-31","2011-08-31","2011-09-30","2011-10-31","2011-11-30","2011-12-31","2012-01-31","2012-02-29","2012-03-31","2012-04-30","2012-05-31","2012-06-30","2012-07-31","2012-08-31","2012-09-30","2012-10-31","2012-11-30","2012-12-31","2013-01-31","2013-02-28","2013-03-31","2013-04-30","2013-05-31","2013-06-30","2013-07-31","2013-08-31","2013-09-30","2013-10-31","2013-11-30","2013-12-31","2014-01-31","2014-02-28","2014-03-31","2014-04-30","2014-05-31","2014-06-30","2014-07-31","2014-08-31","2014-09-30","2014-10-31","2014-11-30","2014-12-31","2015-01-31","2015-02-28","2015-03-31","2015-04-30","2015-05-31","2015-06-30","2015-07-31","2015-08-31","2015-09-30","2015-10-31","2015-11-30","2015-12-31","2016-01-31","2016-02-29","2016-03-31","2016-04-30","2016-05-31","2016-06-30","2016-07-31","2016-08-31","2016-09-30","2016-10-31","2016-11-30","2016-12-31","2017-01-31","2017-02-28","2017-03-31","2017-04-30","2017-05-31","2017-06-30","2017-07-31","2017-08-31","2017-09-30","2017-10-31","2017-11-30","2017-12-31","2018-01-31","2018-02-28","2018-03-31","2018-04-30","2018-05-31","2018-06-30","2018-07-31","2018-08-31","2018-09-30","2018-10-31","2018-11-30","2018-12-31","2019-01-31","2019-02-28","2019-03-31","2019-04-30","2019-05-31","2019-06-30","2019-07-31","2019-08-31","2019-09-30","2019-10-31","2019-11-30","2019-12-31","2020-01-31","2020-02-29","2020-03-31","2020-04-30","2020-05-31","2020-06-30","2020-07-31","2020-08-31","2020-09-30","2020-10-31","2020-11-30","2020-12-31","2021-01-31","2021-02-28","2021-03-31","2021-04-30","2021-05-31","2021-06-30","2021-07-31","2021-08-31","2021-09-30","2021-10-31","2021-11-30","2021-12-31","2022-01-31","2022-02-28","2022-03-31","2022-04-30","2022-05-31","2022-06-30","2022-07-31","2022-08-31","2022-09-30","2022-10-31","2022-11-30","2022-12-31","2023-01-31","2023-02-28","2023-03-31","2023-04-30","2023-05-31","2023-06-30","2023-07-31","2023-08-31","2023-09-30","2023-10-31","2023-11-30","2023-12-31","2024-01-31","2024-02-29","2024-03-31","2024-04-30","2024-05-31","2024-06-30","2024-07-31","2024-08-31","2024-09-30","2024-10-31","2024-11-30","2024-12-31","2025-01-31","2025-02-28","2025-03-31","2025-04-30","2025-05-31","2025-06-30","2025-07-31","2025-08-31","2025-09-30","2025-10-31","2025-11-30","2025-12-31","2026-01-31","2026-02-28","2026-03-31","2026-04-30","2026-05-31","2026-06-30","2026-07-31","2026-08-31","2026-09-30"],"trend":[103.5,110.2,103.4,104.5,106.5,103.8,104.0,107.7,109.1,102.6,100.7,101.2,100.1,98.3,95.8,99.2,101.4,103.4,105.5,110.8,106.9,105.5,112.8,118.1,119.4,116.9,116.8,121.5,119.7,111.4,107.9,110.0,114.7,117.7,126.7,131.4,136.9,141.1,130.3,130.3,128.6,126.4,127.6,131.4,133.8,137.7,138.1,137.1,137.5,136.5,133.2,134.0,139.4,137.3,138.5,141.7,140.1,153.9,157.6,162.8,158.7,170.2,177.4,174.1,172.2,170.3,170.8,167.8,173.0,180.0,179.2,184.3,180.1,181.0,187.6,191.8,198.9,189.8,180.6,190.0,197.9,199.7,200.0,216.6,226.3,228.8,221.0,218.2,230.1,221.4,204.2,213.5,236.9,243.0,248.0,246.9,248.3,245.6,238.6,230.7,226.7,231.5,234.6,239.5,238.9,248.6,237.9,231.4,236.5,245.4,248.4,246.8,251.2,243.3,264.0,268.1,275.3,267.0,280.0,276.4,283.0,284.1,296.4,288.9,284.3,300.6,319.7,311.4,296.3,300.6,308.4,304.6,292.8,287.5,283.6,292.2,283.6,291.4,286.4,278.6,273.4,283.0,289.3,293.6,288.9,293.9,313.9,302.7,318.4,322.0,317.9,313.5,316.1,328.8,337.2,315.0,310.6,313.6,319.0,321.6,322.2,319.5,331.6,342.1,356.5,392.2,410.2,447.8,430.6,456.2,429.9,440.6,413.4,432.8,420.9,427.8,411.4,422.6,420.9,425.3,428.6,416.8,412.2,404.4,428.8,435.2,430.6,430.0,411.8,390.9,396.1,393.4,395.3,394.6,392.1,395.6,390.2,403.7,406.4,400.7,411.9,418.8,422.6,437.9,413.8,404.4,396.9,383.4,390.2,396.5,410.2,416.8,414.8,411.5,397.4,384.2,374.8,394.8,389.6,389.4,385.8,398.0,436.7,421.9,409.6,406.4,412.8,401.9,402.5,446.1,444.2,430.6,421.1,428.1,430.1,417.2,416.3,433.9,449.6,452.2,463.7,466.6,474.2,478.2,466.5,454.7,454.9,453.2,465.5,445.3,445.1,453.8,458.2,498.1,539.1,533.7,561.4,541.0,573.7,617.9,610.6,566.6,564.4,548.0,536.0,519.5,532.5,531.8,546.5,540.2,537.5,531.2,535.2,510.4,496.6,495.6,514.5,524.7,534.8,539.4,538.9,523.5,521.4,533.9,508.9,501.0,508.6,505.7,492.9,499.5,480.8,475.1,482.6,470.7,479.8,496.6,508.8,517.0,529.6,544.2,553.4,512.3,528.6,536.6,533.0,527.8,526.0,546.2],"value":[96.1,95.7,100.3,104.4,100.6,96.0,88.6,80.2,80.7,84.3,85.3,85.6,82.7,87.6,82.2,79.7,70.1,64.0,63.7,55.6,59.1,62.9,56.0,53.1,51.5,50.2,54.0,54.8,57.2,59.7,62.4,59.0,62.7,61.5,63.0,64.2,65.4,66.0,66.3,65.6,67.2,66.9,66.6,66.3,65.9,66.9,67.9,69.2,70.7,70.6,69.4,73.2,75.2,77.1,76.0,80.2,78.1,82.0,83.3,84.5,86.6,86.6,86.0,82.1,82.1,83.7,85.3,87.3,89.7,88.2,90.7,92.3,90.2,90.7,92.3,95.9,93.8,89.6,89.2,88.3,88.5,82.9,81.3,74.1,70.8,67.3,71.1,70.9,63.1,62.3,65.4,61.0,54.8,51.8,48.3,46.6,41.3,42.6,48.5,49.6,49.4,53.0,55.8,56.5,54.7,55.7,59.0,58.7,60.2,64.5,65.4,63.7,61.7,62.7,62.0,62.3,62.8,65.2,68.2,68.9,71.0,68.1,67.7,67.8,66.2,64.6,59.9,59.2,62.6,62.6,65.6,67.6,69.3,69.9,69.1,67.6,70.0,72.8,72.8,73.4,72.9,73.1,74.0,76.1,78.8,82.0,82.9,84.1,82.0,84.3,82.6,84.4,87.7,89.1,89.7,88.0,90.0,91.3,92.1,94.9,96.3,96.8,100.4,101.3,102.3,104.1,105.5,109.7,116.7,119.1,117.4,119.8,114.7,117.4,107.6,103.8,113.5,117.3,111.8,105.7,104.6,106.8,108.8,112.1,111.1,114.5,115.8,115.4,117.1,124.9,130.1,128.4,134.2,134.0,131.7,128.8,128.5,126.8,125.1,130.0,133.2,133.1,133.9,135.0,130.5,126.3,130.7,133.2,133.1,137.9,138.3,139.6,135.6,137.8,125.4,134.7,139.2,141.4,145.6,137.0,143.0,146.6,143.3,150.1,149.8,154.8,156.7,153.9,140.0,116.5,127.6,129.5,128.9,126.1,130.2,128.4,125.7,141.2,142.8,142.4,149.9,163.2,164.3,166.4,169.2,170.2,173.9,172.1,180.3,176.9,188.1,188.1,185.3,192.3,191.8,192.4,179.6,192.7,189.8,178.0,193.4,196.7,186.1,191.6,190.7,184.3,184.3,180.8,187.1,192.2,188.9,187.7,180.6,187.7,194.5,198.3,202.7,211.8,206.3,208.6,208.8,215.8,216.8,218.1,217.7,232.1,223.0,232.4,235.3,222.4,209.0,214.7,213.9,221.4,223.7,226.3,228.6,231.8,232.4,240.7,248.2,237.8,250.5,257.3,261.3,267.6,271.8,271.8],"combo":[98.3,100.0,101.5,104.7,102.7,98.6,93.3,88.0,88.8,90.0,90.3,90.7,88.3,91.5,86.9,85.9,79.1,74.8,75.2,69.5,71.9,74.9,70.5,68.9,67.8,66.2,69.8,71.4,73.2,73.9,75.5,73.1,77.3,76.8,79.9,81.9,84.0,85.4,83.7,83.0,84.2,83.5,83.5,84.0,84.1,85.7,86.7,87.7,89.1,88.8,87.1,90.6,93.4,94.7,94.0,98.3,96.2,102.4,104.2,106.3,107.4,109.7,110.5,106.4,106.1,107.2,108.7,109.9,113.0,113.1,115.2,117.6,115.0,115.5,118.3,122.2,121.8,116.2,114.2,115.2,116.8,111.9,110.5,106.2,104.3,101.1,104.1,103.6,97.1,95.2,96.2,93.2,89.8,87.3,83.8,81.7,75.2,76.8,83.5,84.0,83.4,88.2,91.8,93.2,91.0,93.4,95.8,94.8,97.1,103.0,104.4,102.4,100.7,100.9,102.6,103.5,104.9,106.7,111.8,112.2,115.3,112.2,113.2,112.4,110.0,110.0,106.4,104.9,107.5,108.1,112.5,114.5,115.2,115.2,113.9,113.1,115.0,119.2,118.6,118.3,117.2,118.6,120.3,123.3,125.8,130.0,133.7,133.5,133.2,136.4,133.9,135.5,139.5,142.7,144.5,139.7,141.3,143.2,144.8,148.2,149.8,150.0,155.6,158.1,161.2,167.9,171.8,181.5,187.3,193.3,188.1,192.2,183.0,188.5,176.0,172.7,181.8,187.5,181.2,174.9,174.2,175.3,177.1,179.9,182.0,186.8,187.7,187.1,186.7,192.3,198.7,196.5,203.0,202.7,199.9,197.3,196.2,196.4,195.0,199.5,204.6,205.5,206.9,210.4,202.1,196.3,199.8,200.4,201.5,207.6,210.1,212.5,208.0,209.9,194.6,202.5,205.7,211.3,214.8,205.9,211.6,217.4,220.1,225.2,222.9,227.6,230.7,225.9,211.6,193.8,206.7,207.1,205.3,203.2,208.2,204.4,201.2,221.1,225.3,225.2,235.3,250.2,252.7,255.5,256.7,255.7,259.7,257.5,268.3,261.2,272.7,274.3,272.4,286.7,293.1,293.0,283.8,294.9,297.1,290.6,307.2,304.0,292.3,295.7,292.8,283.3,285.4,281.5,290.8,295.3,291.3,289.0,282.0,285.8,290.6,294.4,302.3,313.6,309.7,312.9,313.1,317.6,318.3,322.0,317.1,330.1,322.5,331.4,331.8,320.3,303.4,308.2,309.0,314.2,318.3,324.2,329.0,333.8,336.8,348.1,357.5,339.1,355.0,363.4,366.7,371.8,375.5,379.8],"sharpe":0.639549,"corr":-0.205673,"dd_value":-0.644566,"dd_combo":-0.429775}</script>
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById('home-data').textContent);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const fmt = (x,d=2) => (x<0?'−':'')+Math.abs(x).toFixed(d);
+  document.getElementById('st-sharpe').textContent = fmt(D.sharpe);
+  document.getElementById('st-corr').textContent = fmt(D.corr);
+  document.getElementById('st-dd').textContent = `${fmt(D.dd_value*100,1)}% → ${fmt(D.dd_combo*100,1)}%`;
+  const S = [{n:'Trend following', c:'--c1', v:D.trend},{n:'MSCI World Value', c:'--c2', v:D.value},{n:'70% value / 30% trend', c:'--c3', v:D.combo}];
+  document.getElementById('hero-legend').innerHTML = S.map(s=>`<span><i style="background:${css(s.c)}"></i>${s.n}</span>`).join('');
+  const NS='http://www.w3.org/2000/svg';
+  const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  function draw(){
+    const host=document.getElementById('hero-chart'); host.innerHTML='';
+    const W=Math.max(300,host.clientWidth||520), H=Math.round(W*0.58), m={l:40,r:10,t:8,b:24};
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Growth of 100 since 2001'},host);
+    const all=S.flatMap(s=>s.v); const lo=Math.log10(Math.min(...all)*0.92), hi=Math.log10(Math.max(...all)*1.05);
+    const n=D.dates.length, xs=i=>m.l+(W-m.l-m.r)*i/(n-1), ys=v=>m.t+(H-m.t-m.b)*(1-(Math.log10(v)-lo)/(hi-lo));
+    [50,100,200,400,600].filter(t=>Math.log10(t)>lo&&Math.log10(t)<hi).forEach(t=>{const y=ys(t);el('line',{x1:m.l,x2:W-m.r,y1:y,y2:y,stroke:'rgba(255,255,255,.10)'},svg);const tx=el('text',{x:m.l-6,y:y+4,'text-anchor':'end'},svg);tx.textContent=t;});
+    D.dates.forEach((d,i)=>{const y=+d.slice(0,4); if(d.slice(5,7)==='01'&&y%5===0){const tx=el('text',{x:xs(i),y:H-6,'text-anchor':'middle'},svg);tx.textContent=y;}});
+    S.forEach(s=>{const d=s.v.map((v,i)=>(i?'L':'M')+xs(i).toFixed(1)+' '+ys(v).toFixed(1)).join('');el('path',{d,fill:'none',stroke:css(s.c),'stroke-width':2.2,'stroke-linejoin':'round'},svg);
+      const i=n-1; el('circle',{cx:xs(i),cy:ys(s.v[i]),r:4,fill:css(s.c),stroke:css('--navy-2'),'stroke-width':2},svg);});
+    const tip=document.createElement('div');tip.className='tip';tip.hidden=true;host.appendChild(tip);
+    const cross=el('line',{y1:m.t,y2:H-m.b,stroke:'rgba(255,255,255,.35)','stroke-dasharray':'3 3',visibility:'hidden'},svg);
+    const ov=el('rect',{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:'transparent'},svg);
+    const mv=e=>{const r=svg.getBoundingClientRect();const px=(e.clientX-r.left)*W/r.width;let i=Math.round((px-m.l)/(W-m.l-m.r)*(n-1));i=Math.max(0,Math.min(n-1,i));
+      cross.setAttribute('x1',xs(i));cross.setAttribute('x2',xs(i));cross.setAttribute('visibility','visible');
+      const [y,mo]=D.dates[i].split('-');tip.innerHTML=`<div style="color:var(--on-navy-2);font-family:var(--f-mono)">${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mo-1]} ${y}</div>`+S.map(s=>`<div class="r"><span>${s.n}</span><b>${s.v[i].toFixed(0)}</b></div>`).join('');
+      tip.hidden=false;const hw=host.clientWidth,tx=xs(i)/W*hw;tip.style.left=(tx>hw*.55?tx-tip.offsetWidth-10:tx+10)+'px';tip.style.top='6px';};
+    ov.addEventListener('pointermove',mv);ov.addEventListener('pointerdown',mv);ov.addEventListener('pointerleave',()=>{tip.hidden=true;cross.setAttribute('visibility','hidden');});
+  }
+  draw(); let t; addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(draw,150);});
+})();
+</script>
 </body>
 </html>
