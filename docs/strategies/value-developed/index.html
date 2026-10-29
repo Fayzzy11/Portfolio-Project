@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systematic Value — Developed Markets · Noah Doose</title>
+<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
+<link rel="stylesheet" href="../../static/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../../">Noah Doose <span>Research</span></a>
+<nav><a href="../../">Home</a><a href="../../strategies/" class=active>Strategies</a><a href="../../research/">Research</a><a href="../../pitches/">Pitches</a><a href="../../methodology/">Methodology</a><a href="../../journal/">Journal</a><a href="../../about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<article class="prose"><p class="meta">Backtest complete · Oct 2026</p><h1 id="systematic-value-developed-markets">Systematic Value — Developed Markets</h1>
+<h2 id="thesis">Thesis</h2>
+<p>Cheap stocks, measured on several fundamentals and compared only with their sector peers, should outperform over a full cycle. The strategy harvests this premium with a transparent rules-based process, controls sector and country bets, and asks a precise construction question: does an optimiser beat simple equal weighting on the same ideas?</p>
+<h2 id="method">Method</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Universe</td>
+<td>Bloomberg World Large &amp; Mid Cap, 24 developed countries, <strong>composition dated at each rebalance</strong>; free-float cap &gt; €1bn, 3-month ADV &gt; €5m; one line per issuer</td>
+</tr>
+<tr>
+<td>Signal</td>
+<td>EV/EBIT, P/B, FCF yield, EV/Sales as yields (banks/insurers: P/B, P/E); winsorised 1/99; z-scored <strong>within GICS sector</strong>; equal-weight composite</td>
+</tr>
+<tr>
+<td>Accounting lag</td>
+<td>A fiscal year is used only from year-end + 6 months, and never before its publication</td>
+</tr>
+<tr>
+<td>Selection</td>
+<td>50 names maximising the total score in the cheapest sector quintile, under ±10-pt sector and country bands vs benchmark (exact integer programme); a buffer keeps holdings still in the top two quintiles</td>
+</tr>
+<tr>
+<td>Weighting</td>
+<td>Equal weight · minimum variance (Ledoit-Wolf, 250 weeks) · mean-variance; 0.5%-4% per name, long only</td>
+</tr>
+<tr>
+<td>Rebalancing</td>
+<td>Semi-annual, 10 dates from June 2021 to December 2025; trades at the first Friday after the decision date; 15 bp per trade</td>
+</tr>
+<tr>
+<td>Currency</td>
+<td>EUR base; currencies carried by ≥ 5 names are hedged with forwards</td>
+</tr>
+<tr>
+<td>Benchmark</td>
+<td>MSCI World Net Total Return EUR</td>
+</tr>
+</tbody>
+</table>
+<h2 id="results-2-jul-2021-26-jun-2026-net-of-costs-and-withholding-tax-hedged">Results (2 Jul 2021 – 26 Jun 2026, net of costs and withholding tax, hedged)</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Ann. return</th>
+<th>Active</th>
+<th>Tracking error</th>
+<th>Max drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Equal weight</td>
+<td>11.6%</td>
+<td>−0.1%</td>
+<td>10.8%</td>
+<td>−17.8%</td>
+</tr>
+<tr>
+<td>Minimum variance</td>
+<td>9.4%</td>
+<td>−2.3%</td>
+<td>10.5%</td>
+<td>−19.1%</td>
+</tr>
+<tr>
+<td>Mean-variance</td>
+<td>9.4%</td>
+<td>−2.4%</td>
+<td>10.4%</td>
+<td>−21.8%</td>
+</tr>
+<tr>
+<td>MSCI World Net EUR</td>
+<td>11.7%</td>
+<td>—</td>
+<td>—</td>
+<td>−18.2%</td>
+</tr>
+</tbody>
+</table>
+<p>Unhedged, equal weight returned 12.7% (+0.95%): the dollar hedge cost about 1% a year in rate differential.</p>
+<p><img alt="Cumulative performance" src="../../assets/value-developed/cumulative_performance.png" /></p>
+<p><strong>The signal worked; the portfolio broke even.</strong> The cheapest sector-neutral quintile beat the dearest by about 8% a year (rank IC 0.09, t ≈ 2.1). Stock selection inside sectors added 2.3% a year, but sector allocation (no mega-cap growth in 2023-24) cost 1.4% and the hedge 0.8%.</p>
+<p><img alt="Score diagnostics" src="../../assets/value-developed/score_diagnostics.png" />
+<img alt="Attribution by sector" src="../../assets/value-developed/brinson_sector_EW.png" />
+<img alt="Factor loadings" src="../../assets/value-developed/factor_loadings.png" /></p>
+<h2 id="limits">Limits</h2>
+<ul>
+<li>Five years, ten rebalances, one regime: no claim of statistically significant alpha.</li>
+<li>Bloomberg's index stands in for MSCI's (constituents not licensed); a replica built from security returns tracks MSCI World Net with 0.996 correlation.</li>
+<li>Current GICS sectors applied to history; no market impact in costs; idealised weekly hedge.</li>
+<li>Anti-momentum tilt (−0.27): the natural next step is a value + momentum + quality composite.</li>
+</ul>
+<h2 id="documents">Documents</h2>
+<ul>
+<li><a href="../../assets/value-developed/Investment_Note_Systematic_Value.pdf">Investment note (PDF)</a></li>
+<li><a href="../../pitches/">Eight stock pitches from the December 2025 portfolio</a></li>
+</ul>
+<h2 id="journal">Journal</h2>
+<ul>
+<li><strong>29 Oct 2026</strong> — Data loaded, total returns validated against the benchmark; a dividend double count (~2%/yr) found and fixed.</li>
+<li><strong>29 Oct 2026</strong> — Score, construction, backtest, attribution and robustness completed.</li>
+<li><strong>30 Oct 2026</strong> — Score-tilted weighting tested (−0.2% active): equal weight kept as reference.</li>
+</ul></article>
+</main>
+<footer><div class="wrap">
+<p>Student research for educational and interview purposes; not investment advice. Market data
+from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
+and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
+<p>© 2026 Noah Doose</p>
+</div></footer>
+</body>
+</html>

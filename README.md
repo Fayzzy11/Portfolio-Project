@@ -7,7 +7,7 @@ published on the project website (`docs/`, GitHub Pages).
 | Strategy | Status | Report |
 |---|---|---|
 | Multi-asset trend following | Backtest complete (data to 30 Sep 2026) | `docs/trend-following/index.html` (French version: `docs/trend-following/fr/`) |
-| Global value equities (portfolio project) | In progress | coming soon |
+| Systematic value, developed markets (portfolio project) | Backtest complete (data to 30 Jun 2026) | `docs/strategies/value-developed/` (built by the portfolio-project pipeline, `src/site_build.py`) |
 
 ## Structure
 

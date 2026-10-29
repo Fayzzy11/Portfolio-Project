@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the optimiser lost to 1/N in a value portfolio · Noah Doose</title>
+<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
+<link rel="stylesheet" href="../../static/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../../">Noah Doose <span>Research</span></a>
+<nav><a href="../../">Home</a><a href="../../strategies/">Strategies</a><a href="../../research/" class=active>Research</a><a href="../../pitches/">Pitches</a><a href="../../methodology/">Methodology</a><a href="../../journal/">Journal</a><a href="../../about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<article class="prose"><p class="meta">30 Oct 2026</p><h1>Why the optimiser lost to 1/N in a value portfolio</h1><h2 id="the-experiment">The experiment</h2>
+<p>At each of ten semi-annual dates the same 50 cheap stocks were weighted three ways: equally, by minimum variance (Ledoit-Wolf covariance, 250 weeks) and by classic mean-variance, all under identical constraints (0.5%-4% per name, ±10 points by sector and country).</p>
+<h2 id="the-result">The result</h2>
+<table>
+<thead>
+<tr>
+<th>Weighting</th>
+<th>Ann. return</th>
+<th>Active vs MSCI World Net</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Equal weight</td>
+<td>11.6%</td>
+<td>−0.1%</td>
+</tr>
+<tr>
+<td>Minimum variance</td>
+<td>9.4%</td>
+<td>−2.3%</td>
+</tr>
+<tr>
+<td>Mean-variance</td>
+<td>9.4%</td>
+<td>−2.4%</td>
+</tr>
+<tr>
+<td>Weights proportional to the score</td>
+<td>11.5%</td>
+<td>−0.2%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="why">Why</h2>
+<ul>
+<li><strong>Style drift.</strong> Minimum variance overweights the least volatile cheap stocks — staples, utilities, defensive health care — and adds a quality/investment tilt (RMW +0.12, CMA +0.23) with a lower beta. Over 2021-2026 the cheap <em>cyclicals</em> were the ones that paid.</li>
+<li><strong>Estimation error.</strong> Mean-variance uses historical average returns, which are notoriously noisy; it concentrates in past winners within a value book, partly undoing the signal (DeMiguel, Garlappi &amp; Uppal, 2009).</li>
+<li><strong>Turnover.</strong> Optimised weights move more: 70% a year vs 57% for equal weight.</li>
+</ul>
+<h2 id="what-i-take-from-it">What I take from it</h2>
+<p>Equal weight is a hard benchmark for an optimiser when the expected-return input carries little information. If I used an optimiser, I would feed it the score as the alpha (Grinold-style) and control factor exposures explicitly rather than minimising raw variance.</p></article>
+</main>
+<footer><div class="wrap">
+<p>Student research for educational and interview purposes; not investment advice. Market data
+from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
+and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
+<p>© 2026 Noah Doose</p>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The backtest bug worth 2% a year — prices that already include dividends · Noah Doose</title>
+<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
+<link rel="stylesheet" href="../../static/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../../">Noah Doose <span>Research</span></a>
+<nav><a href="../../">Home</a><a href="../../strategies/">Strategies</a><a href="../../research/" class=active>Research</a><a href="../../pitches/">Pitches</a><a href="../../methodology/">Methodology</a><a href="../../journal/">Journal</a><a href="../../about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<article class="prose"><p class="meta">29 Oct 2026</p><h1>The backtest bug worth 2% a year — prices that already include dividends</h1><h2 id="the-symptom">The symptom</h2>
+<p>Before testing any strategy I rebuilt the benchmark: all developed-market members of the index, cap-weighted at each date, from my own weekly total returns (price plus reinvested dividends). The replica beat MSCI World Net by <strong>two points a year</strong>, every year, with 0.996 correlation. Systematic, small, and far too good — the textbook sign of a data error rather than skill.</p>
+<h2 id="the-test">The test</h2>
+<p>If prices are not adjusted for dividends, a stock should fall by roughly its dividend on the ex-date. I regressed each stock's weekly price return on the dividend yield paid that week, controlling for the market, over about 38,000 ex-date weeks. The slope should be close to −1. It was close to <strong>0</strong> in every yield bucket, including large special dividends.</p>
+<p>Even a price-only replica beat the <em>net</em> benchmark. Conclusion: the price series extracted from the terminal were already adjusted for dividends. An earlier check on one stock had shown price and total-return index rising in lockstep — and been read as "the total-return field is broken", when it meant "the price already is a total-return series".</p>
+<h2 id="the-fix-and-what-it-changed">The fix and what it changed</h2>
+<p>Total return is now the adjusted price return; the dividend history is used only to deduct withholding tax so that returns match the net benchmark. The replica now trails MSCI World Net by 0.3% a year — the residual being index-provider differences and a conservative tax haircut. Every strategy result would otherwise have been inflated by about 2% a year.</p>
+<h2 id="lesson">Lesson</h2>
+<p>Rebuild the benchmark before you trust the strategy. If a backtest beats the market by a constant margin, suspect units, survivorship and look-ahead first.</p></article>
+</main>
+<footer><div class="wrap">
+<p>Student research for educational and interview purposes; not investment advice. Market data
+from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
+and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
+<p>© 2026 Noah Doose</p>
+</div></footer>
+</body>
+</html>

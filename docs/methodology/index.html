@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology · Noah Doose</title>
+<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
+<link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../">Noah Doose <span>Research</span></a>
+<nav><a href="../">Home</a><a href="../strategies/">Strategies</a><a href="../research/">Research</a><a href="../pitches/">Pitches</a><a href="../methodology/" class=active>Methodology</a><a href="../journal/">Journal</a><a href="../about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<article class="prose"><h1 id="data-and-methodology">Data and methodology</h1>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><strong>Bloomberg terminal</strong> (SKEMA lab, extracted 26-29 October 2026): index compositions at ten dates, weekly prices in EUR, dividend history, annual standardised fundamentals as originally reported, market cap / free float / turnover snapshots, FX, MSCI World Net EUR, €STR. Licensed data are <strong>not</strong> published here: the site shows methodology and aggregated results only.</li>
+<li><strong>Kenneth French Data Library</strong> — Developed 5 factors and momentum (daily), for the factor decomposition.</li>
+<li><strong>OECD via FRED</strong> — 3-month interbank rates by currency, for the cost of FX hedging.</li>
+</ul>
+<h2 id="integrity-rules">Integrity rules</h2>
+<ol>
+<li><strong>No survivorship:</strong> the universe at each date is the index composition at that date, including later delisted names.</li>
+<li><strong>No look-ahead:</strong> a fiscal year is used from year-end + 6 months and never before its announcement; originally reported (not restated) figures; trades executed after the decision date.</li>
+<li><strong>Units checked:</strong> market cap vs price × shares, a benchmark replica from security returns (0.996 correlation with MSCI World Net), an event study on ex-dividend dates.</li>
+<li><strong>Net vs gross:</strong> returns are net of dividend withholding tax, like the benchmark.</li>
+<li><strong>Reproducible:</strong> one command rebuilds every number from the raw file; unit tests check the lag, returns and every portfolio constraint.</li>
+<li><strong>Every judgement call logged</strong> with its alternatives in a decision journal.</li>
+</ol>
+<h2 id="construction-toolkit">Construction toolkit</h2>
+<p>Python (pandas, NumPy, SciPy/HiGHS for the integer selection, cvxpy for the optimisers, scikit-learn for Ledoit-Wolf shrinkage, statsmodels for factor regressions), python-pptx and python-docx for the documents.</p></article>
+</main>
+<footer><div class="wrap">
+<p>Student research for educational and interview purposes; not investment advice. Market data
+from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
+and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
+<p>© 2026 Noah Doose</p>
+</div></footer>
+</body>
+</html>
