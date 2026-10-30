@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Méthodologie · Research Ledger</title>
+<meta name="description" content="D’où viennent les données et les règles que chaque résultat respecte.">
+<link rel="alternate" hreflang="en" href="../../methodology/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B6E4F'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3END%3C/text%3E%3C/svg%3E">
+<script src="../../assets/site.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="top"><div class="wrap">
+ <a class="brand" href="../../fr/"><span class="mark">ND</span><span><b>Noah Doose</b><small>Research Ledger · Recherche actions & stratégies</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../../fr/" class="">Accueil</a><a href="../../fr/strategies/" class="">Stratégies</a><a href="../../fr/pitches/" class="">Stock pitches</a><a href="../../fr/research/" class="">Recherche</a><a href="../../fr/database/" class="">Données</a><a href="../../fr/about/" class="">À propos</a><a href="https://fayzzy11.github.io/HORUS_AM/" rel="noopener">Horus AM ↗</a></nav>
+ <div class="tools">
+  <a class="tbtn" href="../../methodology/" hreflang="en" title="English version">EN</a>
+  <button class="tbtn" id="theme" aria-label="Basculer en thème clair ou sombre" title="Basculer en thème clair ou sombre"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+  <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ </div>
+</div></header>
+<main id="main">
+<header class="phead"><div class="wrap"><div class="eyebrow">Méthodologie</div><h1>Données et méthodologie</h1><p class="lede">D’où viennent les données et les règles que chaque résultat respecte.</p></div></header><section class="sec"><div class="wrap"><article class="prose"><h2>Sources</h2>
+<ul>
+<li><strong>Terminal Bloomberg</strong> (salle SKEMA, extractions d'octobre 2026) : compositions d'indices, prix, dividendes, fondamentaux standardisés tels que publiés à l'origine, capitalisations, change, MSCI World Net EUR, €STR ; indices pays, secteurs, obligataires et matières premières pour les stratégies ETF. Les données sous licence <strong>ne sont pas</strong> publiées ici : le site montre la méthode et des résultats agrégés.</li>
+<li><strong>Kenneth French Data Library</strong> : facteurs Developed (5 facteurs + momentum).</li>
+<li><strong>OCDE via FRED</strong> : taux interbancaires 3 mois par devise, pour le coût de couverture de change.</li>
+</ul>
+<h2>Règles d'intégrité</h2>
+<ol>
+<li><strong>Pas de biais du survivant :</strong> l'univers à chaque date est la composition de l'indice à cette date, y compris les titres radiés ensuite.</li>
+<li><strong>Pas de look-ahead :</strong> un exercice comptable n'est utilisé qu'à partir de la clôture + 6 mois et jamais avant sa publication ; chiffres d'origine (non retraités) ; les ordres sont exécutés après la date de décision.</li>
+<li><strong>Unités vérifiées :</strong> capitalisation vs prix × actions, réplique du benchmark à partir des rendements des titres (corrélation 0,996 avec le MSCI World Net), étude d'événement sur les dates de détachement.</li>
+<li><strong>Net vs brut :</strong> rendements nets de retenue à la source, comme le benchmark.</li>
+<li><strong>Reproductible :</strong> une commande reconstruit chaque chiffre depuis le fichier brut ; des tests unitaires vérifient le décalage, les rendements et chaque contrainte.</li>
+<li><strong>Chaque arbitrage consigné</strong> avec ses alternatives dans un journal de décisions.</li>
+</ol>
+<h2>Outils</h2>
+<p>Python (pandas, NumPy, SciPy/HiGHS pour la sélection en nombres entiers, cvxpy pour les optimiseurs, scikit-learn pour le shrinkage de Ledoit-Wolf, statsmodels pour les régressions factorielles), PowerPoint pour les decks.</p></article></div></section>
+</main>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Noah Doose · Research Ledger</b><p>Travail de recherche étudiant de Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), candidat au CFA niveau II.</p><p>Contenu pédagogique et de préparation aux entretiens. Rien ici n'est un conseil en investissement ni une offre de titres. Les données de marché sous licence ne sont pas redistribuées : les pages montrent la méthode et des résultats agrégés.</p></div>
+ <div><b>Rubriques</b><a href="../../fr/strategies/">Stratégies</a><a href="../../fr/pitches/">Stock pitches</a><a href="../../fr/research/">Recherche</a><a href="../../fr/database/">Données</a><a href="../../fr/about/">À propos</a><a href="../../fr/journal/">Journal</a><a href="../../fr/methodology/">Méthodologie</a></div>
+ <div><b>Ailleurs</b><a href="https://fayzzy11.github.io/HORUS_AM/">Horus Asset Management ↗</a><a href="https://github.com/Fayzzy11/Portfolio-Project">Code sur GitHub ↗</a><p style="margin-top:12px">Mis à jour le 30 oct. 2026.</p></div>
+</div></footer>
+
+</body>
+</html>

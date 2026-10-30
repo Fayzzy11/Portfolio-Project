@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le bug à 2 % par an — des prix qui incluent déjà les dividendes · Research Ledger</title>
+<meta name="description" content="En reconstruisant le benchmark à partir de mes propres rendements, j&#x27;ai découvert un double comptage des dividendes. Une étude d&#x27;événement sur 38 000 détachements l&#x27;a prouvé.">
+<link rel="alternate" hreflang="en" href="../../../research/2026-10-29-dividends-counted-twice/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B6E4F'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3END%3C/text%3E%3C/svg%3E">
+<script src="../../../assets/site.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="top"><div class="wrap">
+ <a class="brand" href="../../../fr/"><span class="mark">ND</span><span><b>Noah Doose</b><small>Research Ledger · Recherche actions & stratégies</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../../../fr/" class="">Accueil</a><a href="../../../fr/strategies/" class="">Stratégies</a><a href="../../../fr/pitches/" class="">Stock pitches</a><a href="../../../fr/research/" class="on">Recherche</a><a href="../../../fr/database/" class="">Données</a><a href="../../../fr/about/" class="">À propos</a><a href="https://fayzzy11.github.io/HORUS_AM/" rel="noopener">Horus AM ↗</a></nav>
+ <div class="tools">
+  <a class="tbtn" href="../../../research/2026-10-29-dividends-counted-twice/" hreflang="en" title="English version">EN</a>
+  <button class="tbtn" id="theme" aria-label="Basculer en thème clair ou sombre" title="Basculer en thème clair ou sombre"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+  <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ </div>
+</div></header>
+<main id="main">
+<header class="phead"><div class="wrap"><div class="crumbs"><a href="../">Recherche</a></div><div class="eyebrow">29 oct. 2026</div><h1>Le bug à 2 % par an — des prix qui incluent déjà les dividendes</h1><p class="lede">En reconstruisant le benchmark à partir de mes propres rendements, j&#x27;ai découvert un double comptage des dividendes. Une étude d&#x27;événement sur 38 000 détachements l&#x27;a prouvé.</p></div></header><section class="sec"><div class="wrap"><article class="prose"><h2>Le symptôme</h2>
+<p>Avant de tester une stratégie, j'ai reconstruit le benchmark : tous les membres de l'indice dans les pays développés, pondérés par la capitalisation à chaque date, à partir de mes propres rendements totaux hebdomadaires (prix plus dividendes réinvestis). La réplique battait le MSCI World Net de <strong>deux points par an</strong>, chaque année, avec une corrélation de 0,996. Systématique, faible et beaucoup trop beau : le signe classique d'une erreur de données plutôt que d'un talent.</p>
+<h2>Le test</h2>
+<p>Si les prix ne sont pas ajustés des dividendes, une action doit baisser à peu près du montant du dividende le jour du détachement. J'ai régressé le rendement hebdomadaire de chaque action sur le rendement du dividende versé cette semaine-là, en contrôlant par le marché, sur environ 38 000 semaines de détachement. La pente aurait dû être proche de −1. Elle était proche de <strong>0</strong> dans toutes les tranches de rendement, dividendes exceptionnels compris.</p>
+<p>Même une réplique « prix seuls » battait le benchmark <em>net</em>. Conclusion : les prix extraits du terminal étaient déjà ajustés des dividendes. Une vérification antérieure sur une seule action montrait prix et indice de rendement total progressant ensemble ; je l'avais lue comme « le champ total return ne fonctionne pas », alors qu'elle voulait dire « le prix est déjà une série de rendement total ».</p>
+<h2>La correction et ce qu'elle change</h2>
+<p>Le rendement total est désormais le rendement du prix ajusté ; l'historique des dividendes sert seulement à déduire la retenue à la source pour que les rendements soient comparables au benchmark net. La réplique fait maintenant 0,3 % par an de moins que le MSCI World Net, l'écart venant des différences entre fournisseurs d'indices et d'une retenue prudente. Sans cette correction, chaque résultat aurait été gonflé d'environ 2 % par an.</p>
+<h2>La leçon</h2>
+<p>Reconstruire le benchmark avant de croire la stratégie. Si un backtest bat le marché d'une marge constante, soupçonner d'abord les unités, le biais du survivant et le look-ahead.</p></article><div class="btns" style="margin-top:32px"><a class="btn" href="../">← Recherche</a></div></div></section>
+</main>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Noah Doose · Research Ledger</b><p>Travail de recherche étudiant de Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), candidat au CFA niveau II.</p><p>Contenu pédagogique et de préparation aux entretiens. Rien ici n'est un conseil en investissement ni une offre de titres. Les données de marché sous licence ne sont pas redistribuées : les pages montrent la méthode et des résultats agrégés.</p></div>
+ <div><b>Rubriques</b><a href="../../../fr/strategies/">Stratégies</a><a href="../../../fr/pitches/">Stock pitches</a><a href="../../../fr/research/">Recherche</a><a href="../../../fr/database/">Données</a><a href="../../../fr/about/">À propos</a><a href="../../../fr/journal/">Journal</a><a href="../../../fr/methodology/">Méthodologie</a></div>
+ <div><b>Ailleurs</b><a href="https://fayzzy11.github.io/HORUS_AM/">Horus Asset Management ↗</a><a href="https://github.com/Fayzzy11/Portfolio-Project">Code sur GitHub ↗</a><p style="margin-top:12px">Mis à jour le 30 oct. 2026.</p></div>
+</div></footer>
+
+</body>
+</html>

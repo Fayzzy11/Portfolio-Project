@@ -43,7 +43,7 @@
           if (ok && q) ok = it.textContent.toLowerCase().indexOf(q) >= 0;
           it.style.display = ok ? "" : "none"; if (ok) n++;
         });
-        if (cnt) cnt.textContent = n + " of " + items.length;
+        if (cnt) cnt.textContent = n + (document.documentElement.lang === "fr" ? " sur " : " of ") + items.length;
         if (empty) empty.style.display = n ? "none" : "block";
       }
       scope.querySelectorAll("[data-f]").forEach(function (b) {
@@ -78,13 +78,15 @@
     // NAV chart
     var el = document.getElementById("navchart");
     if (el && window.NAV) navChart(el, window.NAV);
+    var el2 = document.getElementById("navchart2");
+    if (el2 && window.NAV2) navChart(el2, window.NAV2);
   });
 
   function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
   function navChart(box, D) {
     var svgNS = "http://www.w3.org/2000/svg";
-    var colors = { "Equal weight": "--green", "Minimum variance": "--amber", "Mean-variance": "--red", "MSCI World Net EUR": "--chart-bench" };
+    var colors = D.colors || {};
     var on = {}; Object.keys(D.series).forEach(function (k) { on[k] = true; });
     var range = "all", mode = "nav";
     var tip = box.querySelector(".tip"), host = box.querySelector(".plot");
@@ -133,15 +135,15 @@
       g += "</g>";
       var lastY = null;
       dates.forEach(function (d, i) {
-        var y = d.slice(0, 4);
-        if (y !== lastY && i > 0 && d.slice(5, 7) <= "01") g += '<line class="axis" x1="' + X(i) + '" x2="' + X(i) + '" y1="' + (H - m.b) + '" y2="' + (H - m.b + 5) + '"/><text x="' + X(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + y + "</text>";
+        var y = d.slice(0, 4), step = dates.length > 150 ? (dates.length > 400 ? 5 : 2) : 1;
+        if (y !== lastY && i > 0 && d.slice(5, 7) <= "01" && (+y % step === 0)) g += '<line class="axis" x1="' + X(i) + '" x2="' + X(i) + '" y1="' + (H - m.b) + '" y2="' + (H - m.b + 5) + '"/><text x="' + X(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + y + "</text>";
         lastY = y;
       });
       if (mode === "nav") g += '<line stroke-dasharray="3 3" class="axis" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(100) + '" y2="' + Y(100) + '"/>';
       keys.slice().reverse().forEach(function (k) {
         var p = series[k].map(function (v, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); }).join("");
-        var bench = k.indexOf("MSCI") === 0;
-        g += '<path d="' + p + '" fill="none" stroke="' + css(colors[k]) + '" stroke-width="' + (k === "Equal weight" ? 2.4 : 1.6) + '"' + (bench ? ' stroke-dasharray="5 3"' : "") + "/>";
+        var bench = (D.bench || []).indexOf(k) >= 0;
+        g += '<path d="' + p + '" fill="none" stroke="' + css(colors[k]) + '" stroke-width="' + (k === D.main ? 2.4 : 1.6) + '"' + (bench ? ' stroke-dasharray="5 3"' : "") + "/>";
       });
       g += '<line id="cx" class="axis" style="opacity:0" y1="' + m.t + '" y2="' + (H - m.b) + '" x1="-10" x2="-10"/><g id="dots"></g>';
       host.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Cumulative performance">' + g + '<rect x="' + m.l + '" y="' + m.t + '" width="' + (W - m.l - m.r) + '" height="' + (H - m.t - m.b) + '" fill="transparent" id="hit"/></svg>';

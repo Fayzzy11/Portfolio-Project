@@ -1,289 +1,37 @@
-"""Build the Research Ledger site into docs/ (GitHub Pages).
+"""Build the Research Ledger site (English at docs/, French at docs/fr/) for GitHub Pages.
 
 Usage (from the repository root):
     python site/build_site.py
 
-Reads   site/data/*.json        aggregated results and pitch content (see export_from_pipeline.py)
-        site/content/**/*.md    pages written by hand (about, journal, methodology, research notes, database)
-        site/static/            site.css and site.js, copied to docs/assets/
-Writes  docs/index.html, docs/strategies/, docs/pitches/, docs/research/, docs/database/, docs/journal/,
-        docs/methodology/, docs/about/ and docs/assets/site.{css,js}.
-Leaves  docs/trend-following/, docs/downloads/ and every file under docs/assets/ it does not generate untouched.
+Reads   site/data/*.json         results and pitch content (English) + pitches_fr.json (French fields)
+        site/content/{en,fr}/    hand-written pages in Markdown (about, journal, methodology, research notes, checklist)
+        site/static/             site.css and site.js, copied to docs/assets/
+Writes  every page in both languages. Leaves docs/trend-following/ (archived futures study) and docs/downloads/ untouched.
 """
-import html
 import json
 import re
 import shutil
 import statistics
-from datetime import date
-from pathlib import Path
 
-import markdown
+from lib import (AUTHOR, CONTENT, DATA, DOCS, HERE, HORUS_URL, ICON_DL, ICON_EXT, SITE, cls_sign, doc_layout, esc, front,
+                 md, md_inline, money, nav_chart, num, page, pct, phead, section, slugify, stat, strip_h1, svg_columns,
+                 svg_diverging, svg_football, svg_grouped, svg_hbars, t, tbl, tr)
 
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
-DOCS = ROOT / "docs"
-DATA = HERE / "data"
-CONTENT = HERE / "content"
-
-SITE = "Research Ledger"
-AUTHOR = "Noah Doose"
-REPO = "https://github.com/Fayzzy11/Portfolio-Project"
-BUILT = date.today().strftime("%d %b %Y")
-
-NAV = [("index", "Home", ""), ("strategies", "Strategies", "strategies/"), ("pitches", "Stock pitches", "pitches/"),
-       ("research", "Research", "research/"), ("database", "Database", "database/"), ("journal", "Journal", "journal/"),
-       ("about", "About", "about/")]
-
-esc = html.escape
-
-
-# ---------------------------------------------------------------- helpers
-def pct(x, d=1, sign=False):
-    if x is None:
-        return "—"
-    s = f"{x * 100:+.{d}f}%" if sign else f"{x * 100:.{d}f}%"
-    return s.replace("-", "−")
-
-
-def cls_sign(x):
-    return "" if x is None else ("pos" if x > 0 else "neg" if x < 0 else "")
-
-
-def fnum(x, d=1):
-    return "—" if x is None else f"{x:,.{d}f}".replace("-", "−")
-
-
-def money(sym, v):
-    if v >= 1000:
-        return f"{sym}{v:,.0f}"
-    return f"{sym}{v:,.2f}"
-
-
-def slugify(s):
-    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
-
-
-def md(text):
-    out = markdown.markdown(text, extensions=["tables", "sane_lists", "attr_list"])
-    out = out.replace("<table>", '<div class="tbl-wrap"><table class="t">').replace("</table>", "</table></div>")
-    return out
-
-
-def front(path):
-    t = path.read_text(encoding="utf-8")
-    meta = {}
-    if t.startswith("---"):
-        _, fm, t = t.split("---", 2)
-        for line in fm.strip().splitlines():
-            k, _, v = line.partition(":")
-            meta[k.strip()] = v.strip()
-    return meta, t.strip()
-
-
-def strip_h1(t):
-    return re.sub(r"^# .*\n+", "", t, count=1)
-
-
-def tbl(head, rows, num_cols=(), cls="", sortable=False, row_cls=None):
-    th = "".join(f'<th class="n">{esc(h)}</th>' if i in num_cols else f"<th>{esc(h)}</th>" for i, h in enumerate(head))
-    body = []
-    for r_i, r in enumerate(rows):
-        tds = []
-        for i, c in enumerate(r):
-            v = None
-            if isinstance(c, tuple):
-                c, v = c
-            attr = f' data-v="{v}"' if v is not None else ""
-            tds.append(f'<td class="n"{attr}>{c}</td>' if i in num_cols else f"<td{attr}>{c}</td>")
-        rc = row_cls(r_i, r) if row_cls else ""
-        body.append(f'<tr class="{rc}">' + "".join(tds) + "</tr>")
-    s = " data-sortable" if sortable else ""
-    return f'<div class="tbl-wrap {cls}"><table class="t"{s}><thead><tr>{th}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
-
-
-def section(id_, idx, title, inner, sub=""):
-    p = f"<p>{sub}</p>" if sub else ""
-    return f'<section class="sec" id="{id_}"><div class="shead"><span class="idx">{idx}</span><h2>{esc(title)}</h2>{p}</div>{inner}</section>'
-
-
-def page(path, title, body, active, desc="", depth=0, scripts=""):
-    r = "../" * depth
-    nav = "".join(f'<a href="{r}{href}" class="{"on" if key == active else ""}">{lab}</a>' for key, lab, href in NAV)
-    full_title = f"{title} · {SITE}" if title != SITE else f"{SITE} — {AUTHOR}"
-    doc = f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{esc(full_title)}</title>
-<meta name="description" content="{esc(desc)}">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
-<link rel="stylesheet" href="{r}assets/site.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
-<script src="{r}assets/site.js"></script>
-</head>
-<body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="top"><div class="wrap">
- <a class="brand" href="{r}"><span class="mark">ND</span><span><b>{SITE}</b><small>{AUTHOR} · equity research &amp; data</small></span></a>
- <nav class="nav" id="nav" aria-label="Main">{nav}</nav>
- <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
- <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
-</div></header>
-<main id="main">
-{body}
-</main>
-<footer class="sitefoot"><div class="wrap">
- <div><b>{SITE}</b><p>Student research by {AUTHOR}, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
- <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
- <div><b>Sections</b>{"".join(f'<a href="{r}{href}">{lab}</a>' for key, lab, href in NAV[1:])}<a href="{r}methodology/">Methodology</a></div>
- <div><b>Elsewhere</b><a href="{REPO}">Code on GitHub</a><a href="{r}trend-following/">Trend-following report</a><a href="{r}downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built {BUILT}.</p></div>
-</div></footer>
-{scripts}
-</body>
-</html>
-"""
-    out = DOCS / path
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(doc, encoding="utf-8")
-    return out
-
-
-# ---------------------------------------------------------------- SVG charts
-def svg_hbars(labels, values, fmt, w=640, bar_h=26, gap=12, label_w=210, color="var(--green)", colors=None, maxv=None):
-    maxv = maxv or max(abs(v) for v in values) or 1
-    h = len(values) * (bar_h + gap) + 4
-    plot = w - label_w - 70
-    g = []
-    for i, (l, v) in enumerate(zip(labels, values)):
-        y = i * (bar_h + gap)
-        bw = max(2, abs(v) / maxv * plot)
-        c = colors[i] if colors else color
-        g.append(f'<text class="lbl" x="{label_w - 12}" y="{y + bar_h / 2 + 4}" text-anchor="end">{esc(l)}</text>'
-                 f'<rect x="{label_w}" y="{y}" width="{bw:.1f}" height="{bar_h}" rx="2" fill="{c}"/>'
-                 f'<text class="val" x="{label_w + bw + 8:.1f}" y="{y + bar_h / 2 + 4}">{fmt(v)}</text>')
-    return f'<svg viewBox="0 0 {w} {h}" role="img">{"".join(g)}</svg>'
-
-
-def svg_diverging(labels, values, fmt, w=640, bar_h=24, gap=10, label_w=200, lim=None):
-    lim = lim or max(abs(v) for v in values) * 1.1 or 1
-    h = len(values) * (bar_h + gap) + 22
-    plot = w - label_w - 20
-    zero = label_w + plot / 2
-    g = [f'<line class="axis" x1="{zero}" x2="{zero}" y1="0" y2="{h - 18}"/>']
-    for i, (l, v) in enumerate(zip(labels, values)):
-        y = i * (bar_h + gap)
-        bw = abs(v) / lim * plot / 2
-        x = zero if v >= 0 else zero - bw
-        c = "var(--green)" if v >= 0 else "var(--red)"
-        tx, anchor = (zero + bw + 6, "start") if v >= 0 else (zero - bw - 6, "end")
-        g.append(f'<text class="lbl" x="{label_w - 12}" y="{y + bar_h / 2 + 4}" text-anchor="end">{esc(l)}</text>'
-                 f'<rect x="{x:.1f}" y="{y}" width="{max(bw, 1.5):.1f}" height="{bar_h}" rx="2" fill="{c}"/>'
-                 f'<text class="val" x="{tx:.1f}" y="{y + bar_h / 2 + 4}" text-anchor="{anchor}">{fmt(v)}</text>')
-    g.append(f'<text x="{zero}" y="{h - 4}" text-anchor="middle">0</text>')
-    return f'<svg viewBox="0 0 {w} {h}" role="img">{"".join(g)}</svg>'
-
-
-def svg_columns(labels, values, fmt, w=760, h=240, color_pos="var(--green)", color_neg="var(--red)", m=(36, 10, 16, 34)):
-    ml, mr, mt, mb = m
-    lo, hi = min(0, min(values)), max(0, max(values))
-    span = (hi - lo) or 1
-    lo -= span * .08; hi += span * .12
-    Y = lambda v: mt + (1 - (v - lo) / (hi - lo)) * (h - mt - mb)
-    n = len(values)
-    slot = (w - ml - mr) / n
-    bw = slot * .62
-    g = [f'<line class="axis" x1="{ml}" x2="{w - mr}" y1="{Y(0):.1f}" y2="{Y(0):.1f}"/>']
-    for i, (l, v) in enumerate(zip(labels, values)):
-        x = ml + i * slot + (slot - bw) / 2
-        y0, y1 = sorted([Y(0), Y(v)])
-        c = color_pos if v >= 0 else color_neg
-        ty = Y(v) - 6 if v >= 0 else Y(v) + 14
-        g.append(f'<rect x="{x:.1f}" y="{y0:.1f}" width="{bw:.1f}" height="{max(y1 - y0, 1):.1f}" rx="2" fill="{c}"/>'
-                 f'<text class="val" x="{x + bw / 2:.1f}" y="{ty:.1f}" text-anchor="middle">{fmt(v)}</text>'
-                 f'<text x="{x + bw / 2:.1f}" y="{h - 10}" text-anchor="middle">{esc(l)}</text>')
-    return f'<svg viewBox="0 0 {w} {h}" role="img">{"".join(g)}</svg>'
-
-
-def svg_grouped(labels, series, names, fmt, w=640, label_w=210, bar_h=14, gap=16, colors=("var(--green)", "var(--amber)", "var(--chart-bench)")):
-    maxv = max(v for s in series for v in s if v is not None) or 1
-    k = len(series)
-    grp = k * bar_h + (k - 1) * 3
-    h = len(labels) * (grp + gap) + 4
-    plot = w - label_w - 70
-    g = []
-    for i, l in enumerate(labels):
-        y = i * (grp + gap)
-        g.append(f'<text class="lbl" x="{label_w - 12}" y="{y + grp / 2 + 4}" text-anchor="end">{esc(l)}</text>')
-        for j, s in enumerate(series):
-            v = s[i]
-            if v is None:
-                continue
-            yy = y + j * (bar_h + 3)
-            bw = max(2, v / maxv * plot)
-            g.append(f'<rect x="{label_w}" y="{yy}" width="{bw:.1f}" height="{bar_h}" rx="2" fill="{colors[j]}"/>'
-                     f'<text class="val" x="{label_w + bw + 6:.1f}" y="{yy + bar_h - 3}">{fmt(v)}</text>')
-    legend = '<div class="legend" style="margin-top:8px">' + "".join(
-        f'<span><i style="background:{colors[j]}"></i>{esc(n)}</span>' for j, n in enumerate(names)) + "</div>"
-    return f'<svg viewBox="0 0 {w} {h}" role="img">{"".join(g)}</svg>' + legend
-
-
-def svg_football(s, w=760):
-    rows = s["scenarios_out"]
-    price, sym = s["price"], s["sym"]
-    vals = [r["value"] for r in rows] + [price] + ([s["valuation"]["consensus_target"]] if s["valuation"].get("consensus_target") else [])
-    vals += [s["low52"], s["high52"]]
-    span = max(vals) - min(vals)
-    lo, hi = min(vals) - span * .22, max(vals) + span * .14
-    label_w, mr = 190, 30
-    X = lambda v: label_w + (v - lo) / (hi - lo) * (w - label_w - mr)
-    items = [("52-week range", s["low52"], s["high52"], "var(--chart-bench)")]
-    vb = {r["name"]: r["value"] for r in rows}
-    items.append(("Scenario range (bear → bull)", vb["Bear"], vb["Bull"], "var(--green)"))
-    if s["valuation"].get("consensus_target"):
-        ct = s["valuation"]["consensus_target"]
-        items.append(("Consensus target", ct, ct, "var(--amber)"))
-    bh, gap = 22, 18
-    top = 26
-    h = top + len(items) * (bh + gap) + 30
-    g = []
-    for i, (lab, a, b, c) in enumerate(items):
-        y = top + i * (bh + gap)
-        g.append(f'<text class="lbl" x="{label_w - 12}" y="{y + bh / 2 + 4}" text-anchor="end">{esc(lab)}</text>')
-        if a == b:
-            g.append(f'<rect x="{X(a) - 3:.1f}" y="{y}" width="6" height="{bh}" fill="{c}"/><text class="val" x="{X(a) + 10:.1f}" y="{y + bh / 2 + 4}">{money(sym, a)}</text>')
-        else:
-            g.append(f'<rect x="{X(a):.1f}" y="{y}" width="{X(b) - X(a):.1f}" height="{bh}" rx="2" fill="{c}" opacity=".85"/>'
-                     f'<text class="val" x="{X(a) - 6:.1f}" y="{y + bh / 2 + 4}" text-anchor="end">{money(sym, a)}</text>'
-                     f'<text class="val" x="{X(b) + 6:.1f}" y="{y + bh / 2 + 4}">{money(sym, b)}</text>')
-            if lab.startswith("Scenario"):
-                g.append(f'<rect x="{X(vb["Base"]) - 1.5:.1f}" y="{y - 4}" width="3" height="{bh + 8}" fill="var(--ink)"/>')
-    py = h - 26
-    g.append(f'<line x1="{X(price):.1f}" x2="{X(price):.1f}" y1="{top - 14}" y2="{py}" stroke="var(--ink)" stroke-dasharray="4 3"/>'
-             f'<text class="val" x="{X(price):.1f}" y="{top - 16}" text-anchor="middle">Price {money(sym, price)}</text>'
-             f'<text x="{X(vb["Base"]):.1f}" y="{h - 6}" text-anchor="middle">Base target {money(sym, vb["Base"])}</text>')
-    return f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="Valuation range">{"".join(g)}</svg>'
-
+LANGS = ("en", "fr")
+L = lambda lang, en, fr: fr if lang == "fr" else en  # inline bilingual text
 
 # ---------------------------------------------------------------- data
 VALUE = json.loads((DATA / "value_developed.json").read_text())
 PITCHES = json.loads((DATA / "pitches.json").read_text(encoding="utf-8"))
-REGION = {"France": "Europe", "United States": "Americas", "Japan": "Asia", "Hong Kong": "Asia"}
-RCLS = {"Overweight": "r-ow", "Neutral": "r-n", "Underweight": "r-uw"}
+PITCH_FR = json.loads((DATA / "pitches_fr.json").read_text(encoding="utf-8"))
+HORUS = json.loads((DATA / "horus_smart_beta.json").read_text())
+RCLS = {"Overweight": "r-ow", "Neutral": "r-n", "Underweight": "r-uw", "Sell": "r-uw", "Buy": "r-ow"}
+REGION = {"France": "europe", "United States": "americas", "Japan": "asia", "Hong Kong": "asia"}
 for s in PITCHES:
     s["slug"] = slugify(f"{s['ticker']}-{s['name']}")
-    s["region"] = REGION.get(s["country"], "Other")
     stem = f"{s['code']}_{re.sub(r'[^A-Za-z0-9]+', '_', s['name']).strip('_')}"
-    s["files"] = {k: f"assets/pitches/{stem}{suf}" for k, suf in
-                  [("pptx", "_pitch.pptx"), ("pdf", "_pitch.pdf"), ("note", "_note.pdf")]}
-    s["files"] = {k: v for k, v in s["files"].items() if (DOCS / v).exists() or k == "note"}
-
-
-def rating(r):
-    return f'<span class="rating {RCLS.get(r, "")}">{esc(r)}</span>'
-
+    s["files"] = {k: f"assets/pitches/{stem}{suf}" for k, suf in [("pptx", "_pitch.pptx"), ("pdf", "_pitch.pdf")]
+                  if (DOCS / f"assets/pitches/{stem}{suf}").exists()}
 
 H = VALUE["headline"]
 IC = VALUE["ic"]
@@ -294,556 +42,730 @@ QI = Q["columns"].index("Q5-Q1")
 SPREAD_6M = statistics.mean(r[QI] for r in Q["values"])
 SPREAD_ANN = (1 + SPREAD_6M) ** 2 - 1
 
+# ---------------------------------------------------------------- strategy universes (rules fixed 30 Oct 2026)
+COUNTRIES = [("US", "United States", "MXUS", "SPX"), ("JP", "Japan", "MXJP", "TPX"), ("GB", "United Kingdom", "MXGB", "UKX"),
+             ("FR", "France", "MXFR", "SBF120"), ("DE", "Germany", "MXDE", "CDAX"), ("CH", "Switzerland", "MXCH", "SPI"),
+             ("NL", "Netherlands", "MXNL", "AEX"), ("IT", "Italy", "MXIT", "FTSEMIB"), ("ES", "Spain", "MXES", "IBEX"),
+             ("SE", "Sweden", "MXSE", "OMX"), ("DK", "Denmark", "MXDK", "KAX"), ("CA", "Canada", "MXCA", "SPTSX"),
+             ("AU", "Australia", "MXAU", "AS51"), ("HK", "Hong Kong", "MXHK", "HSI")]
+SECTORS = [("EN", "Energy", "MXWO0EN"), ("MT", "Materials", "MXWO0MT"), ("IN", "Industrials", "MXWO0IN"),
+           ("CD", "Consumer Discretionary", "MXWO0CD"), ("CS", "Consumer Staples", "MXWO0CS"), ("HC", "Health Care", "MXWO0HC"),
+           ("FN", "Financials", "MXWO0FN"), ("IT", "Information Technology", "MXWO0IT"), ("TC", "Communication Services", "MXWO0TC"),
+           ("UT", "Utilities", "MXWO0UT"), ("RE", "Real Estate", "MXWO0RE")]
+TREND = [("Equities", "US equities", "Actions américaines", "MSCI USA net", "iShares Core S&P 500"),
+         ("Equities", "Euro area equities", "Actions zone euro", "MSCI EMU net", "iShares Core MSCI EMU"),
+         ("Equities", "Japanese equities", "Actions japonaises", "MSCI Japan net", "iShares Core MSCI Japan IMI"),
+         ("Equities", "Emerging equities", "Actions émergentes", "MSCI EM net", "iShares Core MSCI EM IMI"),
+         ("Bonds", "US Treasuries", "Bons du Trésor américain", "Bloomberg US Treasury", "iShares $ Treasury 7-10yr"),
+         ("Bonds", "Euro government bonds", "Obligations d'État zone euro", "Bloomberg Euro Treasury", "iShares Core Euro Govt Bond"),
+         ("Bonds", "Global aggregate bonds", "Obligations mondiales", "Bloomberg Global Aggregate", "to select"),
+         ("Bonds", "US investment-grade credit", "Crédit IG américain", "Bloomberg US Corporate", "to select"),
+         ("Commodities", "Gold", "Or", "Gold spot", "Xetra-Gold"),
+         ("Commodities", "Silver", "Argent", "Silver spot", "iShares Physical Silver"),
+         ("Commodities", "Broad commodities", "Matières premières diversifiées", "Bloomberg Commodity TR", "iShares Diversified Commodity Swap"),
+         ("Commodities", "Crude oil", "Pétrole brut", "BCOM WTI TR", "WisdomTree WTI Crude Oil"),
+         ("Commodities", "Copper", "Cuivre", "BCOM Copper TR", "WisdomTree Copper"),
+         ("Commodities", "Agriculture", "Agriculture", "BCOM Agriculture TR", "to select")]
+SECTOR_CODE = {nm: code for code, nm, _ in SECTORS}
+COUNTRY_CODE = {nm: code for code, nm, *_ in COUNTRIES}
 
-# ---------------------------------------------------------------- pages
-def build_home():
+
+def month_name(ym, lang):
+    y, m = map(int, ym.split("-"))
+    en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    fr = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+    return f"{(fr if lang == 'fr' else en)[m - 1]} {y}"
+
+
+def price_note(s, lang):
+    if lang != "fr":
+        return s["price_note"]
+    x = s["price_note"].replace("intraday", "en séance").replace("close", "clôture").replace("Oct", "oct.").replace("before H1 results", "avant les résultats S1")
+    return x
+
+
+def rating(r, lang):
+    return f'<span class="rating {RCLS.get(r, "")}">{esc(t(lang, r))}</span>'
+
+
+def pf(s, lang, key):
+    """Pitch field in the requested language (French overrides when available)."""
+    if lang == "fr" and key in PITCH_FR.get(s["code"], {}):
+        return PITCH_FR[s["code"]][key]
+    if key == "stories":
+        return [x[3] for x in s["valuation"]["scenarios"]]
+    if key in ("method", "explain"):
+        return s["valuation"][key]
+    return s[key]
+
+
+def fr_inputs(x):
+    for a, b in [("EPS ", "BPA "), ("x TBV", "x l'ANCT"), (" at ", " à "), (" yield", " de rendement"), ("x book", "x les fonds propres"),
+                 ("BVPS", "par action"), ("FCF ", "FCF "), ("RoTE ", "RoTE "), ("CoE", "CoE"), ("US$", "US$")]:
+        x = x.replace(a, b)
+    return re.sub(r"(\d)\.(\d)", r"\1,\2", x)
+
+
+def pitch_links(pitches, lang, lr):
+    return ", ".join(f'<a href="{lr}pitches/{s["slug"]}/">{esc(s["name"])}</a>' for s in pitches) or "—"
+
+
+# ---------------------------------------------------------------- horus statistics
+def horus_stats():
+    r, b, rf = HORUS["r_p3"], HORUS["r_bench"], HORUS["rf"]
+    n = len(r)
+
+    def one(x):
+        g = pk = 1.0
+        mdd = 0
+        nav = []
+        for v in x:
+            g *= 1 + v
+            pk = max(pk, g)
+            mdd = min(mdd, g / pk - 1)
+            nav.append(g)
+        m = sum(x) / n
+        sd = (sum((v - m) ** 2 for v in x) / (n - 1)) ** .5
+        ex = [a - c for a, c in zip(x, rf)]
+        me = sum(ex) / n
+        se = (sum((v - me) ** 2 for v in ex) / (n - 1)) ** .5
+        cagr = nav[-1] ** (12 / n) - 1
+        rf_ann = (1 + sum(rf) / n) ** 12 - 1
+        # same convention as the Horus AM website: (CAGR - average risk-free rate) / volatility
+        return dict(cagr=cagr, vol=sd * 12 ** .5, sharpe=(cagr - rf_ann) / (sd * 12 ** .5), mdd=mdd, nav=nav)
+
+    p, q = one(r), one(b)
+    act = [a - c for a, c in zip(r, b)]
+    te = statistics.stdev(act) * 12 ** .5
+    cov = sum((a - sum(r) / n) * (c - sum(b) / n) for a, c in zip(r, b)) / (n - 1)
+    beta = cov / statistics.variance(b)
+    y0 = int(HORUS["start"][:4])
+    years, ann_p, ann_b = [], [], []
+    for i in range(0, n, 12):
+        gp = gb = 1.0
+        for v in r[i:i + 12]:
+            gp *= 1 + v
+        for v in b[i:i + 12]:
+            gb *= 1 + v
+        years.append(y0 + i // 12)
+        ann_p.append(gp - 1)
+        ann_b.append(gb - 1)
+    ahead = sum(1 for a, c in zip(ann_p, ann_b) if a > c)
+    dates = []
+    y, m = map(int, HORUS["start"].split("-"))
+    for _ in range(n):
+        dates.append(f"{y}-{m:02d}")
+        m += 1
+        if m > 12:
+            y, m = y + 1, 1
+    return dict(p=p, b=q, te=te, ir=(p["cagr"] - q["cagr"]) / te, beta=beta, years=years, ann_p=ann_p, ann_b=ann_b,
+                ahead=ahead, dates=dates)
+
+
+HS = horus_stats()
+HORUS_ETF = {"IWM": ("US small caps", "Petites cap. US"), "IJH": ("US mid caps", "Moyennes cap. US"),
+             "XLK": ("US technology", "Technologie US"), "XLE": ("US energy", "Énergie US"), "XLV": ("US health care", "Santé US"),
+             "XLB": ("US materials", "Matériaux US"), "TLT": ("US Treasuries 20y+", "Trésor US 20 ans+"),
+             "IEF": ("US Treasuries 7-10y", "Trésor US 7-10 ans"), "SHY": ("US Treasuries 1-3y", "Trésor US 1-3 ans"),
+             "AGG": ("US aggregate bonds", "Obligations US agrégées"), "TIP": ("US inflation-linked", "Indexées inflation US"),
+             "LQD": ("US investment-grade corporates", "Crédit IG US"), "RXRGEX": ("German government bonds", "État allemand")}
+
+
+# ---------------------------------------------------------------- HOME
+def build_home(lang):
+    lr = "" if lang == "en" else ""
     ew = H["EW"]
-    research = sorted(research_notes(), key=lambda n: n["slug"], reverse=True)[:3]
+    hp = HS["p"]
+    ow = sum(1 for s in PITCHES if s["rating"] == "Overweight")
+    cards = strategy_cards(lang, "")
     pitch_rows = "".join(
-        f'<div class="row"><span><a href="pitches/{s["slug"]}/">{esc(s["name"])}</a><small>{esc(s["industry"])} · {esc(s["country"])}</small></span>'
-        f'<b>{rating(s["rating"])}</b></div>' for s in PITCHES)
+        f'<a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/{s["slug"]}/"><div><h3>{esc(s["name"])}</h3>'
+        f'<p>{esc(pf(s, lang, "headline"))}</p></div><span>{rating(s["rating"], lang)}</span></a>' for s in PITCHES[:4])
+    notes = research_notes(lang)[:2]
     body = f"""
-<div class="wrap">
-<section class="hero">
+<section class="hero"><div class="wrap">
  <div>
-  <div class="eyebrow">Systematic value · Fundamental pitches · Open methodology</div>
-  <h1>Rules written <em>before</em> results. Every number traceable.</h1>
-  <p>This is the working ledger of my equity research: a systematic value strategy on developed markets, the stock pitches
-  that test what the screen picked, research notes on what went wrong and right, and a catalogue of the data behind it.</p>
-  <div class="btns"><a class="btn primary" href="strategies/value-developed/">Read the value strategy</a><a class="btn" href="pitches/">Browse the pitches</a></div>
+  <div class="eyebrow">{L(lang, "Equity research · Systematic strategies · Open data", "Recherche actions · Stratégies systématiques · Données ouvertes")}</div>
+  <h1>{L(lang, "Rules written before results. Every number traceable.", "Des règles écrites avant les résultats. Chaque chiffre traçable.")}</h1>
+  <p class="lede">{L(lang, "I am Noah Doose, an MSc Financial Markets & Investments student at SKEMA and a CFA Level II candidate. This site is my research ledger: strategies anyone can replicate with ETFs, stock pitches that test them name by name, and the data behind every result.",
+                     "Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Ce site est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.")}</p>
+  <div class="btns"><a class="btn primary" href="strategies/">{L(lang, "Explore the strategies", "Découvrir les stratégies")}</a><a class="btn" href="pitches/">{L(lang, "Read the stock pitches", "Lire les stock pitches")}</a></div>
  </div>
- <div class="ledger">
-  <header><span>Ledger · Systematic value DM</span><span>Jul 2021 – Jun 2026</span></header>
-  <div class="row"><span>Equal weight, net of costs, hedged<small>vs MSCI World Net EUR {pct(ew["bench_return"])}</small></span><b>{pct(ew["ann_return"])}<small>a year</small></b></div>
-  <div class="row"><span>Signal rank IC, sector-neutral<small>mean of {len(IC)} semi-annual dates, t ≈ {IC_T:.1f}</small></span><b>{IC_MEAN:.3f}</b></div>
-  <div class="row"><span>Cheapest vs dearest quintile<small>average 6-month spread {pct(SPREAD_6M)}</small></span><b>{pct(SPREAD_ANN, 1, True)}<small>a year</small></b></div>
-  <div class="row"><span>Max drawdown, equal weight<small>benchmark {pct(VALUE["performance"]["values"][-1][7])}</small></span><b class="neg">{pct(ew["max_drawdown"])}</b></div>
-  <div class="row"><span>Universe researched<small>Bloomberg World, developed markets, 10 dated compositions</small></span><b>1,990</b></div>
- </div>
-</section>
-
-<section class="sec">
- <div class="shead"><span class="idx">§ 01</span><h2>What is in the ledger</h2></div>
- <div class="tiles">
-  <a class="tile" href="strategies/"><span class="n">01 · Strategies</span><h3>Two backtested strategies</h3><p>Systematic value on 1,990 developed-market stocks, and multi-asset trend following over 25 years.</p><div class="go">Open →</div></a>
-  <a class="tile" href="pitches/"><span class="n">02 · Stock pitches</span><h3>Eight pitches, eight learning notes</h3><p>Holdings of the December 2025 portfolio: five conviction calls, one hold and two cautionary cases.</p><div class="go">Open →</div></a>
-  <a class="tile" href="research/"><span class="n">03 · Research</span><h3>Notes from the work</h3><p>Short write-ups of findings: a 2%-a-year dividend bug, why the optimiser lost to 1/N.</p><div class="go">Open →</div></a>
-  <a class="tile" href="database/"><span class="n">04 · Database</span><h3>Data catalogue</h3><p>Every dataset and Bloomberg field used, coverage by date, cleaning rules and the anti-bias checklist.</p><div class="go">Open →</div></a>
-  <a class="tile" href="journal/"><span class="n">05 · Journal</span><h3>Decisions, dated</h3><p>What was decided, when and why, from the investment policy to the last robustness test.</p><div class="go">Open →</div></a>
-  <a class="tile" href="methodology/"><span class="n">06 · Methodology</span><h3>How results are produced</h3><p>Sources, integrity rules and the tools used, in one page.</p><div class="go">Open →</div></a>
- </div>
-</section>
-
-<section class="sec">
- <div class="cols2" style="gap:40px;align-items:start">
-  <div>
-   <div class="shead"><span class="idx">§ 02</span><h2>Latest pitches</h2><p>Calls as of 29 October 2026, with price targets from scenario valuations.</p></div>
-   <div class="ledger">{pitch_rows}<div class="row"><span><a href="pitches/">Open the pitch library →</a></span><b></b></div></div>
+ <div class="panel"><header><span>{L(lang, "Key figures", "Chiffres clés")}</span><span>{L(lang, "backtests, net of costs", "backtests, nets de frais")}</span></header>
+  <div class="kpis">
+   <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">{pct(hp["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2007 vs", "par an depuis 2007 vs")} {pct(HS["b"]["cagr"], 1, lang=lang)}</div></div>
+   <div class="kpi"><div class="k">{L(lang, "Value signal (stock level)", "Signal value (titres)")}</div><div class="v">{num(IC_MEAN, 3, lang)}</div><div class="s">{L(lang, "rank IC, t ≈", "IC de rang, t ≈")} {num(IC_T, 1, lang)}</div></div>
+   <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies", "Surpondérer, 2 cas d'école")}</div></div>
+   <div class="kpi"><div class="k">{L(lang, "Securities researched", "Titres étudiés")}</div><div class="v">1 990</div><div class="s">{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</div></div>
   </div>
-  <div>
-   <div class="shead"><span class="idx">§ 03</span><h2>Latest research</h2></div>
-   <div class="notes">{"".join(f'<a class="noteitem" style="grid-template-columns:1fr" href="research/{n["slug"]}/"><div><div class="d">{esc(n["date"])}</div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div></a>' for n in research)}</div>
-  </div>
+  <footer>{L(lang, "Hypothetical backtests. Past performance does not guarantee future returns.", "Backtests hypothétiques. Les performances passées ne préjugent pas des performances futures.")}</footer>
  </div>
-</section>
+</div></section>
 
-<section class="sec">
- <div class="shead"><span class="idx">§ 04</span><h2>House rules</h2><p>The constraints every result on this site respects.</p></div>
- <div class="cols2">
-  <div class="box accent"><h4>Parameters before results</h4><p>Universe, signal, constraints and costs are written down before any backtest runs. Every variant tested is shown, not only the best one.</p></div>
-  <div class="box accent"><h4>No survivorship, no look-ahead</h4><p>Index membership is taken as it was at each date. Accounts are used six months after year-end and never before publication.</p></div>
-  <div class="box accent"><h4>Too good means check first</h4><p>A result that beats the benchmark by a steady margin is treated as a data error until proven otherwise. One such check found a 2%-a-year bug.</p></div>
-  <div class="box accent"><h4>Costs and taxes included</h4><p>15 bp per trade, dividend withholding tax as in the MSCI net convention, and the carry cost of currency hedges.</p></div>
+<section class="sec"><div class="wrap">
+ <div class="shead"><h2>{L(lang, "Three strategies, one discipline", "Trois stratégies, une même discipline")}</h2>
+ <p>{L(lang, "Each strategy can be held with a handful of UCITS ETFs, is rebalanced on a fixed calendar and was specified before its backtest was run.", "Chaque stratégie se détient avec quelques ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.")}</p></div>
+ {cards}
+</div></section>
+
+<section class="sec alt"><div class="wrap">
+ <div class="cols2" style="gap:48px;align-items:start">
+  <div><div class="shead"><h2>{L(lang, "From top-down to bottom-up", "Du top-down au bottom-up")}</h2>
+   <p>{L(lang, "The value rotation chooses cheap countries and sectors. The stock screen finds the cheapest companies inside them. The pitches check, one company at a time, whether cheap means mispriced.", "La rotation value choisit les pays et secteurs bon marché. Le screen titres trouve les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.")}</p></div>
+   <div class="btns"><a class="btn" href="pitches/">{L(lang, "All pitches", "Tous les pitches")} →</a></div></div>
+  <div class="notes">{pitch_rows}</div>
  </div>
-</section>
+</div></section>
+
+<section class="sec"><div class="wrap">
+ <div class="horus">
+  <div><div class="eyebrow">{L(lang, "Also by me", "Mon autre projet")}</div><h3>Horus Asset Management</h3>
+   <p>{L(lang, "A student investment boutique I built with four classmates for the SKEMA Portfolio Management course. Its flagship, Horus Smart Beta 60/40, is also in my strategies.", "Une boutique de gestion étudiante créée avec quatre camarades pour le cours de Portfolio Management de SKEMA. Sa stratégie phare, Horus Smart Beta 60/40, figure aussi parmi mes stratégies.")}</p></div>
+  <div class="btns"><a class="btn" href="{HORUS_URL}">{L(lang, "Visit Horus AM", "Visiter Horus AM")} {ICON_EXT}</a><a class="btn ghost" href="strategies/horus-smart-beta/">{L(lang, "The strategy", "La stratégie")}</a></div>
+ </div>
+</div></section>
+
+<section class="sec alt"><div class="wrap">
+ <div class="shead"><h2>{L(lang, "Latest research", "Dernières notes de recherche")}</h2></div>
+ <div class="notes">{"".join(f'<a class="noteitem" href="research/{n["slug"]}/"><span class="d">{esc(n["date"])}</span><div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div><span class="go">{t(lang, "read")} →</span></a>' for n in notes)}</div>
+</div></section>"""
+    page("index.html", lang, SITE, body, "index",
+         L(lang, "Equity research by Noah Doose: ETF-replicable strategies, stock pitches and data.",
+           "Recherche actions de Noah Doose : stratégies réplicables en ETF, stock pitches et données."))
+
+
+def strategy_cards(lang, lr):
+    hp = HS["p"]
+    status = L(lang, "Backtest in progress", "Backtest en cours")
+    return f"""<div class="grid three">
+ <article class="card"><div class="tags"><span class="tag green">{L(lang, "Equities · ETF", "Actions · ETF")}</span><span class="tag amber">{status}</span></div>
+  <h3><a href="{lr}strategies/value-rotation/">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</a></h3>
+  <p>{L(lang, "Each month, buy the cheapest developed countries and sectors relative to their own history: eight ETFs, equal weight.", "Chaque mois, acheter les pays et secteurs développés les moins chers par rapport à leur propre historique : huit ETF à parts égales.")}</p>
+  <div class="mini"><div><span>{L(lang, "Universe", "Univers")}</span><b>25 ETF</b></div><div><span>{L(lang, "Holdings", "Lignes")}</span><b>8</b></div><div><span>{L(lang, "Rebalance", "Rebalancement")}</span><b>{L(lang, "Monthly", "Mensuel")}</b></div></div>
+  <div class="foot"><span>{L(lang, "Linked to the stock pitches", "Reliée aux stock pitches")}</span><b>→</b></div></article>
+ <article class="card"><div class="tags"><span class="tag green">{L(lang, "Multi-asset · ETF", "Multi-actifs · ETF")}</span><span class="tag amber">{status}</span></div>
+  <h3><a href="{lr}strategies/trend-following/">{L(lang, "Multi-Asset Trend", "Trend multi-actifs")}</a></h3>
+  <p>{L(lang, "Hold equities, bonds and commodities only while they trend up, sized by risk, cash otherwise. Long only, no leverage.", "Détenir actions, obligations et matières premières seulement quand elles sont en tendance haussière, dimensionnées par le risque, sinon du cash. Long uniquement, sans levier.")}</p>
+  <div class="mini"><div><span>{L(lang, "Universe", "Univers")}</span><b>14 ETF</b></div><div><span>{L(lang, "Target vol.", "Vol. cible")}</span><b>10%</b></div><div><span>{L(lang, "Rebalance", "Rebalancement")}</span><b>{L(lang, "Monthly", "Mensuel")}</b></div></div>
+  <div class="foot"><span>{L(lang, "Futures study archived", "Étude futures archivée")}</span><b>→</b></div></article>
+ <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">{L(lang, "Live since 2007 (backtest)", "Backtest depuis 2007")}</span></div>
+  <h3><a href="{lr}strategies/horus-smart-beta/">Horus Smart Beta 60/40</a></h3>
+  <p>{L(lang, "A permanent 60/40 whose equity half holds the two ETFs most exposed to size, growth and momentum, chosen each January.", "Un 60/40 permanent dont la poche actions détient les deux ETF les plus exposés à la taille, la croissance et le momentum, choisis chaque janvier.")}</p>
+  <div class="mini"><div><span>CAGR</span><b>{pct(hp["cagr"], 1, lang=lang)}</b></div><div><span>Sharpe</span><b>{num(hp["sharpe"], 2, lang)}</b></div><div><span>Max DD</span><b>{pct(hp["mdd"], 0, lang=lang)}</b></div></div>
+  <div class="foot"><span>60/40 : {pct(HS["b"]["cagr"], 1, lang=lang)}</span><b>→</b></div></article>
 </div>"""
-    page("index.html", SITE, body, "index", "Equity research ledger by Noah Doose: systematic value strategy, stock pitches, research notes and data catalogue.")
 
 
-def research_notes():
+# ---------------------------------------------------------------- STRATEGIES INDEX
+def build_strategies(lang):
+    body = phead(t(lang, "strategies"), L(lang, "Strategies you can hold with ETFs", "Des stratégies que l'on peut détenir avec des ETF"),
+                 L(lang, "Three rules-based strategies, each implementable with UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the pitches.",
+                   "Trois stratégies systématiques, chacune réplicable avec des ETF UCITS et rebalancée à date fixe, plus le moteur de recherche titre par titre qui alimente les pitches."))
+    body += f'<section class="sec"><div class="wrap">{strategy_cards(lang, "../")}</div></section>'
+    body += f"""<section class="sec alt"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
+<div class="grid">
+ <article class="card"><div class="meta">{L(lang, "Stock level · 1,990 developed-market stocks · 2021-2026", "Titres · 1 990 actions de pays développés · 2021-2026")}</div>
+  <h3><a href="value-developed/">{L(lang, "Stock-level value screen", "Screen value titre par titre")}</a></h3>
+  <p>{L(lang, "The research engine behind the value rotation and the pitches: sector-neutral value composite, 50 names, three weighting schemes.", "Le moteur de recherche derrière la rotation value et les pitches : composite value neutre par secteur, 50 titres, trois pondérations.")}</p>
+  <div class="foot"><span>{L(lang, "Equal weight", "Équipondéré")} {pct(H["EW"]["ann_return"], 1, lang=lang)} · IC {num(IC_MEAN, 3, lang)}</span><b>→</b></div></article>
+ <article class="card"><div class="meta">{L(lang, "Futures · 17 markets · 2001-2026 · English and French", "Futures · 17 marchés · 2001-2026 · anglais et français")}</div>
+  <h3><a href="{'../trend-following/' if lang == 'en' else '../../trend-following/fr/'}">{L(lang, "Trend following with futures (archived study)", "Trend following en futures (étude archivée)")}</a></h3>
+  <p>{L(lang, "The original time-series momentum study on futures, with design and validation periods. The ETF strategy above replaces it as the investable version.", "L'étude d'origine de momentum en séries temporelles sur futures, avec périodes de conception et de validation. La stratégie ETF ci-dessus la remplace comme version investissable.")}</p>
+  <div class="foot"><span>{L(lang, "Full report", "Rapport complet")}</span><b>→</b></div></article>
+</div></div></section>"""
+    page("strategies/index.html", lang, t(lang, "strategies"), body, "strategies",
+         L(lang, "ETF-replicable strategies by Noah Doose.", "Stratégies réplicables en ETF de Noah Doose."))
+
+
+# ---------------------------------------------------------------- VALUE ROTATION
+def status_block(lang):
+    return f"""<div class="status"><span class="dot"></span><div><b>{L(lang, "Backtest in progress", "Backtest en cours")}</b>
+<p>{L(lang, "The rules below were fixed on 30 October 2026, before the data were extracted. Monthly index data (2000-2026) are being extracted from the Bloomberg terminal; results will be published here with every variant tested.",
+      "Les règles ci-dessous ont été fixées le 30 octobre 2026, avant l'extraction des données. Les données mensuelles d'indices (2000-2026) sont en cours d'extraction sur le terminal Bloomberg ; les résultats seront publiés ici avec toutes les variantes testées.")}</p></div></div>"""
+
+
+def build_value_rotation(lang):
+    lr = "../../"
+    by_country = {}
+    by_sector = {}
+    for s in PITCHES:
+        by_country.setdefault(COUNTRY_CODE.get(s["country"]), []).append(s)
+        by_sector.setdefault(SECTOR_CODE.get(s["sector"]), []).append(s)
+    crow = [[f"<b>{esc(tr(lang, nm))}</b>", f'<span class="mono">{mx} Index</span>', f'<span class="mono">{loc} Index</span>', pitch_links(by_country.get(code, []), lang, lr)]
+            for code, nm, mx, loc in COUNTRIES]
+    srow = [[f"<b>{esc(tr(lang, nm))}</b>", f'<span class="mono">{mx} Index</span>', pitch_links(by_sector.get(code, []), lang, lr)] for code, nm, mx in SECTORS]
+    rules = tbl([L(lang, "Step", "Étape"), L(lang, "Rule", "Règle")], [
+        [L(lang, "Universe", "Univers"), L(lang, "14 developed-country indices and the 11 GICS sectors of MSCI World: 25 lines, each held through one UCITS ETF.", "14 indices de pays développés et les 11 secteurs GICS du MSCI World : 25 lignes, chacune détenue via un ETF UCITS.")],
+        [L(lang, "Signal", "Signal"), L(lang, "Average of three z-scores: earnings yield (E/P), book yield (B/P) and dividend yield, each measured against the line's own trailing 10-year history (at least 5 years). A country is cheap when it is cheap versus its own past, so structurally cheap markets are not bought forever.", "Moyenne de trois z-scores : rendement bénéficiaire (E/P), rendement comptable (B/P) et rendement du dividende, chacun mesuré par rapport à l'historique propre de la ligne sur 10 ans glissants (5 ans minimum). Un pays est bon marché quand il l'est par rapport à son propre passé : les marchés structurellement peu chers ne sont pas achetés éternellement.")],
+        [L(lang, "Selection", "Sélection"), L(lang, "Two sleeves of equal size: the 4 cheapest countries and the 4 cheapest sectors.", "Deux poches de même taille : les 4 pays les moins chers et les 4 secteurs les moins chers.")],
+        [L(lang, "Weighting", "Pondération"), L(lang, "Equal weight, 12.5% per ETF; fully invested, long only.", "Équipondération, 12,5 % par ETF ; investi en totalité, long uniquement.")],
+        [L(lang, "Rebalancing", "Rebalancement"), L(lang, "Monthly: signal at the last trading day of the month, trades on the first trading day of the next month.", "Mensuel : signal au dernier jour de bourse du mois, ordres le premier jour de bourse du mois suivant.")],
+        [L(lang, "Costs", "Frais"), L(lang, "0.10% per unit of turnover and 0.25% a year of ETF fees.", "0,10 % par unité de rotation et 0,25 % par an de frais d'ETF.")],
+        [L(lang, "Benchmark", "Benchmark"), L(lang, "MSCI World Net Total Return in EUR.", "MSCI World Net Total Return en EUR.")],
+        [L(lang, "Test plan", "Plan de test"), L(lang, "Backtest January 2006 to September 2026 in EUR. Variants published whatever the result: 3 or 6 lines per sleeve, a 12-month momentum filter, countries only, sectors only.", "Backtest de janvier 2006 à septembre 2026 en EUR. Variantes publiées quel que soit le résultat : 3 ou 6 lignes par poche, filtre momentum 12 mois, pays seuls, secteurs seuls.")],
+    ])
+    toc = [("idea", L(lang, "The idea", "L'idée")), ("rules", L(lang, "Rules", "Règles")), ("universe", L(lang, "Universe", "Univers")),
+           ("pitches", L(lang, "Link with the pitches", "Lien avec les pitches")), ("results", L(lang, "Results", "Résultats")),
+           ("risks", L(lang, "Risks", "Risques"))]
+    secs = [
+        section("idea", L(lang, "The idea", "L'idée"), f"""<div class="prose"><p>{L(lang,
+            "Value works across markets, not only across stocks: countries and sectors that are cheap relative to their own history have tended to outperform over the following years (Asness, Moskowitz and Pedersen, 2013, <i>Value and Momentum Everywhere</i>). Countries and sectors are also easy to hold: one ETF each, cheap, liquid, available to any European investor.",
+            "Le value fonctionne entre marchés, pas seulement entre actions : les pays et secteurs bon marché par rapport à leur propre historique ont eu tendance à surperformer les années suivantes (Asness, Moskowitz et Pedersen, 2013, <i>Value and Momentum Everywhere</i>). Pays et secteurs sont aussi faciles à détenir : un ETF chacun, peu coûteux, liquide, accessible à tout investisseur européen.")}</p>
+<p>{L(lang, "The rotation is the top-down half of my value process. The stock-level screen and the pitches are the bottom-up half.", "La rotation est la moitié top-down de mon processus value. Le screen titres et les pitches en sont la moitié bottom-up.")}</p></div>
+<div class="steps" style="margin-top:22px">
+ <div class="box"><h4>{L(lang, "Measure", "Mesurer")}</h4><p>{L(lang, "E/P, B/P and dividend yield of 25 indices at each month end.", "E/P, B/P et rendement du dividende de 25 indices à chaque fin de mois.")}</p></div>
+ <div class="box"><h4>{L(lang, "Score", "Noter")}</h4><p>{L(lang, "Each ratio versus the line's own 10-year history, averaged.", "Chaque ratio rapporté à l'historique propre de la ligne sur 10 ans, puis moyenné.")}</p></div>
+ <div class="box"><h4>{L(lang, "Select", "Sélectionner")}</h4><p>{L(lang, "The 4 cheapest countries and the 4 cheapest sectors.", "Les 4 pays et les 4 secteurs les moins chers.")}</p></div>
+ <div class="box"><h4>{L(lang, "Hold", "Détenir")}</h4><p>{L(lang, "Eight ETFs at 12.5% each until the next month end.", "Huit ETF à 12,5 % chacun jusqu'à la fin du mois suivant.")}</p></div>
+</div>"""),
+        section("rules", L(lang, "Rules", "Règles"), rules, L(lang, "Fixed before any data was extracted. Changing a rule after seeing a result would be one more trial, and would weaken every statistic.", "Fixées avant toute extraction de données. Changer une règle après avoir vu un résultat serait un essai de plus et affaiblirait chaque statistique.")),
+        section("universe", L(lang, "Universe", "Univers"),
+                f'<h3 style="margin-top:0">{L(lang, "Countries", "Pays")}</h3>' +
+                tbl([L(lang, "Country", "Pays"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Fallback index", "Indice de secours"), L(lang, "Our pitches", "Nos pitches")], crow) +
+                f'<h3>{L(lang, "Sectors (MSCI World)", "Secteurs (MSCI World)")}</h3>' +
+                tbl([L(lang, "Sector", "Secteur"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Our pitches", "Nos pitches")], srow) +
+                f'<p class="cap">{L(lang, "Each line is implemented with a UCITS ETF listed in euros; the index history is used before the ETF existed. Fallback indices are used only if MSCI valuation data are not licensed on the terminal.", "Chaque ligne est implémentée avec un ETF UCITS coté en euros ; l’historique de l’indice est utilisé avant la création de l’ETF. Les indices de secours ne servent que si les données de valorisation MSCI ne sont pas licenciées sur le terminal.")}</p>'),
+        section("pitches", L(lang, "Link with the pitches", "Lien avec les pitches"), f"""<div class="cols3">
+ <div class="box accent"><div class="k">{L(lang, "1 · Top-down", "1 · Top-down")}</div><h4 style="margin-top:6px">{L(lang, "Value rotation", "Rotation value")}</h4><p>{L(lang, "Which countries and sectors are cheap this month.", "Quels pays et secteurs sont bon marché ce mois-ci.")}</p></div>
+ <div class="box accent"><div class="k">{L(lang, "2 · Screen", "2 · Screen")}</div><h4 style="margin-top:6px"><a href="../value-developed/">{L(lang, "Stock-level value screen", "Screen value titres")}</a></h4><p>{L(lang, "The cheapest companies within each sector, 1,990 stocks.", "Les sociétés les moins chères de chaque secteur, sur 1 990 actions.")}</p></div>
+ <div class="box accent"><div class="k">{L(lang, "3 · Bottom-up", "3 · Bottom-up")}</div><h4 style="margin-top:6px"><a href="{lr}pitches/">{t(lang, "pitches")}</a></h4><p>{L(lang, "Is cheap mispriced, or cheap for a reason? Each pitch answers for one name.", "Bon marché veut-il dire mal valorisé, ou bon marché pour une raison ? Chaque pitch répond pour un titre.")}</p></div>
+</div><div class="callout">{L(lang, "When the rotation holds a country or a sector, the pitches in that country or sector are the names I would add to express the view through single stocks. The universe tables above list them.", "Quand la rotation détient un pays ou un secteur, les pitches de ce pays ou de ce secteur sont les titres que j’ajouterais pour exprimer la vue en actions individuelles. Les tableaux d’univers ci-dessus les listent.")}</div>""", alt=False),
+        section("results", L(lang, "Results", "Résultats"), status_block(lang)),
+        section("risks", L(lang, "Risks", "Risques"), f"""<div class="cols3">
+ <div class="box"><h4>{L(lang, "Value traps at market level", "Pièges à valeur à l’échelle d’un marché")}</h4><p>{L(lang, "A country can stay cheap for years (Italy, Hong Kong). Measuring cheapness against its own history limits this, but does not remove it.", "Un pays peut rester bon marché des années (Italie, Hong Kong). Mesurer la décote par rapport à son propre historique limite ce risque sans le supprimer.")}</p></div>
+ <div class="box"><h4>{L(lang, "Concentration", "Concentration")}</h4><p>{L(lang, "Eight lines can overlap: a cheap Financials sector and a cheap Italy are partly the same bet.", "Huit lignes peuvent se recouper : un secteur Finance bon marché et une Italie bon marché sont en partie le même pari.")}</p></div>
+ <div class="box"><h4>{L(lang, "Growth markets", "Marchés de croissance")}</h4><p>{L(lang, "When expensive growth leads, as in 2023-24, a value rotation lags the benchmark.", "Quand la croissance chère mène, comme en 2023-24, une rotation value fait moins bien que le benchmark.")}</p></div>
+</div>"""),
+    ]
+    body = phead(L(lang, "Strategy · Equities · ETF", "Stratégie · Actions · ETF"), L(lang, "Global Value Rotation", "Rotation Value mondiale"),
+                 L(lang, "Each month, hold the four cheapest developed countries and the four cheapest sectors, measured against their own history. Eight UCITS ETFs, equal weight.",
+                   "Chaque mois, détenir les quatre pays développés et les quatre secteurs les moins chers par rapport à leur propre historique. Huit ETF UCITS à parts égales."),
+                 f'<a href="../">{t(lang, "strategies")}</a> / value-rotation')
+    body += doc_layout(lang, toc, secs)
+    page("strategies/value-rotation/index.html", lang, L(lang, "Global Value Rotation", "Rotation Value mondiale"), body, "strategies",
+         L(lang, "Monthly value rotation across developed countries and sectors with UCITS ETFs.", "Rotation value mensuelle entre pays et secteurs développés avec des ETF UCITS."))
+
+
+# ---------------------------------------------------------------- TREND FOLLOWING (ETF)
+def build_trend(lang):
+    rows = [[esc(tr(lang, ac)), f"<b>{esc(L(lang, en, fr))}</b>", esc(idx), esc(etf if etf != "to select" else L(lang, "to select", "à choisir"))] for ac, en, fr, idx, etf in TREND]
+    rules = tbl([L(lang, "Step", "Étape"), L(lang, "Rule", "Règle")], [
+        [L(lang, "Universe", "Univers"), L(lang, "14 ETFs: 4 equity regions, 4 bond markets, 6 commodities.", "14 ETF : 4 régions actions, 4 marchés obligataires, 6 matières premières.")],
+        [L(lang, "Signal", "Signal"), L(lang, "For each asset, the sign of its excess return over cash on 3, 6 and 12 months, averaged: from −1 to +1. The same blend as the futures study, chosen there for robustness, not for its result.", "Pour chaque actif, le signe de son rendement excédentaire sur le cash à 3, 6 et 12 mois, moyenné : de −1 à +1. Le même mélange que dans l’étude futures, choisi pour sa robustesse et non pour son résultat.")],
+        [L(lang, "Position", "Position"), L(lang, "Long when the signal is positive, in proportion to it; cash otherwise. No short positions: an ETF investor cannot short cheaply.", "Long quand le signal est positif, proportionnellement à celui-ci ; cash sinon. Pas de position courte : un investisseur en ETF ne peut pas vendre à découvert à bas coût.")],
+        [L(lang, "Sizing", "Dimensionnement"), L(lang, "Each asset gets the same risk (inverse of its 12-month volatility); the portfolio is scaled to a 10% volatility target, with at most 100% invested.", "Chaque actif reçoit le même risque (inverse de sa volatilité 12 mois) ; le portefeuille est ajusté pour viser 10 % de volatilité, avec au plus 100 % investi.")],
+        [L(lang, "Rebalancing", "Rebalancement"), L(lang, "Monthly, at the first trading day of the month.", "Mensuel, au premier jour de bourse du mois.")],
+        [L(lang, "Cash", "Cash"), L(lang, "Money-market rate (€STR, Euribor before 2019) on the uninvested part.", "Taux monétaire (€STR, Euribor avant 2019) sur la part non investie.")],
+        [L(lang, "Costs", "Frais"), L(lang, "0.10% per unit of turnover and 0.30% a year of ETF fees.", "0,10 % par unité de rotation et 0,30 % par an de frais d’ETF.")],
+        [L(lang, "Test plan", "Plan de test"), L(lang, "January 2001 to September 2026 in EUR; design period to 2015, validation afterwards, untouched. References: MSCI World Net EUR and a 60/40.", "Janvier 2001 à septembre 2026 en EUR ; conception jusqu’en 2015, validation ensuite, sans retouche. Références : MSCI World Net EUR et un 60/40.")],
+    ])
+    toc = [("idea", L(lang, "The idea", "L'idée")), ("rules", L(lang, "Rules", "Règles")), ("universe", L(lang, "Universe", "Univers")),
+           ("results", L(lang, "Results", "Résultats")), ("archive", L(lang, "Futures study", "Étude futures"))]
+    archive = "../../trend-following/" if lang == "en" else "../../../trend-following/fr/"
+    secs = [
+        section("idea", L(lang, "The idea", "L'idée"), f"""<div class="prose"><p>{L(lang,
+            "Markets that have risen over the past months tend to keep rising for a while, across asset classes and over a century of data (Moskowitz, Ooi and Pedersen, 2012; Hurst, Ooi and Pedersen, 2017). Trend following does not forecast; it follows, and it steps aside when a market turns down.",
+            "Les marchés qui ont monté ces derniers mois ont tendance à continuer de monter un temps, dans toutes les classes d’actifs et sur plus d’un siècle de données (Moskowitz, Ooi et Pedersen, 2012 ; Hurst, Ooi et Pedersen, 2017). Le trend following ne prévoit pas : il suit, et il se retire quand un marché se retourne.")}</p>
+<p>{L(lang, "This version is built for a private investor in Europe: UCITS ETFs only, long or cash, monthly trades. It is the investable counterpart of my earlier futures study.", "Cette version est pensée pour un investisseur particulier en Europe : uniquement des ETF UCITS, long ou cash, des ordres mensuels. C’est la contrepartie investissable de mon étude précédente sur futures.")}</p></div>"""),
+        section("rules", L(lang, "Rules", "Règles"), rules, L(lang, "Fixed before the data extraction of 30 October 2026.", "Fixées avant l’extraction des données du 30 octobre 2026.")),
+        section("universe", L(lang, "Universe", "Univers"), tbl([L(lang, "Asset class", "Classe d’actifs"), L(lang, "Market", "Marché"), L(lang, "Index (history)", "Indice (historique)"), L(lang, "UCITS ETF", "ETF UCITS")], rows)),
+        section("results", L(lang, "Results", "Résultats"), status_block(lang)),
+        section("archive", L(lang, "Futures study", "Étude futures"), f"""<div class="prose"><p>{L(lang,
+            "The original study used 17 futures markets, long and short, from 2001 to 2026. Its 3/6/12-month blend earned 6.9% a year with a 0.64 Sharpe ratio; its long/cash ETF approximation 4.7% with 7.5% volatility. The full report stays online.",
+            "L’étude d’origine portait sur 17 marchés à terme, long et court, de 2001 à 2026. Son mélange 3/6/12 mois a rapporté 6,9 % par an avec un ratio de Sharpe de 0,64 ; son approximation ETF long/cash 4,7 % avec 7,5 % de volatilité. Le rapport complet reste en ligne.")}</p></div>
+<div class="btns"><a class="btn" href="{archive}">{L(lang, "Open the futures report", "Ouvrir le rapport futures")} →</a></div>"""),
+    ]
+    body = phead(L(lang, "Strategy · Multi-asset · ETF", "Stratégie · Multi-actifs · ETF"), L(lang, "Multi-Asset Trend", "Trend multi-actifs"),
+                 L(lang, "Fourteen ETFs across equities, bonds and commodities. Each one is held only while its trend is up, sized by risk, with the rest in cash. Rebalanced monthly.",
+                   "Quatorze ETF en actions, obligations et matières premières. Chacun n’est détenu que lorsque sa tendance est haussière, dimensionné par le risque, le reste en cash. Rebalancement mensuel."),
+                 f'<a href="../">{t(lang, "strategies")}</a> / trend-following')
+    body += doc_layout(lang, toc, secs)
+    page("strategies/trend-following/index.html", lang, L(lang, "Multi-Asset Trend", "Trend multi-actifs"), body, "strategies",
+         L(lang, "Monthly long/cash trend following with UCITS ETFs.", "Trend following mensuel long/cash avec des ETF UCITS."))
+
+
+# ---------------------------------------------------------------- HORUS SMART BETA
+def build_horus(lang):
+    hp, hb = HS["p"], HS["b"]
+    nameP, nameB = "Horus Smart Beta 60/40", L(lang, "Benchmark 60/40", "Benchmark 60/40")
+    nav = {"dates": HS["dates"], "series": {nameP: [round(x, 5) for x in hp["nav"]], nameB: [round(x, 5) for x in hb["nav"]]},
+           "colors": {nameP: "--gold", nameB: "--bench"}, "bench": [nameB], "main": nameP}
+    chart = nav_chart("navchart", L(lang, "Growth of 100", "Croissance de 100"), L(lang, "monthly, USD", "mensuel, USD"),
+                      [("5", "5Y" if lang == "en" else "5A"), ("10", "10Y" if lang == "en" else "10A"), ("all", L(lang, "All", "Tout"))],
+                      [("nav", L(lang, "Growth", "Croissance")), ("dd", "Drawdown")], [nameP, nameB])
+    srow = [[L(lang, "Annual return (CAGR)", "Rendement annuel (CAGR)"), pct(hp["cagr"], 1, lang=lang), pct(hb["cagr"], 1, lang=lang)],
+            [L(lang, "Volatility", "Volatilité"), pct(hp["vol"], 1, lang=lang), pct(hb["vol"], 1, lang=lang)],
+            ["Sharpe", num(hp["sharpe"], 2, lang), num(hb["sharpe"], 2, lang)],
+            [L(lang, "Maximum drawdown", "Perte maximale"), pct(hp["mdd"], 1, lang=lang), pct(hb["mdd"], 1, lang=lang)],
+            [L(lang, "Beta vs benchmark", "Bêta vs benchmark"), num(HS["beta"], 2, lang), "1,00" if lang == "fr" else "1.00"],
+            [L(lang, "Tracking error", "Tracking error"), pct(HS["te"], 1, lang=lang), "—"],
+            [L(lang, "Years ahead of the benchmark", "Années devant le benchmark"), f'{HS["ahead"]}/{len(HS["years"])}', "—"]]
+    stats_tbl = tbl([L(lang, "Statistic", "Statistique"), nameP, nameB], srow, num_cols=(1, 2))
+    ann = svg_columns(HS["years"], [x * 100 for x in HS["ann_p"]], lambda v: num(v, 0, lang), w=980, h=260,
+                      series2=[x * 100 for x in HS["ann_b"]], names=[nameP, nameB])
+    sel_rows = []
+    for y in sorted(HORUS["sel"], reverse=True):
+        eq = [k for k, w in HORUS["sel"][y].items() if w >= .3 - 1e-9]
+        bd = [k for k, w in HORUS["sel"][y].items() if w < .3 - 1e-9]
+        name = lambda k: f'<span class="mono">{k}</span> {esc(HORUS_ETF.get(k, (k, k))[1 if lang == "fr" else 0])}'
+        sel_rows.append([f"<b>{y}</b>", "<br>".join(name(k) for k in eq), "<br>".join(name(k) for k in bd)])
+    sel_tbl = tbl([L(lang, "Year", "Année"), L(lang, "Equities, 30% each", "Actions, 30 % chacune"), L(lang, "Bonds, 20% each", "Obligations, 20 % chacune")], sel_rows)
+    toc = [("results", L(lang, "Results", "Résultats")), ("process", L(lang, "Process", "Processus")), ("years", L(lang, "Year by year", "Année par année")),
+           ("holdings", L(lang, "Holdings", "Portefeuilles")), ("risks", L(lang, "Risks", "Risques")), ("horus", "Horus AM")]
+    secs = [
+        section("results", L(lang, "Results", "Résultats"), f"""<div class="stats" style="margin-bottom:18px">
+ {stat(L(lang, "Annual return", "Rendement annuel"), pct(hp["cagr"], 1, lang=lang), L(lang, "vs", "vs") + " " + pct(hb["cagr"], 1, lang=lang))}
+ {stat("Sharpe", num(hp["sharpe"], 2, lang), L(lang, "vs", "vs") + " " + num(hb["sharpe"], 2, lang))}
+ {stat(L(lang, "Max drawdown", "Perte maximale"), pct(hp["mdd"], 1, lang=lang), L(lang, "vs", "vs") + " " + pct(hb["mdd"], 1, lang=lang))}
+ {stat(L(lang, "Years ahead", "Années devant"), f'{HS["ahead"]}/{len(HS["years"])}', L(lang, "calendar years", "années civiles"))}
+</div>{chart}<h3>{L(lang, "Statistics, January 2007 to", "Statistiques, janvier 2007 à")} {month_name(HORUS["end"], lang)}</h3>{stats_tbl}
+<p class="cap">{L(lang, "Hypothetical backtest in USD, out of sample: each January the rule uses only the three previous years. Benchmark: 60% MSCI World, 40% Bloomberg Global Aggregate. Sharpe ratios use the US 3-month T-bill.", "Backtest hypothétique en USD, hors échantillon : chaque janvier, la règle n’utilise que les trois années précédentes. Benchmark : 60 % MSCI World, 40 % Bloomberg Global Aggregate. Ratios de Sharpe calculés avec le T-bill américain à 3 mois.")}</p>"""),
+        section("process", L(lang, "Process", "Processus"), f"""<div class="steps">
+ <div class="box"><h4>{L(lang, "Measure", "Mesurer")}</h4><p>{L(lang, "A Carhart regression for each of 12 equity ETFs on the last 36 months: exposure to size, value and momentum.", "Une régression de Carhart pour chacun des 12 ETF actions sur les 36 derniers mois : exposition à la taille, au value et au momentum.")}</p></div>
+ <div class="box"><h4>{L(lang, "Score", "Noter")}</h4><p>{L(lang, "z(size) + z(−value) + z(momentum): small, growth and momentum count equally.", "z(taille) + z(−value) + z(momentum) : petites capitalisations, croissance et momentum comptent à égalité.")}</p></div>
+ <div class="box"><h4>{L(lang, "Select", "Sélectionner")}</h4><p>{L(lang, "The two best-scored equity ETFs at 30% each, and the two bond ETFs with the best 3-year Sharpe ratio at 20% each.", "Les deux ETF actions les mieux notés à 30 % chacun, et les deux ETF obligataires au meilleur Sharpe sur 3 ans à 20 % chacun.")}</p></div>
+ <div class="box"><h4>{L(lang, "Hold", "Détenir")}</h4><p>{L(lang, "Four funds for twelve months, then start again each January.", "Quatre fonds pendant douze mois, puis on recommence chaque janvier.")}</p></div>
+</div>"""),
+        section("years", L(lang, "Year by year", "Année par année"), f'<figure class="ch"><figcaption><span>{L(lang, "Calendar-year returns", "Rendements par année civile")} <small>· %</small></span></figcaption>{ann}</figure>'),
+        section("holdings", L(lang, "Holdings", "Portefeuilles"), sel_tbl, L(lang, "The factors never change; the funds that carry them do.", "Les facteurs ne changent jamais ; les fonds qui les portent, si.")),
+        section("risks", L(lang, "Risks", "Risques"), f"""<div class="cols3">
+ <div class="box"><h4>{L(lang, "Mega-cap years", "Années des méga-capitalisations")}</h4><p>{L(lang, "When a few giants lead, small caps lag: 2023 to 2025 were behind the benchmark.", "Quand quelques géants mènent, les petites capitalisations décrochent : 2023 à 2025 ont été en retard sur le benchmark.")}</p></div>
+ <div class="box"><h4>{L(lang, "Momentum reversals", "Retournements du momentum")}</h4><p>{L(lang, "Momentum can crash, as in 2009; it is one factor of three for that reason.", "Le momentum peut s’effondrer, comme en 2009 ; c’est pour cela qu’il ne pèse qu’un tiers.")}</p></div>
+ <div class="box"><h4>{L(lang, "Not a shelter", "Pas un abri")}</h4><p>{L(lang, "The 60/40 is permanent: in 2008 and 2022 the equity half fell with the market.", "Le 60/40 est permanent : en 2008 et 2022, la poche actions a baissé avec le marché.")}</p></div>
+</div>"""),
+        section("horus", "Horus Asset Management", f"""<div class="horus"><div><div class="eyebrow">{L(lang, "Group project · SKEMA 2026", "Projet de groupe · SKEMA 2026")}</div><h3>{L(lang, "The full story is on the Horus AM website", "L’histoire complète est sur le site d’Horus AM")}</h3>
+<p>{L(lang, "Factsheets, a return simulator, a holdings explorer and the factor analysis, in English and French.", "Factsheets, simulateur de rendement, explorateur des portefeuilles et analyse factorielle, en anglais et en français.")}</p></div>
+<div class="btns"><a class="btn" href="{HORUS_URL}">{L(lang, "Visit Horus AM", "Visiter Horus AM")} {ICON_EXT}</a></div></div>"""),
+    ]
+    body = phead(L(lang, "Strategy · Horus Asset Management", "Stratégie · Horus Asset Management"), "Horus Smart Beta 60/40",
+                 L(lang, "Same 60/40, smarter equities and bonds inside. Strategic factors that never change (size, growth, momentum) and a tactical ETF selection every January.",
+                   "Le même 60/40, avec des actions et des obligations mieux choisies. Des facteurs stratégiques qui ne changent jamais (taille, croissance, momentum) et une sélection tactique d’ETF chaque janvier."),
+                 f'<a href="../">{t(lang, "strategies")}</a> / horus-smart-beta')
+    body += doc_layout(lang, toc, secs)
+    nav_json = json.dumps(nav).replace("</", "<\\/")
+    page("strategies/horus-smart-beta/index.html", lang, "Horus Smart Beta 60/40", body, "strategies",
+         L(lang, "Horus Smart Beta 60/40: factor ETF selection inside a permanent 60/40.", "Horus Smart Beta 60/40 : sélection factorielle d’ETF dans un 60/40 permanent."),
+         scripts=f"<script>window.NAV={nav_json};</script>")
+
+
+# ---------------------------------------------------------------- STOCK-LEVEL VALUE SCREEN
+def build_value_screen(lang):
+    perf = VALUE["performance"]
+    ci = {c: i for i, c in enumerate(perf["columns"])}
+    ew = H["EW"]
+    LBL = {"Equal weight": L(lang, "Equal weight", "Équipondéré"), "Minimum variance": L(lang, "Minimum variance", "Variance minimale"),
+           "Mean-variance": L(lang, "Mean-variance", "Moyenne-variance"), "MSCI World Net EUR": "MSCI World Net EUR",
+           "hedged, net of costs": L(lang, "hedged, net of costs", "couvert, net de frais"), "hedged, before costs": L(lang, "hedged, before costs", "couvert, avant frais"),
+           "unhedged, net of costs": L(lang, "unhedged, net of costs", "non couvert, net de frais")}
+    rows = []
+    for name, v in zip(perf["index"], perf["values"]):
+        m = re.match(r"^(.*?) \((.*)\)$", name)
+        label = f'{LBL.get(m.group(1))}<small style="display:block">{LBL.get(m.group(2), m.group(2))}</small>' if m else LBL.get(name, name)
+        bench = "MSCI" in name
+        rows.append([label, pct(v[ci["ann_return"]], 1, lang=lang), pct(v[ci["ann_vol"]], 1, lang=lang), num(v[ci["sharpe"]], 2, lang),
+                     "—" if bench else f'<span class="{cls_sign(v[ci["active_return"]])}">{pct(v[ci["active_return"]], 1, True, lang)}</span>',
+                     "—" if bench else pct(v[ci["tracking_error"]], 1, lang=lang), pct(v[ci["max_drawdown"]], 1, lang=lang),
+                     pct(v[ci["turnover_oneway_ann"]], 0, lang=lang) if v[ci["turnover_oneway_ann"]] is not None else "—"])
+    perf_tbl = tbl([L(lang, "Portfolio", "Portefeuille"), L(lang, "Return", "Rendement"), "Vol.", "Sharpe", L(lang, "Active", "Actif"), "TE",
+                    "Max DD", L(lang, "Turnover", "Rotation")], rows, num_cols=range(1, 8),
+                   row_cls=lambda i, r: "hl" if i == 0 else ("bench" if "MSCI" in r[0] else ""))
+    names = {"Equal weight": LBL["Equal weight"], "Minimum variance": LBL["Minimum variance"], "Mean-variance": LBL["Mean-variance"], "MSCI World Net EUR": "MSCI World Net EUR"}
+    navd = VALUE["nav"]
+    nav = {"dates": navd["dates"], "series": {names[k]: v for k, v in navd["series"].items()},
+           "colors": {names["Equal weight"]: "--accent", names["Minimum variance"]: "--s2", names["Mean-variance"]: "--s3", "MSCI World Net EUR": "--bench"},
+           "bench": ["MSCI World Net EUR"], "main": names["Equal weight"]}
+    chart = nav_chart("navchart", L(lang, "Cumulative performance, net of costs, hedged", "Performance cumulée, nette de frais, couverte"),
+                      L(lang, "weekly, rebased to 100", "hebdomadaire, base 100"), [("1", "1Y" if lang == "en" else "1A"), ("3", "3Y" if lang == "en" else "3A"), ("all", L(lang, "All", "Tout"))],
+                      [("nav", L(lang, "Growth", "Croissance")), ("dd", "Drawdown")], list(nav["series"]))
+    cal = VALUE["calendar"]
+    cal_rows = []
+    for y, vals in zip(cal["index"], cal["values"]):
+        lab = y + {"2026": L(lang, " (H1)", " (S1)"), "2021": L(lang, " (from Jul)", " (dès juil.)")}.get(y, "")
+        cal_rows.append([lab] + [f'<span class="{cls_sign(v)}">{pct(v, 1, True, lang)}</span>' for v in vals] +
+                        [f'<b class="{cls_sign(vals[0] - vals[3])}">{pct(vals[0] - vals[3], 1, True, lang)}</b>'])
+    cal_tbl = tbl([L(lang, "Year", "Année")] + [names[c] for c in cal["columns"]] + [L(lang, "EW − benchmark", "Équi. − benchmark")], cal_rows, num_cols=range(1, 6))
+    ic_svg = svg_columns([x["date"][2:7].replace("-", "/") for x in IC], [x["ic"] for x in IC], lambda v: num(v, 2, lang), w=520, h=250, m=(10, 10, 16, 30))
+    qavg = [statistics.mean(r[i] for r in Q["values"]) for i in range(5)]
+    q_svg = svg_columns(["Q1", "Q2", "Q3", "Q4", "Q5"], qavg, lambda v: pct(v, 1, lang=lang), w=520, h=250)
+    att = [a for a in VALUE["attribution"] if a["method"] == "Equal weight"]
+    sec_ = [a for a in att if a["dimension"] == "sector"][0]
+    fx = [a for a in att if a["dimension"] == "fx_overlay"][0]
+    att_svg = svg_diverging([L(lang, "Selection within sectors", "Sélection dans les secteurs"), L(lang, "Sector allocation", "Allocation sectorielle"), L(lang, "Currency hedge", "Couverture de change")],
+                            [sec_["selection"], sec_["allocation"], fx["allocation"]], lambda v: pct(v, 1, True, lang), w=640, label_w=220)
+    method = tbl([L(lang, "Step", "Étape"), L(lang, "Rule", "Règle")], [
+        [L(lang, "Universe", "Univers"), L(lang, "Bloomberg World large and mid caps in 24 developed countries, composition dated at each rebalance; free-float cap above €1bn, ADV above €5m.", "Grandes et moyennes capitalisations Bloomberg World de 24 pays développés, composition datée à chaque rebalancement ; flottant au-dessus de 1 Md€, volume quotidien au-dessus de 5 M€.")],
+        [L(lang, "Signal", "Signal"), L(lang, "EV/EBIT, P/B, FCF yield and EV/Sales as yields (banks: P/B and P/E), winsorised, z-scored within each GICS sector, averaged.", "EV/EBIT, P/B, rendement FCF et EV/Sales exprimés en rendements (banques : P/B et P/E), winsorisés, z-scorés dans chaque secteur GICS, moyennés.")],
+        [L(lang, "Accounting lag", "Décalage comptable"), L(lang, "Fiscal year used from year-end + 6 months, never before publication.", "Exercice utilisé à partir de la clôture + 6 mois, jamais avant sa publication.")],
+        [L(lang, "Selection", "Sélection"), L(lang, "50 names from the cheapest sector quintile, ±10-point sector and country bands vs the benchmark.", "50 titres du quintile le moins cher de chaque secteur, bandes ±10 points par secteur et par pays vs le benchmark.")],
+        [L(lang, "Weighting", "Pondération"), L(lang, "Equal weight · minimum variance · mean-variance; 0.5%-4% per name.", "Équipondéré · variance minimale · moyenne-variance ; 0,5 %-4 % par titre.")],
+        [L(lang, "Rebalancing", "Rebalancement"), L(lang, "Semi-annual, ten dates from June 2021 to December 2025; 15 bp per trade.", "Semestriel, dix dates de juin 2021 à décembre 2025 ; 15 pb par transaction.")],
+    ])
+    toc = [("summary", L(lang, "Summary", "Synthèse")), ("method", L(lang, "Method", "Méthode")), ("performance", "Performance"),
+           ("years", L(lang, "Year by year", "Année par année")), ("signal", L(lang, "The signal", "Le signal")),
+           ("attribution", "Attribution"), ("limits", L(lang, "Limits", "Limites"))]
+    secs = [
+        section("summary", L(lang, "Summary", "Synthèse"), f"""<div class="stats">
+ {stat(L(lang, "Return, equal weight", "Rendement, équipondéré"), pct(ew["ann_return"], 1, lang=lang), L(lang, "benchmark", "benchmark") + " " + pct(ew["bench_return"], 1, lang=lang))}
+ {stat(L(lang, "Active return", "Rendement actif"), pct(ew["active_return"], 1, True, lang), "TE " + pct(ew["tracking_error"], 1, lang=lang), cls_sign(ew["active_return"]))}
+ {stat(L(lang, "Signal IC", "IC du signal"), num(IC_MEAN, 3, lang), f"t ≈ {num(IC_T, 1, lang)}")}
+ {stat(L(lang, "Cheap − dear quintile", "Quintile bon marché − cher"), pct(SPREAD_ANN, 1, True, lang), L(lang, "a year", "par an"))}
+</div><div class="callout"><b>{L(lang, "The signal worked; the portfolio broke even.", "Le signal a fonctionné ; le portefeuille a fait jeu égal.")}</b> {L(lang,
+  f"Stock selection inside sectors added {pct(sec_['selection'], 1, True)} a year, but holding no mega-cap growth in 2023-24 cost {pct(sec_['allocation'], 1, True)} in sector allocation and the dollar hedge {pct(fx['allocation'], 1, True)}. This is why the investable version moved to a country and sector rotation, where the sector bet is the strategy itself.",
+  f"La sélection dans les secteurs a apporté {pct(sec_['selection'], 1, True, 'fr')} par an, mais l’absence de méga-capitalisations de croissance en 2023-24 a coûté {pct(sec_['allocation'], 1, True, 'fr')} en allocation sectorielle et la couverture du dollar {pct(fx['allocation'], 1, True, 'fr')}. C’est pour cela que la version investissable est devenue une rotation pays et secteurs, où le pari sectoriel est la stratégie elle-même.")}</div>"""),
+        section("method", L(lang, "Method", "Méthode"), method),
+        section("performance", "Performance", chart + "<h3>" + L(lang, "Statistics, July 2021 – June 2026", "Statistiques, juillet 2021 – juin 2026") + "</h3>" + perf_tbl),
+        section("years", L(lang, "Year by year", "Année par année"), cal_tbl),
+        section("signal", L(lang, "The signal", "Le signal"), f"""<div class="cols2">
+<figure class="ch"><figcaption><span>{L(lang, "Rank IC at each rebalance", "IC de rang à chaque rebalancement")}</span></figcaption>{ic_svg}</figure>
+<figure class="ch"><figcaption><span>{L(lang, "Average 6-month return by quintile", "Rendement moyen à 6 mois par quintile")} <small>· Q5 = {L(lang, "cheapest", "moins cher")}</small></span></figcaption>{q_svg}</figure></div>"""),
+        section("attribution", "Attribution", f'<figure class="ch"><figcaption><span>{L(lang, "Equal weight: sources of active return", "Équipondéré : sources du rendement actif")} <small>· {L(lang, "a year", "par an")}</small></span></figcaption>{att_svg}</figure>'),
+        section("limits", L(lang, "Limits", "Limites"), f"""<div class="prose"><ul>
+<li>{L(lang, "Five years, ten rebalances, one regime: no claim of significant alpha.", "Cinq ans, dix rebalancements, un seul régime : aucune prétention d’alpha significatif.")}</li>
+<li>{L(lang, "Bloomberg World stands in for MSCI World (constituents not licensed); replica correlation 0.996.", "Bloomberg World remplace MSCI World (constituants non licenciés) ; corrélation de la réplique 0,996.")}</li>
+<li>{L(lang, "Current GICS sectors applied to history; no market impact in costs.", "Secteurs GICS actuels appliqués à l’historique ; pas d’impact de marché dans les coûts.")}</li></ul></div>
+<div class="btns"><a class="btn" href="{'../../' if lang == 'en' else '../../../'}assets/value-developed/Investment_Note_Systematic_Value.pdf">{L(lang, "Investment note (PDF, English)", "Note d’investissement (PDF, anglais)")}</a><a class="btn" href="../../database/">{L(lang, "Data catalogue", "Catalogue des données")}</a></div>"""),
+    ]
+    body = phead(L(lang, "Research engine · Stocks", "Moteur de recherche · Actions"), L(lang, "Stock-level value screen", "Screen value titre par titre"),
+                 L(lang, "A sector-neutral value composite on 1,990 developed-market stocks, tested over five years with three weighting schemes. It finds the names behind the pitches.",
+                   "Un composite value neutre par secteur sur 1 990 actions de pays développés, testé sur cinq ans avec trois pondérations. C’est lui qui trouve les titres des pitches."),
+                 f'<a href="../">{t(lang, "strategies")}</a> / value-developed')
+    body += doc_layout(lang, toc, secs)
+    page("strategies/value-developed/index.html", lang, L(lang, "Stock-level value screen", "Screen value titre par titre"), body, "strategies",
+         L(lang, "Five-year backtest of a sector-neutral value screen on developed markets.", "Backtest sur cinq ans d’un screen value neutre par secteur sur les marchés développés."),
+         scripts="<script>window.NAV=" + json.dumps(nav).replace("</", "<\\/") + ";</script>")
+
+
+# ---------------------------------------------------------------- PITCHES
+def build_pitch_index(lang):
+    cards = []
+    for s in PITCHES:
+        f = s["files"]
+        root = "../" if lang == "en" else "../../"
+        dl = "".join(f'<a class="btn sm" href="{root}{f[k]}">{ICON_DL} {lab}</a>' for k, lab in [("pptx", "PowerPoint"), ("pdf", "PDF")] if k in f)
+        cards.append(f"""<article class="card" data-item data-rating="{s['rating'].lower()}" data-region="{REGION.get(s['country'], 'other')}">
+<div class="meta">{esc(s['ticker'])} · {esc(tr(lang, s['exchange']))} · {esc(tr(lang, s['country']))} · {esc(tr(lang, s['sector']))}</div>
+<h3><a href="{s['slug']}/">{esc(s['name'])}</a></h3>
+<div class="tags">{rating(s['rating'], lang)}<span class="tag">{esc(pf(s, lang, 'role'))}</span></div>
+<p>{esc(pf(s, lang, 'headline'))}</p>
+<div class="mini"><div><span>{t(lang, 'price')}</span><b>{money(s['sym'], s['price'], lang)}</b></div><div><span>{t(lang, 'target')}</span><b>{money(s['sym'], s['target'], lang)}</b></div><div><span>{t(lang, 'upside')}</span><b class="{cls_sign(s['upside'])}">{pct(s['upside'], 0, True, lang)}</b></div></div>
+<div class="foot links">{dl}</div></article>""")
+
+    def group(key, label, vals):
+        return f'<div class="fgroup"><span>{label}</span><button class="fbtn" data-f="{key}" data-v="all" aria-pressed="true">{t(lang, "all")}</button>' + "".join(
+            f'<button class="fbtn" data-f="{key}" data-v="{v}" aria-pressed="false">{lab}</button>' for v, lab in vals) + "</div>"
+    filt = (group("rating", L(lang, "Call", "Avis"), [("overweight", t(lang, "Overweight")), ("neutral", t(lang, "Neutral")), ("underweight", t(lang, "Underweight"))]) +
+            group("region", L(lang, "Region", "Région"), [("europe", "Europe"), ("americas", L(lang, "Americas", "Amériques")), ("asia", L(lang, "Asia", "Asie"))]))
+    body = phead(t(lang, "pitches"), L(lang, "What the screen bought, examined one by one", "Ce que le screen a acheté, examiné titre par titre"),
+                 L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each pitch has a twelve-slide deck in a buy-side format.",
+                   "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026. Chaque pitch a un deck de douze slides au format buy-side."))
+    body += f"""<section class="sec"><div class="wrap" data-filter-scope>
+<div class="filters">{filt}<input class="search" type="search" placeholder="{L(lang, 'Search a company, a sector…', 'Chercher une société, un secteur…')}" data-search aria-label="Search"><span class="count"></span></div>
+<div class="grid">{"".join(cards)}</div><div class="empty">{L(lang, "No pitch matches these filters.", "Aucun pitch ne correspond à ces filtres.")}</div>
+<p class="cap" style="margin-top:20px">{L(lang, "Prices as of 29 October 2026. Calls: Overweight above +15% upside to the base case, Neutral between −10% and +15%, Underweight below −10%. Student research, not investment advice.",
+   "Cours au 29 octobre 2026. Avis : Surpondérer au-delà de +15 % de potentiel vers le scénario central, Neutre entre −10 % et +15 %, Sous-pondérer en dessous de −10 %. Travail étudiant, pas un conseil en investissement.")}</p>
+</div></section>"""
+    page("pitches/index.html", lang, t(lang, "pitches"), body, "pitches", L(lang, "Stock pitches with downloadable decks.", "Stock pitches avec decks téléchargeables."))
+
+
+def build_pitch(s, lang):
+    v = s["valuation"]
+    sym = s["sym"]
+    f = s["files"]
+    lr = "../../"
+    dl = "".join(f'<a class="btn {"primary" if k == "pptx" else ""}" href="{lr if lang == "en" else "../../../"}{f[k]}">{ICON_DL} {lab}</a>'
+                 for k, lab in [("pptx", L(lang, "Download the deck (PowerPoint)", "Télécharger le deck (PowerPoint)")), ("pdf", L(lang, "PDF version", "Version PDF"))] if k in f)
+    up = s["upside"]
+    head = f"""<header class="pitchhead"><div class="wrap"><div>
+<div class="crumbs"><a href="../">{t(lang, "pitches")}</a> / {esc(s["ticker"])}</div>
+<div class="eyebrow" style="margin-top:12px">{esc(pf(s, lang, "industry"))} · {esc(tr(lang, s["country"]))} · {esc(tr(lang, s["exchange"]))}: {esc(s["ticker"])}</div>
+<h1>{esc(s["name"])}</h1><p class="headline">{esc(pf(s, lang, "headline"))}</p>
+<div class="tags">{rating(s["rating"], lang)}<span class="tag">{esc(pf(s, lang, "role"))}</span><span class="tag">{L(lang, "Horizon", "Horizon")} {esc(pf(s, lang, "horizon"))}</span></div>
+<div class="btns" style="margin-top:22px">{dl}</div></div>
+<div class="panel call"><header><span>{L(lang, "The call", "L’avis")}</span><span>{esc(price_note(s, lang))}</span></header>
+<div class="row"><span>{t(lang, "price")}</span><b class="big">{money(sym, s["price"], lang)}</b></div>
+<div class="row"><span>{L(lang, "Base-case value", "Valeur centrale")}<small>{esc(pf(s, lang, "method"))}</small></span><b class="big">{money(sym, s["target"], lang)}</b></div>
+<div class="row"><span>{t(lang, "upside")}</span><b class="big {cls_sign(up)}">{pct(up, 0, True, lang)}</b></div>
+<div class="row"><span>{L(lang, "52-week range", "Plus bas / plus haut 52 sem.")}</span><b>{money(sym, s["low52"], lang)} – {money(sym, s["high52"], lang)}</b></div></div>
+</div></header>"""
+    ks = pf(s, lang, "key_stats")
+    stats = '<div class="stats" style="margin-top:22px">' + "".join(stat(esc(k), esc(x)) for k, x in ks) + "</div>"
+    thesis = '<div class="numlist">' + "".join(f'<div class="box"><h4>{esc(a)}</h4><p>{esc(b)}</p></div>' for a, b in pf(s, lang, "thesis")) + "</div>"
+    stories = pf(s, lang, "stories")
+    inp = lambda r: '<span style="white-space:nowrap">' + esc(fr_inputs(r["inputs"]) if lang == "fr" else r["inputs"]) + "</span>"
+    sc_rows = [[f'<b>{t(lang, r["name"])}</b>', inp(r), money(sym, r["value"], lang),
+                f'<span class="{cls_sign(r["upside"])}">{pct(r["upside"], 0, True, lang)}</span>', esc(stories[i])] for i, r in enumerate(s["scenarios_out"])]
+    sc_tbl = tbl([L(lang, "Scenario", "Scénario"), L(lang, "Inputs", "Hypothèses"), L(lang, "Value / share", "Valeur / action"), L(lang, "vs price", "vs cours"),
+                  L(lang, "What has to happen", "Ce qu’il faut voir")], sc_rows, num_cols=(2, 3), row_cls=lambda i, r: "hl" if i == 1 else "")
+    ff = svg_football(s, lang, dict(range52=L(lang, "52-week range", "Plage 52 semaines"), scen=L(lang, "Scenarios (bear → bull)", "Scénarios (pessimiste → optimiste)"),
+                                    cons=L(lang, "Consensus target", "Objectif du consensus"), price=t(lang, "price"), base=L(lang, "Base case", "Scénario central")))
+    val = f"""<div class="prose"><p><b>{esc(pf(s, lang, "method"))}.</b> {esc(pf(s, lang, "explain"))}</p></div>{sc_tbl}
+<figure class="ch" style="margin-top:18px"><figcaption><span>{L(lang, "Valuation range", "Fourchette de valorisation")}</span></figcaption>{ff}</figure>"""
+    cat = '<ul class="timeline">' + "".join(f'<li><div class="d">{esc(d)}</div><p>{esc(x)}</p></li>' for d, x in pf(s, lang, "catalysts")) + "</ul>"
+    trig = ('<div class="sell"><b>' + L(lang, "We change the call if", "Nous changeons d’avis si") + "</b><ul>" +
+            "".join(f"<li>{esc(x)}</li>" for x in pf(s, lang, "triggers")) + "</ul></div>")
+    fct = s["facts"]
+    cc, scode = COUNTRY_CODE.get(s["country"]), SECTOR_CODE.get(s["sector"])
+    strat = f"""<div class="cols2">
+<div class="box accent"><div class="k">{L(lang, "Value rotation (ETF)", "Rotation value (ETF)")}</div><h4 style="margin-top:6px">{esc(tr(lang, s["country"]))} · {esc(tr(lang, s["sector"]))}</h4>
+<p>{L(lang, "This name belongs to the country sleeve and to the sector sleeve of the same names in the rotation universe. When the rotation holds either, this pitch is a way to express the view in a single stock.", "Ce titre appartient à la poche pays et à la poche secteur correspondantes de l’univers de la rotation. Quand la rotation détient l’une ou l’autre, ce pitch permet d’exprimer la vue en action individuelle.")}</p>
+<p style="margin-top:10px"><a href="{lr if lang == 'en' else '../../'}strategies/value-rotation/#universe">{L(lang, "See the universe", "Voir l’univers")} →</a></p></div>
+<div class="box accent"><div class="k">{L(lang, "Stock-level screen", "Screen titres")}</div><h4 style="margin-top:6px">{L(lang, "Rank", "Rang")} {fct["sector_rank"]} {t(lang, "of")} {fct["sector_n"]} · score {num(fct["score"], 2, lang)}</h4>
+<p>{L(lang, f"Value score at the December 2025 rebalance, within {fct['sector']}, on accounts for the fiscal year to {fct['fy_used'][:7]}.", f"Score value au rebalancement de décembre 2025, au sein du secteur {tr('fr', fct['sector'])}, sur les comptes de l’exercice clos en {fct['fy_used'][:7]}.")}</p>
+<p style="margin-top:10px"><a href="{lr if lang == 'en' else '../../'}strategies/value-developed/">{L(lang, "See the screen", "Voir le screen")} →</a></p></div></div>"""
+    toc = [("summary", L(lang, "In one paragraph", "En un paragraphe")), ("thesis", L(lang, "Thesis", "Thèse")), ("valuation", L(lang, "Valuation", "Valorisation")),
+           ("catalysts", L(lang, "Catalysts and risks", "Catalyseurs et risques")), ("strategies", L(lang, "In our strategies", "Dans nos stratégies")),
+           ("deck", "Deck")]
+    secs = [
+        section("summary", L(lang, "In one paragraph", "En un paragraphe"), f'<div class="prose"><p style="font-size:19px">{esc(pf(s, lang, "one_liner"))}</p></div>{stats}'),
+        section("thesis", L(lang, "Investment thesis", "Thèse d’investissement"), thesis),
+        section("valuation", L(lang, "Valuation", "Valorisation"), val),
+        section("catalysts", L(lang, "Catalysts and risks", "Catalyseurs et risques"), f'<div class="cols2" style="align-items:start"><div>{cat}</div>{trig}</div>'),
+        section("strategies", L(lang, "In our strategies", "Dans nos stratégies"), strat),
+        section("deck", "Deck", f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap"><div><h4>{L(lang, "The full pitch", "Le pitch complet")}</h4><p>{L(lang, "Twelve slides: summary, company, macro, why the screen picked it, track record, financials, variant perception, valuation, catalysts, risks and sources.", "Douze slides : synthèse, société, macro, pourquoi le screen l’a choisi, historique, financiers, variant perception, valorisation, catalyseurs, risques et sources.")}</p></div><div class="btns">{dl}</div></div>'),
+    ]
+    body = head + doc_layout(lang, toc, secs) + f'<div class="wrap"><p class="cap" style="margin:8px 0 48px">{L(lang, "Student research for educational and interview purposes. Not investment advice.", "Travail de recherche étudiant à visée pédagogique et de préparation aux entretiens. Pas un conseil en investissement.")}</p></div>'
+    page(f"pitches/{s['slug']}/index.html", lang, s["name"], body, "pitches", pf(s, lang, "headline"))
+
+
+# ---------------------------------------------------------------- RESEARCH
+def research_notes(lang):
     out = []
-    for p in sorted((CONTENT / "research").glob("*.md")):
+    for p in sorted((CONTENT / lang / "research").glob("*.md"), reverse=True):
         meta, text = front(p)
         out.append(dict(slug=p.stem, title=meta.get("title", p.stem), date=meta.get("date", ""), summary=meta.get("summary", ""), text=text))
     return out
 
 
-def build_research():
-    notes = sorted(research_notes(), key=lambda n: n["slug"], reverse=True)
-    items = "".join(f'<a class="noteitem" href="{n["slug"]}/"><span class="d">{esc(n["date"])}</span><div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div><span class="go">Read →</span></a>' for n in notes)
-    body = f"""<div class="wrap"><header class="phead"><div class="eyebrow">Research notes</div><h1>Findings, written up when they happen</h1>
-<p class="lede">Short notes on what the work revealed: data errors caught, construction choices tested, lessons from the pitches. Each one states the evidence and what changed as a result.</p></header>
-<section class="sec"><div class="notes">{items}</div></section></div>"""
-    page("research/index.html", "Research", body, "research", "Research notes by Noah Doose.", 1)
-    for i, n in enumerate(notes):
-        body = f"""<div class="wrap"><header class="phead"><div class="crumbs"><a href="../">Research</a> / {esc(n["date"])}</div>
-<h1>{esc(n["title"])}</h1><p class="lede">{esc(n["summary"])}</p></header>
-<section class="sec"><article class="prose">{md(n["text"])}</article></section>
-<section class="sec noprint"><div class="btns"><a class="btn" href="../">← All research notes</a><a class="btn" href="../../strategies/value-developed/">The value strategy</a></div></section></div>"""
-        page(f"research/{n['slug']}/index.html", n["title"], body, "research", n["summary"], 2)
+def build_research(lang):
+    notes = research_notes(lang)
+    items = "".join(f'<a class="noteitem" href="{n["slug"]}/"><span class="d">{esc(n["date"])}</span><div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div><span class="go">{t(lang, "read")} →</span></a>' for n in notes)
+    body = phead(t(lang, "research"), L(lang, "Findings, written up when they happen", "Des découvertes, écrites quand elles arrivent"),
+                 L(lang, "Short notes on what the work revealed: data errors caught, construction choices tested, lessons from the pitches.",
+                   "De courtes notes sur ce que le travail a révélé : erreurs de données détectées, choix de construction testés, leçons des pitches."))
+    body += f'<section class="sec"><div class="wrap"><div class="notes">{items}</div></div></section>'
+    page("research/index.html", lang, t(lang, "research"), body, "research", L(lang, "Research notes.", "Notes de recherche."))
+    for n in notes:
+        body = phead(n["date"], esc(n["title"]), esc(n["summary"]), f'<a href="../">{t(lang, "research")}</a>')
+        body += f'<section class="sec"><div class="wrap"><article class="prose">{md(n["text"])}</article><div class="btns" style="margin-top:32px"><a class="btn" href="../">← {t(lang, "research")}</a></div></div></section>'
+        page(f"research/{n['slug']}/index.html", lang, n["title"], body, "research", n["summary"])
 
 
-def simple_md_page(name, active, eyebrow, lede, depth=1):
-    meta, text = front(CONTENT / f"{name}.md")
+def simple_page(name, lang, active, eyebrow, lede):
+    meta, text = front(CONTENT / lang / f"{name}.md")
     m = re.match(r"^# (.*)$", text, re.M)
-    title = m.group(1) if m else meta.get("title", name.title())
-    body = f"""<div class="wrap"><header class="phead"><div class="eyebrow">{esc(eyebrow)}</div><h1>{esc(title)}</h1><p class="lede">{lede}</p></header>
-<section class="sec"><article class="prose">{md(strip_h1(text))}</article></section></div>"""
-    page(f"{name}/index.html", meta.get("title", title), body, active, lede, depth)
+    title = m.group(1) if m else meta.get("title", name)
+    body = phead(eyebrow, esc(title), lede) + f'<section class="sec"><div class="wrap"><article class="prose">{md(strip_h1(text))}</article></div></section>'
+    page(f"{name}/index.html", lang, meta.get("title", title), body, active, lede)
 
 
-# ---------------------------------------------------------------- strategies
-def build_strategies():
-    ew = H["EW"]
-    tf = json.loads((ROOT / "strategies/trend_following/results/results.json").read_text())
-    ref = tf["meta"]["reference"]
-    st = tf["stats"]["full"][ref]
-    body = f"""<div class="wrap"><header class="phead"><div class="eyebrow">Strategies</div><h1>Two strategies, built the same way</h1>
-<p class="lede">Each strategy starts from a written policy, fixes its parameters before the first backtest and reports every variant tested, net of costs.</p></header>
-<section class="sec"><div class="grid">
- <article class="card"><div class="meta"><span>Equities · developed markets</span><span>Backtest complete · Oct 2026</span></div>
-  <h3><a href="value-developed/">Systematic Value — Developed Markets</a></h3>
-  <p>Intra-sector value composite on 1,990 developed large and mid caps, 50 names, three weighting schemes, semi-annual rebalancing, benchmarked on MSCI World Net EUR.</p>
-  <div class="stats" style="margin-top:6px">
-   <div class="stat"><div class="k">Return, EW</div><div class="v">{pct(ew["ann_return"])}</div><div class="s">vs {pct(ew["bench_return"])}</div></div>
-   <div class="stat"><div class="k">Signal IC</div><div class="v">{IC_MEAN:.3f}</div><div class="s">t ≈ {IC_T:.1f}</div></div></div>
-  <div class="foot"><span class="figs"><span>2021-2026 · weekly</span></span><a class="btn sm" href="value-developed/">Open report →</a></div></article>
- <article class="card"><div class="meta"><span>Multi-asset futures</span><span>Report · Oct 2026</span></div>
-  <h3><a href="../trend-following/">Multi-Asset Trend Following</a></h3>
-  <p>Time-series momentum on {tf["meta"]["n_markets"]} futures markets (equities, bonds, currencies, commodities), {int(tf["meta"]["vol_target"] * 100)}% volatility target, design and validation periods split at {tf["meta"]["split"][:4]}, compared with an MSCI World Value proxy.</p>
-  <div class="stats" style="margin-top:6px">
-   <div class="stat"><div class="k">Return, blend</div><div class="v">{pct(st["annual_return"])}</div><div class="s">{st["years"]:.0f} years</div></div>
-   <div class="stat"><div class="k">Sharpe ratio</div><div class="v">{st["sharpe"]:.2f}</div><div class="s">max DD {pct(st["max_drawdown"], 0)}</div></div></div>
-  <div class="foot"><span class="figs"><span>{tf["meta"]["start"][:4]}-{tf["meta"]["end"][:4]} · daily</span></span><a class="btn sm" href="../trend-following/">Open report →</a></div></article>
-</div></section></div>"""
-    page("strategies/index.html", "Strategies", body, "strategies", "Backtested strategies by Noah Doose.", 1)
-
-
-def build_value():
-    perf = VALUE["performance"]
-    pc = perf["columns"]
-    ci = {c: i for i, c in enumerate(pc)}
-    ew = H["EW"]
-    toc = [("summary", "Summary"), ("method", "Method"), ("performance", "Performance"), ("years", "Year by year"),
-           ("signal", "The signal"), ("attribution", "Attribution"), ("factors", "Factor exposures"),
-           ("robustness", "Robustness"), ("limits", "Limits"), ("documents", "Documents")]
-    # performance table
-    rows = []
-    for name, v in zip(perf["index"], perf["values"]):
-        m = re.match(r"^(.*?) \((.*)\)$", name)
-        label = f'{esc(m.group(1))}<small style="display:block;color:var(--slate);font-weight:400">{esc(m.group(2))}</small>' if m else esc(name)
-        rows.append([label, pct(v[ci["ann_return"]]), pct(v[ci["ann_vol"]]), fnum(v[ci["sharpe"]], 2),
-                     f'<span class="{cls_sign(v[ci["active_return"]])}">{pct(v[ci["active_return"]], 1, True)}</span>' if "MSCI" not in name else "—",
-                     pct(v[ci["tracking_error"]]) if "MSCI" not in name else "—",
-                     fnum(v[ci["info_ratio"]], 2) if v[ci["info_ratio"]] is not None else "—",
-                     pct(v[ci["max_drawdown"]]),
-                     pct(v[ci["turnover_oneway_ann"]], 0) if v[ci["turnover_oneway_ann"]] is not None else "—"])
-    perf_tbl = tbl(["Portfolio", "Return", "Vol.", "Sharpe", "Active", "TE", "IR", "Max DD", "Turnover"],
-                   rows, num_cols=range(1, 9), cls="perf",
-                   row_cls=lambda i, r: "hl" if r[0].startswith("Equal weight<") and ">hedged, net" in r[0] else ("bench" if "MSCI" in r[0] else ""))
-    # calendar
-    cal = VALUE["calendar"]
-    def heat(v):
-        a = min(abs(v) / .25, 1) * .55 + .08
-        col = "14,107,79" if v >= 0 else "178,58,46"
-        return f'<span style="display:block;margin:-10px -14px;padding:10px 14px;background:rgba({col},{a:.2f})">{pct(v, 1, True)}</span>'
-    cal_rows = []
-    for y, vals in zip(cal["index"], cal["values"]):
-        lab = y + (" (H1)" if y == "2026" else " (from Jul)" if y == "2021" else "")
-        cal_rows.append([lab] + [heat(v) for v in vals] + [f'<span class="{cls_sign(vals[0] - vals[3])}">{pct(vals[0] - vals[3], 1, True)}</span>'])
-    cal_tbl = tbl(["Year"] + cal["columns"] + ["EW − benchmark"], cal_rows, num_cols=range(1, 6))
-    # IC
-    ic_svg = svg_columns([x["date"][2:7].replace("-", "/") for x in IC], [x["ic"] for x in IC], lambda v: f"{v:+.2f}".replace("-", "−"), w=520, h=250, m=(10, 10, 16, 30))
-    qavg = [statistics.mean(r[i] for r in Q["values"]) for i in range(5)]
-    q_svg = svg_columns(["Q1 dear", "Q2", "Q3", "Q4", "Q5 cheap"], qavg, lambda v: pct(v, 1), w=520, h=250,
-                        color_pos="var(--green)")
-    # attribution
-    att = VALUE["attribution"]
-    arows = [[esc(a["method"]), esc(a["dimension"].replace("fx_overlay", "FX hedge").title() if a["dimension"] != "fx_overlay" else "FX hedge"),
-              f'<span class="{cls_sign(a["allocation"])}">{pct(a["allocation"], 2, True)}</span>',
-              f'<span class="{cls_sign(a["selection"])}">{pct(a["selection"], 2, True)}</span>' if a["selection"] is not None else "—"] for a in att]
-    att_tbl = tbl(["Weighting", "Dimension", "Allocation, a year", "Selection, a year"], arows, num_cols=(2, 3))
-    ew_att = [a for a in att if a["method"] == "Equal weight"]
-    sec = [a for a in ew_att if a["dimension"] == "sector"][0]
-    fx = [a for a in ew_att if a["dimension"] == "fx_overlay"][0]
-    att_svg = svg_diverging(["Selection within sectors", "Sector allocation", "Currency hedge"],
-                            [sec["selection"], sec["allocation"], fx["allocation"]], lambda v: pct(v, 1, True), w=620, label_w=200)
-    # factors
-    F = VALUE["factors"]
-    fcols = [c for c in F["columns"] if "excess" in c]
-    fi = {k: i for i, k in enumerate(F["index"])}
-    names = {"const": "Alpha, a year", "MKT (EUR)": "Market (EUR)", "SMB": "Size (SMB)", "HML": "Value (HML)",
-             "RMW": "Profitability (RMW)", "CMA": "Investment (CMA)", "MOM": "Momentum (MOM)", "R2": "R²"}
-    frows = []
-    for k, lab in names.items():
-        r = [lab]
-        for c in fcols:
-            v = F["values"][fi[k]][F["columns"].index(c)]
-            r.append(pct(v, 1, True) if k == "const" else f"{v:.2f}".replace("-", "−"))
-        frows.append(r)
-    f_tbl = tbl(["Loading"] + [c.replace(" excess (unhedged)", "") for c in fcols], frows, num_cols=range(1, 4))
-    # robustness
-    rob = [r for r in VALUE["robustness"] if r["method"] in ("Equal weight", "Score-tilted")]
-    rrows = [[esc(r["variant"]), pct(r["ann_return"]), f'<span class="{cls_sign(r["active_return"])}">{pct(r["active_return"], 1, True)}</span>',
-              pct(r["tracking_error"]), pct(r["max_drawdown"]), pct(r["turnover_oneway_ann"], 0) if r["turnover_oneway_ann"] else "—"] for r in rob]
-    r_tbl = tbl(["Variant (equal weight unless stated)", "Return", "Active", "Tracking error", "Max DD", "Turnover"], rrows, num_cols=range(1, 6),
-                row_cls=lambda i, r: "hl" if r[0].startswith("Base") else "")
-    nav_json = json.dumps(VALUE["nav"]).replace("</", "<\\/")
-    chk = "".join(f'<label><input type="checkbox" data-s="{esc(k)}" checked>{esc(k)}</label>' for k in VALUE["nav"]["series"])
-    method = tbl(["Step", "Rule"], [
-        ["Universe", "Bloomberg World Large &amp; Mid Cap members in 24 developed countries, <b>composition dated at each rebalance</b>; free-float cap above €1bn, 3-month ADV above €5m; one line per issuer"],
-        ["Signal", "EV/EBIT, P/B, FCF yield and EV/Sales expressed as yields (banks and insurers: P/B and P/E); winsorised at 1/99%; z-scored <b>within GICS sector</b>; equal-weight composite"],
-        ["Accounting lag", "A fiscal year is used from year-end + 6 months and never before its announcement date"],
-        ["Selection", "50 names maximising total score in the cheapest sector quintile, within ±10-point sector and country bands versus the benchmark (exact integer programme); a buffer keeps holdings still in the top two quintiles"],
-        ["Weighting", "Equal weight · minimum variance (Ledoit-Wolf covariance, 250 weeks) · mean-variance; 0.5%-4% per name, long only"],
-        ["Rebalancing", "Semi-annual, ten dates from June 2021 to December 2025; trades at the first Friday after the decision date; 15 bp per trade"],
-        ["Currency", "EUR base; currencies carried by five or more names are hedged with forwards"],
-        ["Benchmark", "MSCI World Net Total Return EUR (MSDEWIN)"]])
-    secs = [
-        section("summary", "01", "Summary", f"""
-<div class="stats">
- <div class="stat"><div class="k">Return, equal weight</div><div class="v">{pct(ew["ann_return"])}</div><div class="s">benchmark {pct(ew["bench_return"])}</div></div>
- <div class="stat"><div class="k">Active return</div><div class="v {cls_sign(ew["active_return"])}">{pct(ew["active_return"], 1, True)}</div><div class="s">tracking error {pct(ew["tracking_error"])}</div></div>
- <div class="stat"><div class="k">Max drawdown</div><div class="v">{pct(ew["max_drawdown"])}</div><div class="s">beta {ew["beta"]:.2f}</div></div>
- <div class="stat"><div class="k">Signal IC</div><div class="v">{IC_MEAN:.3f}</div><div class="s">t ≈ {IC_T:.1f}, {len(IC)} dates</div></div>
- <div class="stat"><div class="k">Q5 − Q1 spread</div><div class="v">{pct(SPREAD_ANN, 1, True)}</div><div class="s">a year, compounded</div></div>
-</div>
-<div class="callout"><b>The signal worked; the portfolio broke even.</b> Cheap stocks beat expensive ones within their sector, and stock
-selection added {pct(sec["selection"], 1, True)} a year. But the portfolio held no mega-cap growth in 2023-24, sector allocation cost
-{pct(sec["allocation"], 1, True)} and the dollar hedge {pct(fx["allocation"], 1, True)}. Net of costs and withholding tax, equal weight matched
-the benchmark; both optimisers lagged it by more than 2 points a year.</div>"""),
-        section("method", "02", "Method", method, "Every rule below was fixed before the first backtest ran."),
-        section("performance", "03", "Performance", f"""
-<figure class="ch chartbox" id="navchart"><figcaption><span>Cumulative performance, net of costs, hedged <small>· rebased to 100 · weekly</small></span>
-<span class="seg"><button data-mode="nav" aria-pressed="true">Growth</button><button data-mode="dd" aria-pressed="false">Drawdown</button></span>
-<span class="seg"><button data-range="1" aria-pressed="false">1Y</button><button data-range="3" aria-pressed="false">3Y</button><button data-range="all" aria-pressed="true">All</button></span></figcaption>
-<div class="toggles" style="margin-bottom:8px">{chk}</div><div class="plot"></div><div class="tip"></div></figure>
-<h3>Statistics, 2 July 2021 – 26 June 2026</h3>{perf_tbl}
-<p class="cap">Hedged = currencies held by five or more names hedged to EUR. Costs: 15 bp per trade. Withholding tax at MSCI-style statutory rates. TE = tracking error, IR = information ratio. Turnover one-way, annualised.</p>"""),
-        section("years", "04", "Year by year", cal_tbl + '<p class="cap">2021 starts in July; 2026 covers the first half only.</p>',
-                "Value paid in 2022 and 2025, and lagged badly in 2024, when the benchmark rose on mega-cap growth the strategy could not own."),
-        section("signal", "05", "The signal", f"""<div class="cols2">
-<figure class="ch"><figcaption><span>Rank IC at each rebalance <small>· sector-neutral, next 6 months</small></span></figcaption>{ic_svg}</figure>
-<figure class="ch"><figcaption><span>Average 6-month return by quintile <small>· Q5 = cheapest</small></span></figcaption>{q_svg}</figure></div>
-<p class="cap">The information coefficient is the rank correlation between the score at each date and the next six-month return, measured within sectors. Positive at {sum(1 for x in IC if x["ic"] > 0)} of {len(IC)} dates.</p>"""),
-        section("attribution", "06", "Attribution", f"""<figure class="ch" style="margin-bottom:18px"><figcaption><span>Equal weight: where the active return came from <small>· a year</small></span></figcaption>{att_svg}</figure>{att_tbl}""",
-                "Brinson attribution by sector and by country, plus the cost of the currency overlay."),
-        section("factors", "07", "Factor exposures", f_tbl + '<p class="cap">Weekly regressions of unhedged excess returns on Fama-French developed five factors plus momentum (Kenneth French Data Library), 260 weeks. Alpha is the annualised intercept.</p>',
-                "A clear value (HML) and small-cap tilt, and a negative momentum loading: buying what has fallen."),
-        section("robustness", "08", "Robustness", r_tbl, "Each variant changes one rule and keeps the others. None was adopted after seeing its result."),
-        section("limits", "09", "Limits", """<div class="prose"><ul>
-<li><b>Five years, ten rebalances, one regime.</b> No claim of statistically significant alpha.</li>
-<li>Bloomberg's World index stands in for MSCI's (MSCI constituents not licensed); a replica built from security returns tracks MSCI World Net with 0.996 correlation.</li>
-<li>Current GICS sectors applied to history; no market impact in costs; idealised weekly hedge.</li>
-<li>Negative momentum loading (−0.27): the natural next step is a value + momentum + quality composite.</li></ul></div>"""),
-        section("documents", "10", "Documents", """<div class="links">
-<a class="btn" href="../../assets/value-developed/Investment_Note_Systematic_Value.pdf">Investment note (PDF)</a>
-<a class="btn" href="../../pitches/">Eight stock pitches</a><a class="btn" href="../../database/">Data catalogue</a>
-<a class="btn" href="../../research/2026-10-30-optimiser-vs-equal-weight/">Why the optimiser lost</a></div>"""),
-    ]
-    tocs = "".join(f'<a href="#{i}">{t}</a>' for i, t in toc)
-    body = f"""<div class="wrap"><header class="phead"><div class="crumbs"><a href="../">Strategies</a> / value-developed</div>
-<h1>Systematic Value — Developed Markets</h1>
-<p class="lede">Cheap stocks, measured on several fundamentals and compared only with their sector peers, should outperform over a full cycle.
-This strategy harvests that premium with transparent rules, controls sector and country bets, and asks one construction question:
-does an optimiser beat equal weighting on the same ideas?</p></header>
-<div class="doc"><nav class="toc" aria-label="On this page"><b>On this page</b>{tocs}</nav><div>{"".join(secs)}</div></div></div>"""
-    page("strategies/value-developed/index.html", "Systematic Value — Developed Markets", body, "strategies",
-         "Five-year backtest of a sector-neutral value strategy on developed markets.", 2,
-         scripts=f"<script>window.NAV={nav_json};</script>")
-
-
-# ---------------------------------------------------------------- pitches
-ZLAB = {"ebit_ev": "EBIT / EV", "b_p": "Book / price", "fcf_p": "FCF yield", "s_ev": "Sales / EV", "e_p": "Earnings / price"}
-
-
-def build_pitch_index():
-    sectors = sorted({s["sector"] for s in PITCHES})
-    cards = []
-    for s in PITCHES:
-        f = s["files"]
-        links = f'<a class="chip" href="{s["slug"]}/"><b>Read note</b></a>' + "".join(
-            f'<a class="chip" href="../{f[k]}">{lab}</a>' for k, lab in [("pptx", "PPTX"), ("pdf", "Deck PDF"), ("note", "Note PDF")] if k in f)
-        cards.append(f"""<article class="card" data-item data-rating="{s["rating"].lower()}" data-region="{s["region"].lower()}" data-sector="{slugify(s["sector"])}">
-<div class="meta"><span>{esc(s["ticker"])} · {esc(s["exchange"])} · {esc(s["country"])}</span><span style="color:var(--green-ink)">{esc(s["sector"])}</span></div>
-<h3><a href="{s["slug"]}/">{esc(s["name"])}</a></h3>
-<div>{rating(s["rating"])} <span class="chip" style="height:24px">{esc(s["role"])}</span></div>
-<p>{esc(s["headline"])}</p>
-<div class="foot"><span class="figs"><span>Price <b>{money(s["sym"], s["price"])}</b></span><span>Target <b>{money(s["sym"], s["target"])}</b></span><b class="{cls_sign(s["upside"])}">{pct(s["upside"], 0, True)}</b></span></div>
-<div class="links">{links}</div></article>""")
-    def group(key, label, vals):
-        return f'<div class="fgroup"><span>{label}</span><button class="fbtn" data-f="{key}" data-v="all" aria-pressed="true">All</button>' + "".join(
-            f'<button class="fbtn" data-f="{key}" data-v="{v}" aria-pressed="false">{l}</button>' for v, l in vals) + "</div>"
-    filt = (group("rating", "Call", [("overweight", "Overweight"), ("neutral", "Neutral"), ("underweight", "Underweight")]) +
-            group("region", "Region", [("europe", "Europe"), ("americas", "Americas"), ("asia", "Asia")]) +
-            group("sector", "Sector", [(slugify(x), x) for x in sectors]))
-    rows = [[f'<a href="{s["slug"]}/">{esc(s["name"])}</a>', esc(s["sector"]), esc(s["country"]), rating(s["rating"]),
-             money(s["sym"], s["price"]), money(s["sym"], s["target"]), (f'<span class="{cls_sign(s["upside"])}">{pct(s["upside"], 0, True)}</span>', s["upside"]),
-             esc(s["valuation"]["method"])] for s in PITCHES]
-    body = f"""<div class="wrap"><header class="phead"><div class="eyebrow">Stock pitches · October 2026</div><h1>What the screen bought, examined one by one</h1>
-<p class="lede">Eight holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each has a twelve-slide deck in a
-buy-side format and a learning note that explains the business, the macro, the numbers and the valuation from first principles.</p></header>
-<section class="sec" data-filter-scope>
-<div class="filters">{filt}<input class="search" type="search" placeholder="Search company, sector, thesis…" data-search aria-label="Search pitches"><span class="count"></span></div>
-<div class="grid">{"".join(cards)}</div><div class="empty">No pitch matches these filters.</div></section>
-<section class="sec"><div class="shead"><span class="idx">Σ</span><h2>The book at a glance</h2><p>Click a column header to sort. Upside is to the base-case scenario value.</p></div>
-{tbl(["Company", "Sector", "Country", "Call", "Price", "Target", "Upside", "Valuation method"], rows, num_cols=(4, 5, 6), sortable=True)}
-<p class="cap">Prices as of 29 October 2026. Calls: Overweight above +15% upside, Neutral between −10% and +15%, Underweight below −10%. Student research, not investment advice.</p></section></div>"""
-    page("pitches/index.html", "Stock pitches", body, "pitches", "Eight stock pitches with decks and learning notes.", 1)
-
-
-def src_item(i, x):
-    link = ""
-    if x["url"]:
-        host = re.sub(r"^https?://(www[.])?", "", x["url"]).split("/")[0]
-        link = f' · <a href="{esc(x["url"])}">{esc(host)}</a>'
-    return f'<li><span class="tag">{esc(x["tag"] or str(i + 1))}</span><span>{esc(x["label"])}{link}</span></li>'
-
-
-def build_pitch(s):
-    f = s["facts"]
-    v = s["valuation"]
-    n = s["note"]
-    sym = s["sym"]
-    toc = [("overview", "Overview"), ("business", "The business"), ("macro", "Industry & macro"), ("history", "What happened"),
-           ("screen", "Why the screen picked it"), ("thesis", "Thesis"), ("variant", "Variant perception"), ("financials", "Financials"),
-           ("valuation", "Valuation"), ("catalysts", "Catalysts"), ("risks", "Risks & sell rules"), ("interview", "Interview prep"),
-           ("glossary", "Glossary"), ("sources", "Sources")]
-    dl = "".join(f'<a class="btn sm" href="../../{s["files"][k]}">{lab}</a>' for k, lab in [("pptx", "Deck (.pptx)"), ("pdf", "Deck (PDF)"), ("note", "This note (PDF)")] if k in s["files"])
-    up = s["upside"]
-    head = f"""<header class="pitchhead"><div>
-<div class="crumbs noprint"><a href="../">Stock pitches</a> / {esc(s["ticker"])}</div>
-<div class="eyebrow" style="margin-top:12px">{esc(s["industry"])} · {esc(s["country"])} · {esc(s["exchange"])}: {esc(s["ticker"])}</div>
-<h1>{esc(s["name"])}</h1><p class="headline">{esc(s["headline"])}</p>
-<div class="tags">{rating(s["rating"])}<span class="chip">{esc(s["role"])}</span>{f'<span class="chip">Conviction: {esc(s["conviction"])}</span>' if s["conviction"] != "Case study" else ""}<span class="chip">{esc(s["horizon"])}</span></div>
-<div class="dl">{dl}</div></div>
-<div class="callbox"><div class="ledger"><header><span>The call</span><span>{esc(s["price_note"])}</span></header>
-<div class="row"><span>Rating</span><b>{rating(s["rating"])}</b></div>
-<div class="row"><span>Price</span><b class="big">{money(sym, s["price"])}</b></div>
-<div class="row"><span>Base-case value<small>{esc(v["method"])}</small></span><b class="big">{money(sym, s["target"])}</b></div>
-<div class="row"><span>Upside to base case</span><b class="big {cls_sign(up)}">{pct(up, 0, True)}</b></div>
-<div class="row"><span>Market cap</span><b>{sym}{s["mcap_bn"]:,.1f}bn</b></div>
-<div class="row"><span>52-week range</span><b>{money(sym, s["low52"])} – {money(sym, s["high52"])}</b></div></div></div></header>"""
-    stats = '<div class="stats">' + "".join(f'<div class="stat"><div class="k">{esc(k)}</div><div class="v" style="font-size:22px">{esc(val)}</div></div>' for k, val in s["key_stats"]) + "</div>"
-    # segments
-    sg = s["segments"]
-    unit = sg["unit"]
-    fmt = (lambda x: f"{x:g}%") if unit == "%" else (lambda x: f"{x:,.1f}{unit}" if unit == "m" else f"{x:,.0f} {unit}")
-    if sg.get("values2"):
-        seg_svg = svg_grouped(sg["labels"], [sg["values"], sg["values2"]], sg["series"], lambda x: f"{x:,.0f}")
-    else:
-        seg_svg = svg_hbars(sg["labels"], sg["values"], fmt)
-    biz_boxes = '<div class="cols2" style="margin-top:18px">' + "".join(f'<div class="box"><h4>{esc(a)}</h4><p>{esc(b)}</p></div>' for a, b in s["business"]) + "</div>"
-    macro_cards = '<div class="cols2" style="margin-top:18px">' + "".join(
-        f'<div class="box accent"><div class="k">{esc(a)}</div><div class="big">{esc(b)}</div><p>{esc(c)}</p></div>' for a, b, c in s["macro"]) + "</div>"
-    hist = '<ul class="timeline">' + "".join(f'<li><div class="d">{esc(d)}</div><p>{esc(t)}</p></li>' for d, t in n["history"]) + "</ul>"
-    # screen
-    mult = f["multiples"]
-    mrows = []
-    for k in mult:
-        a, b, c = mult.get(k), f["peer_median"].get(k), f["sector_median"].get(k)
-        mrows.append([k, f"{a:.2f}x" if a is not None else "—", f"{b:.2f}x" if b is not None else "—", f"{c:.2f}x" if c is not None else "—"])
-    m_tbl = tbl(["Multiple, Dec 2025", s["name"], "Peer median", "Sector median"], mrows, num_cols=(1, 2, 3))
-    z = f["z"]
-    zk = [k for k in ZLAB if z.get(k) is not None]
-    z_svg = svg_diverging([ZLAB[k] for k in zk], [z[k] for k in zk], lambda x: f"{x:+.1f}".replace("-", "−"), w=820, label_w=170, bar_h=22,
-                          lim=max(5.5, max(abs(z[k]) for k in zk) * 1.15))
-    w = f.get("weights_last") or {}
-    held = ", ".join(d[:7] for d in f.get("dates_held", []))
-    h1 = f.get("h1_2026_return")
-    screen = f"""<div class="prose"><p>{esc(n["model_long"])}</p></div>
-<div class="stats" style="margin:18px 0">
- <div class="stat"><div class="k">Value score, Dec 2025</div><div class="v">{f["score"]:+.2f}</div><div class="s">rank {f["sector_rank"]} of {f["sector_n"]} in {esc(f["sector"])}</div></div>
- <div class="stat"><div class="k">Accounts used</div><div class="v" style="font-size:20px">FY to {esc(f["fy_used"][:7])}</div><div class="s">year-end + 6-month lag</div></div>
- <div class="stat"><div class="k">Weight, Dec 2025</div><div class="v" style="font-size:17px">{pct(w.get("EW"), 1)} / {pct(w.get("MV"), 1)} / {pct(w.get("MVO"), 1)}</div><div class="s">equal · min-var · mean-var</div></div>
- <div class="stat"><div class="k">H1 2026 return</div><div class="v {cls_sign(h1)}">{pct(h1, 1, True)}</div><div class="s">benchmark {pct(f.get("h1_2026_benchmark"), 1, True)}</div></div>
-</div>
-<figure class="ch" style="margin-bottom:18px"><figcaption><span>Z-scores within sector <small>· Dec 2025 rebalance · above 0 = cheaper than the sector average</small></span></figcaption>{z_svg}</figure>
-<div>{m_tbl}<p class="cap">Multiples on the accounts the model could use at the time. Peer set: same GICS industry group in the developed universe. Held at: {esc(held)}.</p></div>"""
-    thesis = '<div class="num-list">' + "".join(f'<div class="box"><h4>{esc(a)}</h4><p>{esc(b)}</p></div>' for a, b in s["thesis"]) + "</div>"
-    variant = '<div class="vs"><div class="h">What the market says</div><div class="h">What the evidence says</div>' + "".join(
-        f"<div>“{esc(a)}”</div><div>{esc(b)}</div>" for a, b in s["variant"]) + "</div>"
-    fin = s["financials"]
-    fin_tbl = tbl(fin["cols"] if fin["cols"][0] else ["Line"] + fin["cols"][1:], [[esc(c) for c in r] for r in fin["rows"]], num_cols=range(1, len(fin["cols"])))
-    # valuation
-    sc_rows = [[f'<b>{esc(r["name"])}</b>', esc(r["inputs"]), money(sym, r["value"]), f'<span class="{cls_sign(r["upside"])}">{pct(r["upside"], 0, True)}</span>', esc(r["story"])]
-               for r in s["scenarios_out"]]
-    sc_tbl = tbl(["Scenario", "Inputs", "Value / share", "vs price", "What has to happen"], sc_rows, num_cols=(2, 3),
-                 row_cls=lambda i, r: "hl" if "Base" in r[0] else "")
-    extra = ""
-    if v.get("sotp"):
-        tot = sum(x[1] for x in v["sotp"])
-        extra = "<h3>Sum of the parts (cross-check)</h3>" + tbl(["Component", "Per share"], [[esc(a), money(sym, b)] for a, b in v["sotp"]] + [["<b>Total</b>", f"<b>{money(sym, tot)}</b>"]], num_cols=(1,)) + \
-            f'<p class="cap">The listed parts add up to {money(sym, tot)} per share. At {money(sym, s["price"])}, the market implicitly values everything else at about {money(sym, s["price"] - tot)} per share.</p>'
-    if v.get("profits"):
-        yrs = sorted(v["profits"])
-        extra = '<figure class="ch" style="margin-top:18px"><figcaption><span>Profit attributable through the cycle <small>· US$m</small></span></figcaption>' + svg_columns(yrs, [v["profits"][y] for y in yrs], lambda x: f"{x:,.0f}", w=760, h=230) + "</figure>" + \
-            f'<p class="cap">Normalised profit excludes {", ".join(str(x) for x in v["exclude"])}: US${v["normal_profit_usd_m"]:,.0f}m, or US${v["normal_eps_usd"]:.2f} per share.</p>'
-    ct = v.get("consensus_target")
-    val = f"""<div class="prose"><p><b>Method: {esc(v["method"])}.</b> {esc(v["explain"])}</p></div>
-{sc_tbl}<figure class="ch" style="margin-top:18px"><figcaption><span>Valuation range <small>· base case marked</small></span></figcaption>{svg_football(s)}</figure>
-{f'<p class="cap">Consensus target: {money(sym, ct)} ({pct(ct / s["price"] - 1, 0, True)}). Rating thresholds: Overweight above +15%, Neutral −10% to +15%, Underweight below −10%.</p>' if ct else ''}{extra}"""
-    cat = '<ul class="timeline">' + "".join(f'<li><div class="d">{esc(d)}</div><p>{esc(t)}</p></li>' for d, t in s["catalysts"]) + "</ul>"
-    risks = tbl(["Risk", "Mitigant"], [[esc(a), esc(b)] for a, b in s["risks"]]) + \
-        '<div class="sell" style="margin-top:18px"><b>We change the call if</b><ul>' + "".join(f"<li>{esc(t)}</li>" for t in s["triggers"]) + "</ul></div>" + \
-        f'<h3>The {"bull" if s["rating"] == "Underweight" else "bear"} case, taken seriously</h3><div class="prose"><p>{esc(n["bear_long"])}</p></div>'
-    qa = "".join(f'<details class="qa" open><summary>{esc(q)}</summary><div>{esc(a)}</div></details>' for q, a in n["interview"])
-    gloss = '<dl class="gloss">' + "".join(f"<dt>{esc(a)}</dt><dd>{esc(b)}</dd>" for a, b in n["glossary"]) + "</dl>"
-    src = '<ol class="src">' + "".join(src_item(i, x) for i, x in enumerate(s["sources"])) + "</ol>" + \
-        f'<p class="cap">Company figures from filings and releases listed above. Screen data (multiples, z-scores, weights) from the Bloomberg extract of 26-29 October 2026, aggregated. Peers: {esc(s["peers_text"])}</p>'
-    secs = [
-        section("overview", "01", "Overview", f'<div class="prose"><p>{esc(n["intro"])}</p><blockquote>{esc(s["one_liner"])}</blockquote></div>{stats}'),
-        section("business", "02", "The business", "<div class='prose'>" + "".join(f"<p>{esc(p)}</p>" for p in n["business_long"]) + "</div>"
-                + f'<figure class="ch" style="margin-top:18px"><figcaption><span>{esc(sg["title"])}</span></figcaption>{seg_svg}</figure>{biz_boxes}'),
-        section("macro", "03", "Industry & macro", "<div class='prose'>" + "".join(f"<p>{esc(p)}</p>" for p in n["macro_long"]) + "</div>" + macro_cards),
-        section("history", "04", "What happened", hist, "The events that shaped the stock, in order."),
-        section("screen", "05", "Why the screen picked it", screen),
-        section("thesis", "06", "Investment thesis", thesis),
-        section("variant", "07", "Variant perception", variant, "Where our reading differs from the obvious one."),
-        section("financials", "08", "Financials", fin_tbl + f'<p class="cap">{esc(fin["note"])}</p>'),
-        section("valuation", "09", "Valuation", val),
-        section("catalysts", "10", "Catalysts", cat),
-        section("risks", "11", "Risks & sell rules", risks),
-        section("interview", "12", "Interview prep", qa, "Questions a portfolio manager is likely to ask, with short answers."),
-        section("glossary", "13", "Glossary", gloss),
-        section("sources", "14", "Sources", src),
-    ]
-    tocs = "".join(f'<a href="#{i}">{t}</a>' for i, t in toc)
-    printhead = f'<div class="printonly cap" style="margin-bottom:8px">{SITE} · {AUTHOR} · Learning note · {esc(s["price_note"])} · Student research, not investment advice.</div>'
-    body = f"""<div class="wrap">{printhead}{head}
-<div class="doc"><nav class="toc" aria-label="On this page"><b>{esc(s["name"])}</b>{tocs}</nav><div>{"".join(secs)}
-<p class="cap" style="margin-top:20px">Student research for educational and interview purposes. Not investment advice. Prices as of {esc(s["price_note"])}.</p></div></div></div>"""
-    page(f"pitches/{s['slug']}/index.html", f"{s['name']} — learning note", body, "pitches", s["headline"], 2)
-
-
-# ---------------------------------------------------------------- database
+# ---------------------------------------------------------------- DATABASE
 DATASETS = [
-    ("Index compositions", "WORLD Index", "BDS · INDX_MWEIGHT_HIST with END_DATE_OVERRIDE", "10 dates, Jun 2021 – Dec 2025", "4,117 tickers (union), 2,248-3,335 per date", "Point-in-time universe"),
-    ("Security reference", "each ticker", "BDP · NAME, CRNCY, GICS_SECTOR_NAME, GICS_INDUSTRY_GROUP_NAME, CNTRY_OF_RISK, CNTRY_OF_DOMICILE, ID_BB_GLOBAL, MARKET_STATUS", "static", "4,117 tickers", "Developed-market filter, sectors"),
-    ("Weekly prices", "each DM ticker", "BDH · PX_LAST, weekly, Currency = EUR", "Jun 2016 – Jun 2026", "986,418 observations, 1,988 tickers", "Returns, covariance"),
-    ("Dividends", "each DM ticker", "BDS · DVD_HIST_ALL with DVD_START_DT / DVD_END_DT", "2016 – 2026", "44,198 records, 1,631 tickers", "Withholding-tax haircut"),
-    ("Annual fundamentals", "each DM ticker", "BDH · 8 fields, Per = Y, EQY_FUND_CRNCY = EUR, FILING_STATUS = OR", "fiscal years 2015 – 2025", "1,967 tickers", "Value signal"),
-    ("Rebalance snapshots", "each DM ticker", "BDH · CUR_MKT_CAP, EQY_FREE_FLOAT_PCT, TURNOVER at each rebalance date", "10 dates", "1,989 tickers", "Liquidity filters, EV"),
-    ("Market series", "13 FX pairs, indices, rates", "BDH · PX_LAST weekly: EURxxx Curncy, MSDEWIN, NDDUWI, WORLD Index, ESTRON, EONIA", "Jun 2016 – Jun 2026", "18 series", "FX conversion, hedging, benchmark"),
-    ("Factor returns", "Kenneth French Data Library", "Developed 5 factors + momentum, daily, compounded weekly", "2016 – 2026", "6 factors", "Factor regressions"),
-    ("Short rates", "OECD via FRED", "3-month interbank rate by currency, monthly", "2016 – 2026", "13 currencies", "Hedge carry"),
+    ("Index compositions", "Compositions d’indices", "BDS · INDX_MWEIGHT_HIST + END_DATE_OVERRIDE", "10 dates, 2021-2025", "4,117 tickers", "4 117 titres", "Stock screen", "Screen titres"),
+    ("Weekly prices", "Prix hebdomadaires", "BDH · PX_LAST, Currency = EUR", "2016-2026", "986,418 obs.", "986 418 obs.", "Stock screen", "Screen titres"),
+    ("Dividends", "Dividendes", "BDS · DVD_HIST_ALL", "2016-2026", "44,198 records", "44 198 lignes", "Stock screen", "Screen titres"),
+    ("Annual fundamentals", "Fondamentaux annuels", "BDH · 8 fields, FILING_STATUS = OR, EUR", "FY 2015-2025", "1,967 tickers", "1 967 titres", "Stock screen", "Screen titres"),
+    ("Rebalance snapshots", "Instantanés aux rebalancements", "BDH · CUR_MKT_CAP, EQY_FREE_FLOAT_PCT, TURNOVER", "10 dates", "1,989 tickers", "1 989 titres", "Stock screen", "Screen titres"),
+    ("Country and sector valuation", "Valorisation pays et secteurs", "BDH monthly · PX_LAST, PE_RATIO, PX_TO_BOOK_RATIO, EQY_DVD_YLD_12M", "2000-2026", "25 indices + fallbacks", "25 indices + secours", "Value rotation", "Rotation value"),
+    ("Multi-asset total returns", "Rendements totaux multi-actifs", "BDH monthly · PX_LAST, Currency = EUR", "2000-2026", "14 + 14 indices", "14 + 14 indices", "Trend · Value rotation", "Trend · Rotation value"),
+    ("Market series", "Séries de marché", "BDH · MSDEWIN, EURUSD, ESTRON, EUR003M", "2000-2026", "7 series", "7 séries", "All", "Toutes"),
+    ("Factor returns", "Rendements des facteurs", "Kenneth French Data Library", "2016-2026", "6 factors", "6 facteurs", "Stock screen", "Screen titres"),
 ]
 FIELDS = [
-    ("INDX_MWEIGHT_HIST", "Index members and weights at a past date", "Compositions", "BDS", "Default is today's list: always pass END_DATE_OVERRIDE, or the backtest is survivorship-biased."),
-    ("CNTRY_OF_RISK", "Country of economic risk", "Reference", "BDP", "Used for the developed-market filter and country bands; can differ from domicile (e.g. Irish-domiciled US groups)."),
-    ("GICS_SECTOR_NAME", "GICS sector", "Reference", "BDP", "Current classification only: applied to the whole history (known limit)."),
-    ("GICS_INDUSTRY_GROUP_NAME", "GICS industry group", "Reference", "BDP", "Defines peer sets in the pitches."),
-    ("CRNCY", "Trading currency", "Reference", "BDP", "GBp and ILs are sub-units (pence, agorot)."),
-    ("MARKET_STATUS", "Listing status (ACTV, DLST…)", "Reference", "BDP", "Delisted names stay in the dated compositions."),
-    ("PX_LAST", "Last price", "Prices", "BDH", "Came back adjusted for cash dividends: it is already a total-return series. Adding dividends double-counts ~2% a year."),
-    ("DVD_HIST_ALL", "Dividend history (dates, amount, type)", "Dividends", "BDS", "Amount in payment currency, which the extract does not store; split-adjusted basis."),
-    ("SALES_REV_TURN", "Revenue", "Fundamentals", "BDH", "Negative values set to missing for EV/Sales."),
-    ("EBIT", "Operating income", "Fundamentals", "BDH", "Not used for banks and insurers."),
-    ("NET_INCOME", "Net income", "Fundamentals", "BDH", "Earnings yield for financials."),
-    ("CF_FREE_CASH_FLOW", "Free cash flow", "Fundamentals", "BDH", "Standardised definition, comparable across countries."),
-    ("TOT_COMMON_EQY", "Common equity (book value)", "Fundamentals", "BDH", "Negative book kept: ranks as expensive."),
-    ("NET_DEBT", "Net debt", "Fundamentals", "BDH", "Enterprise value = market cap + net debt + minorities."),
-    ("MINORITY_NONCONTROLLING_INTEREST", "Minority interests", "Fundamentals", "BDH", "Part of enterprise value."),
-    ("BS_SH_OUT", "Shares outstanding", "Fundamentals", "BDH", "Smoke test only: ratios use company totals, never per-share data."),
-    ("ANNOUNCEMENT_DT", "Results announcement date", "Fundamentals", "BDH", "A fiscal year is never used before this date (look-ahead guard)."),
-    ("FILING_STATUS = OR", "Override: originally reported figures", "Fundamentals", "override", "Avoids restated numbers that were not known at the time."),
-    ("EQY_FUND_CRNCY = EUR", "Override: fundamentals in EUR", "Fundamentals", "override", "Same currency as the market cap snapshot."),
-    ("CUR_MKT_CAP", "Market capitalisation", "Snapshots", "BDH", "Company-level total, so share classes do not create false discounts."),
-    ("EQY_FREE_FLOAT_PCT", "Free float, %", "Snapshots", "BDH", "Capped at 100% (21 aberrant readings)."),
-    ("TURNOVER", "Value traded", "Snapshots", "BDH", "Quarterly sum divided by weekdays gives average daily value traded (ADV)."),
-    ("MSDEWIN Index", "MSCI World Net Total Return, EUR", "Market", "BDH", "Benchmark. Net of withholding tax: compare with net, not gross, returns."),
-    ("ESTRON Index", "€STR overnight rate", "Market", "BDH", "Risk-free rate; EONIA froze after January 2022."),
-    ("EURxxx Curncy", "FX, units of currency per EUR", "Market", "BDH", "13 pairs, weekly."),
+    ("INDX_MWEIGHT_HIST", "Index members and weights at a past date", "Membres et poids d’un indice à une date passée", "BDS",
+     "Default is today's list: always pass END_DATE_OVERRIDE, or the backtest is survivorship-biased.", "Par défaut, c’est la liste du jour : toujours passer END_DATE_OVERRIDE, sinon le backtest a un biais du survivant."),
+    ("PX_LAST", "Last price or index level", "Dernier cours ou niveau d’indice", "BDH",
+     "For stocks it came back adjusted for dividends: already a total-return series. Adding dividends double-counts ~2% a year.", "Pour les actions, il est revenu ajusté des dividendes : c’est déjà une série de rendement total. Ajouter les dividendes compte ~2 % par an deux fois."),
+    ("PE_RATIO", "Trailing price-to-earnings of an index", "PER passé d’un indice", "BDH", "Negative or missing when aggregate earnings are negative: use E/P, not P/E, in the score.", "Négatif ou manquant quand les bénéfices agrégés sont négatifs : utiliser E/P plutôt que P/E dans le score."),
+    ("PX_TO_BOOK_RATIO", "Price-to-book", "Cours / valeur comptable", "BDH", "Structurally different across sectors: compare each line with its own history.", "Structurellement différent entre secteurs : comparer chaque ligne à son propre historique."),
+    ("EQY_DVD_YLD_12M", "Trailing 12-month dividend yield, %", "Rendement du dividende sur 12 mois, %", "BDH", "In percent, not decimal.", "En pourcentage, pas en décimal."),
+    ("DVD_HIST_ALL", "Dividend history", "Historique des dividendes", "BDS", "Amount in payment currency, which the extract does not store.", "Montant dans la devise de paiement, que l’extraction ne stocke pas."),
+    ("CNTRY_OF_RISK", "Country of economic risk", "Pays de risque économique", "BDP", "Can differ from domicile (Irish-domiciled US groups).", "Peut différer du pays de domicile (groupes américains domiciliés en Irlande)."),
+    ("GICS_SECTOR_NAME", "GICS sector", "Secteur GICS", "BDP", "Current classification only, applied to the whole history.", "Classification actuelle seulement, appliquée à tout l’historique."),
+    ("FILING_STATUS = OR", "Originally reported figures", "Chiffres publiés à l’origine", "override", "Avoids restated numbers that were not known at the time.", "Évite les chiffres retraités qui n’étaient pas connus à l’époque."),
+    ("ANNOUNCEMENT_DT", "Results announcement date", "Date de publication des résultats", "BDH", "A fiscal year is never used before this date.", "Un exercice n’est jamais utilisé avant cette date."),
+    ("CUR_MKT_CAP", "Market capitalisation", "Capitalisation boursière", "BDH", "Company-level total: share classes do not create false discounts.", "Total au niveau société : les catégories d’actions ne créent pas de fausse décote."),
+    ("Currency = EUR", "Override: convert at Bloomberg rates", "Override : conversion aux taux Bloomberg", "override", "Returns in EUR include currency moves: what a euro investor earns unhedged.", "Les rendements en EUR incluent le change : ce que gagne un investisseur en euros non couvert."),
+    ("MSDEWIN Index", "MSCI World Net TR, EUR", "MSCI World Net TR, EUR", "BDH", "Net of withholding tax: compare with net, not gross, returns.", "Net de retenue à la source : comparer avec des rendements nets, pas bruts."),
 ]
 
 
-def build_database():
+def build_database(lang):
     cov = VALUE["coverage"]
-    cov_rows = [[c[0], f'{int(c[1]):,}', f'{int(c[3]):,}', f"{float(c[4]):.1f}%", f'{int(c[5]):,}', f'{int(c[6]):,}'] for c in cov[1:]]
-    cov_tbl = tbl(["Date", "WORLD members", "Developed", "DM weight", "Liquid", "Eligible"], cov_rows, num_cols=range(1, 6))
-    rep = VALUE["replica"]
-    rep_tbl = tbl(rep[0], [[esc(c) for c in r] for r in rep[1:]], num_cols=(1, 2))
-    ds_tbl = tbl(["Dataset", "Source", "Retrieval", "Period", "Coverage", "Used for"],
-                 [[f"<b>{esc(a)}</b>", esc(b), f'<span class="mono" style="font-size:13px">{esc(c)}</span>', esc(d), esc(e), esc(f)] for a, b, c, d, e, f in DATASETS])
-    fld_rows = [[f'<span class="mono">{esc(a)}</span>', esc(b), esc(c), esc(d), esc(e)] for a, b, c, d, e in FIELDS]
-    fld = f"""<div data-filter-scope><div class="filters"><input class="search" type="search" placeholder="Search a field, a dataset or a pitfall…" data-search aria-label="Search fields">
-<div class="fgroup"><span>Dataset</span><button class="fbtn" data-f="ds" data-v="all" aria-pressed="true">All</button>{"".join(f'<button class="fbtn" data-f="ds" data-v="{slugify(x)}" aria-pressed="false">{x}</button>' for x in dict.fromkeys(f[2] for f in FIELDS))}</div><span class="count"></span></div>
-<div class="tbl-wrap"><table class="t"><thead><tr><th>Field</th><th>Meaning</th><th>Dataset</th><th>Function</th><th>Pitfall / rule</th></tr></thead><tbody>
-{"".join(f'<tr data-item data-ds="{slugify(f[2])}"><td>{r[0]}</td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td><td>{r[4]}</td></tr>' for f, r in zip(FIELDS, fld_rows))}
-</tbody></table></div><div class="empty">No field matches.</div></div>"""
-    _, bias = front(CONTENT / "database/bias_checklist.md")
+    cov_rows = [[c[0], num(int(c[1]), 0, lang), num(int(c[3]), 0, lang), pct(float(c[4]) / 100, 1, lang=lang), num(int(c[6]), 0, lang)] for c in cov[1:]]
+    cov_tbl = tbl([L(lang, "Date", "Date"), L(lang, "Index members", "Membres de l’indice"), L(lang, "Developed", "Développés"), L(lang, "DM weight", "Poids DM"), L(lang, "Eligible", "Éligibles")], cov_rows, num_cols=range(1, 5))
+    ds_tbl = tbl([L(lang, "Dataset", "Jeu de données"), L(lang, "Retrieval", "Extraction"), L(lang, "Period", "Période"), L(lang, "Coverage", "Couverture"), L(lang, "Used by", "Utilisé par")],
+                 [[f"<b>{esc(L(lang, a, b))}</b>", f'<span class="mono" style="font-size:13.5px">{esc(c if lang == "en" else c.replace("monthly", "mensuel").replace("8 fields", "8 champs"))}</span>', esc(d), esc(L(lang, e, f)), esc(L(lang, g, h))] for a, b, c, d, e, f, g, h in DATASETS])
+    fld = f"""<div data-filter-scope><div class="filters"><input class="search" type="search" placeholder="{L(lang, 'Search a field or a pitfall…', 'Chercher un champ ou un piège…')}" data-search aria-label="Search"><span class="count"></span></div>
+<div class="tbl-wrap"><table class="t"><thead><tr><th>{L(lang, "Field", "Champ")}</th><th>{L(lang, "Meaning", "Signification")}</th><th>{L(lang, "Function", "Fonction")}</th><th>{L(lang, "Pitfall", "Piège")}</th></tr></thead><tbody>
+{"".join(f'<tr data-item><td><span class="mono">{esc(a)}</span></td><td>{esc(L(lang, b, c))}</td><td>{esc(d)}</td><td>{esc(L(lang, e, f))}</td></tr>' for a, b, c, d, e, f in FIELDS)}
+</tbody></table></div><div class="empty">—</div></div>"""
+    meta, bias = front(CONTENT / lang / "bias_checklist.md")
     brows = []
     for line in strip_h1(bias).splitlines():
         c = [x.strip() for x in line.strip().strip("|").split("|")]
         if not line.startswith("|") or len(c) < 5 or c[0] in ("#", "") or set(c[0]) <= set("-: "):
             continue
-        inline = lambda t: markdown.markdown(t).replace("<p>", "").replace("</p>", "")
-        st = c[4]
-        tone = "r-ow" if st.startswith("OK") or "Fixed" in st else "r-n"
-        brows.append([c[0], f"<b>{inline(c[1])}</b>",
-                      f'{inline(c[2])}<small style="display:block;color:var(--slate);margin-top:4px;word-break:break-word">Evidence: {inline(c[3])}</small>',
-                      f'<span class="rating {tone}" style="white-space:nowrap">{inline(st.split(" — ")[0].split(" (")[0].replace("**", ""))}</span>'
-                      + (f'<small style="display:block;color:var(--slate);margin-top:4px">{inline(st.split(" — ", 1)[1])}</small>' if " — " in st else "")])
-    bias_tbl = tbl(["#", "Risk", "Control and evidence", "Status"], brows, num_cols=(0,))
-    rules = """<div class="cols2">
-<div class="box"><h4>Prices</h4><p>Weekly Friday grid; Tel Aviv lines stamped on Sundays moved to the Friday before. Gaps up to eight weeks bridged; a held line that stops trading earns 0% after its last price.</p></div>
-<div class="box"><h4>Dividends</h4><p>Event study on ~38,000 ex-dates: the price does not drop on ex-date, so PX_LAST already includes dividends. Dividend records only size the withholding-tax haircut.</p></div>
-<div class="box"><h4>Fundamentals</h4><p>Year-end + 6 months and never before announcement (471 late filers blocked). Negative sales and EV ≤ 0 set to missing; negative book kept.</p></div>
-<div class="box"><h4>Issuers and liquidity</h4><p>One line per issuer (share classes and dual listings merged on identical accounts, the most traded kept). Liquidity filters remove 466 of 14,369 member-dates, de-duplication 199 more.</p></div>
-</div>"""
-    toc = [("overview", "Overview"), ("catalogue", "Datasets"), ("fields", "Field dictionary"), ("coverage", "Coverage by date"),
-           ("checks", "Consistency checks"), ("cleaning", "Cleaning rules"), ("bias", "Anti-bias checklist"), ("licence", "Licence")]
+        st = c[4].replace("**", "")
+        ok = st.startswith("OK") or st.startswith("Fixed") or st.startswith("Corrigé")
+        head_, _, rest = st.partition(" — ")
+        head_ = head_.split(" (")[0]
+        brows.append([c[0], f"<b>{md_inline(c[1])}</b>", md_inline(c[2]),
+                      f'<span class="rating {"r-ow" if ok else "r-n"}" style="white-space:nowrap">{esc(head_)}</span>' + (f'<small style="display:block;margin-top:4px">{esc(rest)}</small>' if rest else "")])
+    bias_tbl = tbl(["#", L(lang, "Risk", "Risque"), L(lang, "Control", "Contrôle"), L(lang, "Status", "Statut")], brows)
+    toc = [("overview", L(lang, "Overview", "Vue d’ensemble")), ("datasets", L(lang, "Datasets", "Jeux de données")), ("fields", L(lang, "Bloomberg fields", "Champs Bloomberg")),
+           ("coverage", L(lang, "Coverage", "Couverture")), ("bias", L(lang, "Anti-bias checklist", "Checklist anti-biais")), ("licence", L(lang, "Licence", "Licence"))]
     secs = [
-        section("overview", "01", "Overview", """<div class="stats">
-<div class="stat"><div class="k">Securities</div><div class="v">4,117</div><div class="s">union of 10 compositions</div></div>
-<div class="stat"><div class="k">Developed</div><div class="v">1,990</div><div class="s">24 countries</div></div>
-<div class="stat"><div class="k">Weekly prices</div><div class="v">986k</div><div class="s">observations</div></div>
-<div class="stat"><div class="k">Dividends</div><div class="v">44,198</div><div class="s">records</div></div>
-<div class="stat"><div class="k">Fundamentals</div><div class="v">8</div><div class="s">fields, 11 fiscal years</div></div></div>
-<div class="callout amber"><b>What this page is.</b> A catalogue of the data behind the value strategy: what was extracted, how, with which settings, how
-complete it is and which rules cleaned it. The raw data stay offline: Bloomberg terms do not allow redistribution.</div>"""),
-        section("catalogue", "02", "Datasets", ds_tbl + '<p class="cap">Extracted through the Bloomberg Excel add-in on 26-29 October 2026 and frozen as values in one workbook (WORLD_RAW_20261029.xlsx).</p>'),
-        section("fields", "03", "Field dictionary", fld, "Every Bloomberg field and override used, with the trap each one hides."),
-        section("coverage", "04", "Coverage by date", cov_tbl + '<p class="cap">Eligible = developed, free-float cap above €1bn, ADV above €5m, one line per issuer. The eligible set covers 97.7-98.5% of developed benchmark weight at each date.</p>',
-                "Index membership shrinks over time (index methodology), so the eligible universe falls from about 1,640 to 1,100 names."),
-        section("checks", "05", "Consistency checks", rep_tbl + '<p class="cap">Replica = developed members of WORLD, cap-weighted at each date, buy-and-hold, built from our own security returns. Weekly correlation with MSDEWIN 0.996, tracking error 1.2%, annual gap −0.3%.</p>',
-                "Rebuilding the benchmark from security returns is the test that caught the dividend double count."),
-        section("cleaning", "06", "Cleaning rules", rules),
-        section("bias", "07", "Anti-bias checklist", bias_tbl, "Written before the backtest was interpreted. Rule one: if a result looks good, check survivorship, look-ahead and units before any other explanation."),
-        section("licence", "08", "Licence", """<div class="prose"><p>Bloomberg and MSCI data are licensed to SKEMA Business School for teaching use. This site publishes methodology,
-field definitions, coverage counts and aggregated portfolio results only. No security-level time series is redistributed. Factor data come from the
-Kenneth French Data Library; short rates from the OECD via FRED.</p></div>"""),
+        section("overview", L(lang, "Overview", "Vue d’ensemble"), f"""<div class="stats">
+{stat(L(lang, "Securities", "Titres"), num(4117, 0, lang), L(lang, "union of 10 compositions", "union de 10 compositions"))}{stat(L(lang, "Developed", "Développés"), num(1990, 0, lang), L(lang, "24 countries", "24 pays"))}
+{stat(L(lang, "Weekly prices", "Prix hebdo"), "986k", L(lang, "observations", "observations"))}{stat(L(lang, "Indices for the ETF strategies", "Indices des stratégies ETF"), "53", L(lang, "monthly, 2000-2026", "mensuel, 2000-2026"))}</div>
+<div class="callout amber"><b>{L(lang, "What this page is.", "Ce qu’est cette page.")}</b> {L(lang, "A catalogue of the data behind every result: what was extracted, how, and with which settings. The raw data stay offline: Bloomberg terms do not allow redistribution, and no data file is downloadable from this site.", "Un catalogue des données derrière chaque résultat : ce qui a été extrait, comment, et avec quels paramètres. Les données brutes restent hors ligne : les conditions de Bloomberg n’autorisent pas leur redistribution, et aucun fichier de données n’est téléchargeable sur ce site.")}</div>"""),
+        section("datasets", L(lang, "Datasets", "Jeux de données"), ds_tbl),
+        section("fields", L(lang, "Bloomberg fields", "Champs Bloomberg"), fld, L(lang, "Every field and override used, with the trap each one hides.", "Chaque champ et override utilisé, avec le piège qu’il cache.")),
+        section("coverage", L(lang, "Coverage", "Couverture"), cov_tbl, L(lang, "Stock screen universe at each rebalance.", "Univers du screen titres à chaque rebalancement.")),
+        section("bias", L(lang, "Anti-bias checklist", "Checklist anti-biais"), bias_tbl, L(lang, "Written before the backtest was interpreted. Rule one: if a result looks good, check survivorship, look-ahead and units first.", "Écrite avant d’interpréter le backtest. Règle numéro un : si un résultat paraît bon, vérifier d’abord le biais du survivant, le look-ahead et les unités.")),
+        section("licence", L(lang, "Licence", "Licence"), f'<div class="prose"><p>{L(lang, "Bloomberg and MSCI data are licensed to SKEMA Business School for teaching. This site publishes methodology, field definitions, coverage counts and aggregated results only.", "Les données Bloomberg et MSCI sont licenciées à SKEMA Business School pour l’enseignement. Ce site ne publie que la méthode, la définition des champs, des statistiques de couverture et des résultats agrégés.")}</p></div>'),
     ]
-    tocs = "".join(f'<a href="#{i}">{t}</a>' for i, t in toc)
-    body = f"""<div class="wrap"><header class="phead"><div class="eyebrow">Database</div><h1>The data behind the work</h1>
-<p class="lede">Every dataset, every Bloomberg field and override, the coverage at each date and the rules that cleaned it, so any number on this site can be traced back.</p></header>
-<div class="doc"><nav class="toc" aria-label="On this page"><b>On this page</b>{tocs}</nav><div>{"".join(secs)}</div></div></div>"""
-    page("database/index.html", "Database", body, "database", "Data catalogue: datasets, Bloomberg fields, coverage and cleaning rules.", 1)
+    body = phead(t(lang, "database"), L(lang, "The data behind the work", "Les données derrière le travail"),
+                 L(lang, "Every dataset, every Bloomberg field and override, the coverage at each date and the checks that cleaned it.",
+                   "Chaque jeu de données, chaque champ et override Bloomberg, la couverture à chaque date et les contrôles qui les ont nettoyés."))
+    body += doc_layout(lang, toc, secs)
+    page("database/index.html", lang, t(lang, "database"), body, "database", L(lang, "Data catalogue.", "Catalogue des données."))
 
 
-# ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- MAIN
+def clean_docs():
+    """Remove generated pages and files that must not be published any more (note PDFs, old pages)."""
+    for p in (DOCS / "assets/pitches").glob("*_note.pdf"):
+        p.unlink()
+    for d in ["fr", "pitches", "research", "strategies", "database", "journal", "methodology", "about", "static"]:
+        if (DOCS / d).exists():
+            shutil.rmtree(DOCS / d)
+    for f in ["home_template.html"]:
+        if (DOCS / f).exists():
+            (DOCS / f).unlink()
+
+
 def main():
+    clean_docs()
     (DOCS / "assets").mkdir(parents=True, exist_ok=True)
     for f in ("site.css", "site.js"):
         shutil.copy(HERE / "static" / f, DOCS / "assets" / f)
-    old = DOCS / "static"
-    if old.exists():
-        shutil.rmtree(old)
-    for f in ("home_template.html",):
-        if (DOCS / f).exists():
-            (DOCS / f).unlink()
     (DOCS / ".nojekyll").touch()
-    build_home()
-    build_strategies()
-    build_value()
-    build_pitch_index()
-    for s in PITCHES:
-        build_pitch(s)
-    build_research()
-    build_database()
-    simple_md_page("journal", "journal", "Journal", "Decisions and milestones, dated. The full decision log with rejected alternatives lives in the repository.")
-    simple_md_page("methodology", "", "Methodology", "Where the data come from, the rules every result respects, and the tools used.")
-    simple_md_page("about", "about", "About", "Who is behind this ledger and why it exists.")
+    for lang in LANGS:
+        build_home(lang)
+        build_strategies(lang)
+        build_value_rotation(lang)
+        build_trend(lang)
+        build_horus(lang)
+        build_value_screen(lang)
+        build_pitch_index(lang)
+        for s in PITCHES:
+            build_pitch(s, lang)
+        build_research(lang)
+        build_database(lang)
+        simple_page("journal", lang, "", t(lang, "journal"), L(lang, "Decisions and milestones, dated.", "Décisions et étapes, datées."))
+        simple_page("methodology", lang, "", t(lang, "methodology"), L(lang, "Where the data come from and the rules every result respects.", "D’où viennent les données et les règles que chaque résultat respecte."))
+        simple_page("about", lang, "about", t(lang, "about"), L(lang, "Who is behind this ledger and why it exists.", "Qui tient ce carnet et pourquoi il existe."))
     print("site built in", DOCS)
 
 

@@ -4,46 +4,58 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strategies · Research Ledger</title>
-<meta name="description" content="Backtested strategies by Noah Doose.">
+<meta name="description" content="ETF-replicable strategies by Noah Doose.">
+<link rel="alternate" hreflang="fr" href="../fr/strategies/">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B6E4F'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3END%3C/text%3E%3C/svg%3E">
 <script src="../assets/site.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
- <a class="brand" href="../"><span class="mark">ND</span><span><b>Research Ledger</b><small>Noah Doose · equity research &amp; data</small></span></a>
- <nav class="nav" id="nav" aria-label="Main"><a href="../" class="">Home</a><a href="../strategies/" class="on">Strategies</a><a href="../pitches/" class="">Stock pitches</a><a href="../research/" class="">Research</a><a href="../database/" class="">Database</a><a href="../journal/" class="">Journal</a><a href="../about/" class="">About</a></nav>
- <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
- <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+ <a class="brand" href="../"><span class="mark">ND</span><span><b>Noah Doose</b><small>Research Ledger · Equity research & strategies</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../" class="">Home</a><a href="../strategies/" class="on">Strategies</a><a href="../pitches/" class="">Stock pitches</a><a href="../research/" class="">Research</a><a href="../database/" class="">Database</a><a href="../about/" class="">About</a><a href="https://fayzzy11.github.io/HORUS_AM/" rel="noopener">Horus AM ↗</a></nav>
+ <div class="tools">
+  <a class="tbtn" href="../fr/strategies/" hreflang="fr" title="Version française">FR</a>
+  <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Switch light or dark theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+  <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ </div>
 </div></header>
 <main id="main">
-<div class="wrap"><header class="phead"><div class="eyebrow">Strategies</div><h1>Two strategies, built the same way</h1>
-<p class="lede">Each strategy starts from a written policy, fixes its parameters before the first backtest and reports every variant tested, net of costs.</p></header>
-<section class="sec"><div class="grid">
- <article class="card"><div class="meta"><span>Equities · developed markets</span><span>Backtest complete · Oct 2026</span></div>
-  <h3><a href="value-developed/">Systematic Value — Developed Markets</a></h3>
-  <p>Intra-sector value composite on 1,990 developed large and mid caps, 50 names, three weighting schemes, semi-annual rebalancing, benchmarked on MSCI World Net EUR.</p>
-  <div class="stats" style="margin-top:6px">
-   <div class="stat"><div class="k">Return, EW</div><div class="v">11.6%</div><div class="s">vs 11.7%</div></div>
-   <div class="stat"><div class="k">Signal IC</div><div class="v">0.086</div><div class="s">t ≈ 2.1</div></div></div>
-  <div class="foot"><span class="figs"><span>2021-2026 · weekly</span></span><a class="btn sm" href="value-developed/">Open report →</a></div></article>
- <article class="card"><div class="meta"><span>Multi-asset futures</span><span>Report · Oct 2026</span></div>
-  <h3><a href="../trend-following/">Multi-Asset Trend Following</a></h3>
-  <p>Time-series momentum on 17 futures markets (equities, bonds, currencies, commodities), 10% volatility target, design and validation periods split at 2015, compared with an MSCI World Value proxy.</p>
-  <div class="stats" style="margin-top:6px">
-   <div class="stat"><div class="k">Return, blend</div><div class="v">6.9%</div><div class="s">26 years</div></div>
-   <div class="stat"><div class="k">Sharpe ratio</div><div class="v">0.64</div><div class="s">max DD −27%</div></div></div>
-  <div class="foot"><span class="figs"><span>2001-2026 · daily</span></span><a class="btn sm" href="../trend-following/">Open report →</a></div></article>
-</div></section></div>
+<header class="phead"><div class="wrap"><div class="eyebrow">Strategies</div><h1>Strategies you can hold with ETFs</h1><p class="lede">Three rules-based strategies, each implementable with UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the pitches.</p></div></header><section class="sec"><div class="wrap"><div class="grid three">
+ <article class="card"><div class="tags"><span class="tag green">Equities · ETF</span><span class="tag amber">Backtest in progress</span></div>
+  <h3><a href="../strategies/value-rotation/">Global Value Rotation</a></h3>
+  <p>Each month, buy the cheapest developed countries and sectors relative to their own history: eight ETFs, equal weight.</p>
+  <div class="mini"><div><span>Universe</span><b>25 ETF</b></div><div><span>Holdings</span><b>8</b></div><div><span>Rebalance</span><b>Monthly</b></div></div>
+  <div class="foot"><span>Linked to the stock pitches</span><b>→</b></div></article>
+ <article class="card"><div class="tags"><span class="tag green">Multi-asset · ETF</span><span class="tag amber">Backtest in progress</span></div>
+  <h3><a href="../strategies/trend-following/">Multi-Asset Trend</a></h3>
+  <p>Hold equities, bonds and commodities only while they trend up, sized by risk, cash otherwise. Long only, no leverage.</p>
+  <div class="mini"><div><span>Universe</span><b>14 ETF</b></div><div><span>Target vol.</span><b>10%</b></div><div><span>Rebalance</span><b>Monthly</b></div></div>
+  <div class="foot"><span>Futures study archived</span><b>→</b></div></article>
+ <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">Live since 2007 (backtest)</span></div>
+  <h3><a href="../strategies/horus-smart-beta/">Horus Smart Beta 60/40</a></h3>
+  <p>A permanent 60/40 whose equity half holds the two ETFs most exposed to size, growth and momentum, chosen each January.</p>
+  <div class="mini"><div><span>CAGR</span><b>8.9%</b></div><div><span>Sharpe</span><b>0.66</b></div><div><span>Max DD</span><b>−23%</b></div></div>
+  <div class="foot"><span>60/40 : 6.1%</span><b>→</b></div></article>
+</div></div></section><section class="sec alt"><div class="wrap"><div class="shead"><h2>Research behind the strategies</h2></div>
+<div class="grid">
+ <article class="card"><div class="meta">Stock level · 1,990 developed-market stocks · 2021-2026</div>
+  <h3><a href="value-developed/">Stock-level value screen</a></h3>
+  <p>The research engine behind the value rotation and the pitches: sector-neutral value composite, 50 names, three weighting schemes.</p>
+  <div class="foot"><span>Equal weight 11.6% · IC 0.086</span><b>→</b></div></article>
+ <article class="card"><div class="meta">Futures · 17 markets · 2001-2026 · English and French</div>
+  <h3><a href="../trend-following/">Trend following with futures (archived study)</a></h3>
+  <p>The original time-series momentum study on futures, with design and validation periods. The ETF strategy above replaces it as the investable version.</p>
+  <div class="foot"><span>Full report</span><b>→</b></div></article>
+</div></div></section>
 </main>
 <footer class="sitefoot"><div class="wrap">
- <div><b>Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
- <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
- <div><b>Sections</b><a href="../strategies/">Strategies</a><a href="../pitches/">Stock pitches</a><a href="../research/">Research</a><a href="../database/">Database</a><a href="../journal/">Journal</a><a href="../about/">About</a><a href="../methodology/">Methodology</a></div>
- <div><b>Elsewhere</b><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub</a><a href="../trend-following/">Trend-following report</a><a href="../downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built 30 Oct 2026.</p></div>
+ <div><b>Noah Doose · Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), CFA Level II candidate.</p><p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
+ <div><b>Sections</b><a href="../strategies/">Strategies</a><a href="../pitches/">Stock pitches</a><a href="../research/">Research</a><a href="../database/">Database</a><a href="../about/">About</a><a href="../journal/">Journal</a><a href="../methodology/">Methodology</a></div>
+ <div><b>Elsewhere</b><a href="https://fayzzy11.github.io/HORUS_AM/">Horus Asset Management ↗</a><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub ↗</a><p style="margin-top:12px">Updated 30 Oct 2026.</p></div>
 </div></footer>
 
 </body>
