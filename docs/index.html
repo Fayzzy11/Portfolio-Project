@@ -3,25 +3,85 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Home · Noah Doose</title>
-<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
-<link rel="stylesheet" href="static/style.css">
+<title>Research Ledger — Noah Doose</title>
+<meta name="description" content="Equity research ledger by Noah Doose: systematic value strategy, stock pitches, research notes and data catalogue.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
+<script src="assets/site.js"></script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="brand" href="">Noah Doose <span>Research</span></a>
-<nav><a href="" class=active>Home</a><a href="strategies/">Strategies</a><a href="research/">Research</a><a href="pitches/">Pitches</a><a href="methodology/">Methodology</a><a href="journal/">Journal</a><a href="about/">About</a></nav>
+ <a class="brand" href=""><span class="mark">ND</span><span><b>Research Ledger</b><small>Noah Doose · equity research &amp; data</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="" class="on">Home</a><a href="strategies/" class="">Strategies</a><a href="pitches/" class="">Stock pitches</a><a href="research/" class="">Research</a><a href="database/" class="">Database</a><a href="journal/" class="">Journal</a><a href="about/" class="">About</a></nav>
+ <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
 </div></header>
-<main class="wrap">
-<section class="hero"><h1 id="equity-research-portfolio-construction">Equity research &amp; portfolio construction</h1>
-<p>I am Noah Doose, MSc Financial Markets &amp; Investments student at SKEMA Business School (Paris) and CFA Level II candidate. This site is my research base: systematic strategies built and backtested end to end, research notes on what I learned along the way, and fundamental stock pitches.</p>
-<p>Everything here is designed to be checked: dated universes (no survivorship), lagged accounting data (no look-ahead), every decision logged with its alternatives, and honest results — including when a strategy does not beat its benchmark.</p></section><h2>Strategies</h2><div class="cards"><a class="card" href="strategies/value-developed/"><h3>Systematic Value — Developed Markets</h3><p class="meta">Backtest complete · Oct 2026</p><p>Intra-sector value composite on developed large and mid caps, 50 names, three weighting schemes, 5-year backtest vs MSCI World Net EUR.</p></a><a class="card" href="trend-following/"><h3>Multi-asset trend following</h3><p class="meta">Backtest complete · Oct 2026</p><p>Time-series momentum on 17 futures markets (equities, bonds, commodities, FX), 10% volatility target, 2001-2026. Full report with every calculation, English and French.</p></a></div><h2>Latest research</h2><div class="cards"><a class="card" href="research/2026-10-30-optimiser-vs-equal-weight/"><h3>Why the optimiser lost to 1/N in a value portfolio</h3><p class="meta">30 Oct 2026</p><p>Same 50 stocks, three weighting schemes. Minimum variance and mean-variance lagged equal weight by about 2.3 points a year — and the reason is style, not only estimation error.</p></a><a class="card" href="research/2026-10-29-dividends-counted-twice/"><h3>The backtest bug worth 2% a year — prices that already include dividends</h3><p class="meta">29 Oct 2026</p><p>Rebuilding the benchmark from my own security returns exposed a dividend double count. An event study on 38,000 ex-dates proved it.</p></a></div>
+<main id="main">
+
+<div class="wrap">
+<section class="hero">
+ <div>
+  <div class="eyebrow">Systematic value · Fundamental pitches · Open methodology</div>
+  <h1>Rules written <em>before</em> results. Every number traceable.</h1>
+  <p>This is the working ledger of my equity research: a systematic value strategy on developed markets, the stock pitches
+  that test what the screen picked, research notes on what went wrong and right, and a catalogue of the data behind it.</p>
+  <div class="btns"><a class="btn primary" href="strategies/value-developed/">Read the value strategy</a><a class="btn" href="pitches/">Browse the pitches</a></div>
+ </div>
+ <div class="ledger">
+  <header><span>Ledger · Systematic value DM</span><span>Jul 2021 – Jun 2026</span></header>
+  <div class="row"><span>Equal weight, net of costs, hedged<small>vs MSCI World Net EUR 11.7%</small></span><b>11.6%<small>a year</small></b></div>
+  <div class="row"><span>Signal rank IC, sector-neutral<small>mean of 10 semi-annual dates, t ≈ 2.1</small></span><b>0.086</b></div>
+  <div class="row"><span>Cheapest vs dearest quintile<small>average 6-month spread 3.6%</small></span><b>+7.4%<small>a year</small></b></div>
+  <div class="row"><span>Max drawdown, equal weight<small>benchmark −18.2%</small></span><b class="neg">−17.8%</b></div>
+  <div class="row"><span>Universe researched<small>Bloomberg World, developed markets, 10 dated compositions</small></span><b>1,990</b></div>
+ </div>
+</section>
+
+<section class="sec">
+ <div class="shead"><span class="idx">§ 01</span><h2>What is in the ledger</h2></div>
+ <div class="tiles">
+  <a class="tile" href="strategies/"><span class="n">01 · Strategies</span><h3>Two backtested strategies</h3><p>Systematic value on 1,990 developed-market stocks, and multi-asset trend following over 25 years.</p><div class="go">Open →</div></a>
+  <a class="tile" href="pitches/"><span class="n">02 · Stock pitches</span><h3>Eight pitches, eight learning notes</h3><p>Holdings of the December 2025 portfolio: five conviction calls, one hold and two cautionary cases.</p><div class="go">Open →</div></a>
+  <a class="tile" href="research/"><span class="n">03 · Research</span><h3>Notes from the work</h3><p>Short write-ups of findings: a 2%-a-year dividend bug, why the optimiser lost to 1/N.</p><div class="go">Open →</div></a>
+  <a class="tile" href="database/"><span class="n">04 · Database</span><h3>Data catalogue</h3><p>Every dataset and Bloomberg field used, coverage by date, cleaning rules and the anti-bias checklist.</p><div class="go">Open →</div></a>
+  <a class="tile" href="journal/"><span class="n">05 · Journal</span><h3>Decisions, dated</h3><p>What was decided, when and why, from the investment policy to the last robustness test.</p><div class="go">Open →</div></a>
+  <a class="tile" href="methodology/"><span class="n">06 · Methodology</span><h3>How results are produced</h3><p>Sources, integrity rules and the tools used, in one page.</p><div class="go">Open →</div></a>
+ </div>
+</section>
+
+<section class="sec">
+ <div class="cols2" style="gap:40px;align-items:start">
+  <div>
+   <div class="shead"><span class="idx">§ 02</span><h2>Latest pitches</h2><p>Calls as of 29 October 2026, with price targets from scenario valuations.</p></div>
+   <div class="ledger"><div class="row"><span><a href="pitches/rno-renault/">Renault</a><small>Automobiles · France</small></span><b><span class="rating r-ow">Overweight</span></b></div><div class="row"><span><a href="pitches/bnp-bnp-paribas/">BNP Paribas</a><small>Banks · France</small></span><b><span class="rating r-ow">Overweight</span></b></div><div class="row"><span><a href="pitches/ca-carrefour/">Carrefour</a><small>Food retail · France</small></span><b><span class="rating r-ow">Overweight</span></b></div><div class="row"><span><a href="pitches/hpq-hp-inc/">HP Inc</a><small>Technology hardware · United States</small></span><b><span class="rating r-ow">Overweight</span></b></div><div class="row"><span><a href="pitches/5401-nippon-steel/">Nippon Steel</a><small>Steel · Japan</small></span><b><span class="rating r-ow">Overweight</span></b></div><div class="row"><span><a href="pitches/cnc-centene/">Centene</a><small>Managed care · United States</small></span><b><span class="rating r-n">Neutral</span></b></div><div class="row"><span><a href="pitches/316-orient-overseas-international/">Orient Overseas (International)</a><small>Container shipping · Hong Kong</small></span><b><span class="rating r-uw">Underweight</span></b></div><div class="row"><span><a href="pitches/9503-kansai-electric-power/">Kansai Electric Power</a><small>Electric utilities · Japan</small></span><b><span class="rating r-n">Neutral</span></b></div><div class="row"><span><a href="pitches/">Open the pitch library →</a></span><b></b></div></div>
+  </div>
+  <div>
+   <div class="shead"><span class="idx">§ 03</span><h2>Latest research</h2></div>
+   <div class="notes"><a class="noteitem" style="grid-template-columns:1fr" href="research/2026-10-30-optimiser-vs-equal-weight/"><div><div class="d">30 Oct 2026</div><h3>Why the optimiser lost to 1/N in a value portfolio</h3><p>Same 50 stocks, three weighting schemes. Minimum variance and mean-variance lagged equal weight by about 2.3 points a year — and the reason is style, not only estimation error.</p></div></a><a class="noteitem" style="grid-template-columns:1fr" href="research/2026-10-29-dividends-counted-twice/"><div><div class="d">29 Oct 2026</div><h3>The backtest bug worth 2% a year — prices that already include dividends</h3><p>Rebuilding the benchmark from my own security returns exposed a dividend double count. An event study on 38,000 ex-dates proved it.</p></div></a></div>
+  </div>
+ </div>
+</section>
+
+<section class="sec">
+ <div class="shead"><span class="idx">§ 04</span><h2>House rules</h2><p>The constraints every result on this site respects.</p></div>
+ <div class="cols2">
+  <div class="box accent"><h4>Parameters before results</h4><p>Universe, signal, constraints and costs are written down before any backtest runs. Every variant tested is shown, not only the best one.</p></div>
+  <div class="box accent"><h4>No survivorship, no look-ahead</h4><p>Index membership is taken as it was at each date. Accounts are used six months after year-end and never before publication.</p></div>
+  <div class="box accent"><h4>Too good means check first</h4><p>A result that beats the benchmark by a steady margin is treated as a data error until proven otherwise. One such check found a 2%-a-year bug.</p></div>
+  <div class="box accent"><h4>Costs and taxes included</h4><p>15 bp per trade, dividend withholding tax as in the MSCI net convention, and the carry cost of currency hedges.</p></div>
+ </div>
+</section>
+</div>
 </main>
-<footer><div class="wrap">
-<p>Student research for educational and interview purposes; not investment advice. Market data
-from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
-and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
-<p>© 2026 Noah Doose</p>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
+ <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
+ <div><b>Sections</b><a href="strategies/">Strategies</a><a href="pitches/">Stock pitches</a><a href="research/">Research</a><a href="database/">Database</a><a href="journal/">Journal</a><a href="about/">About</a><a href="methodology/">Methodology</a></div>
+ <div><b>Elsewhere</b><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub</a><a href="trend-following/">Trend-following report</a><a href="downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built 30 Oct 2026.</p></div>
 </div></footer>
+
 </body>
 </html>

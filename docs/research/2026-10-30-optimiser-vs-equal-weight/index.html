@@ -3,20 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Why the optimiser lost to 1/N in a value portfolio · Noah Doose</title>
-<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
-<link rel="stylesheet" href="../../static/style.css">
+<title>Why the optimiser lost to 1/N in a value portfolio · Research Ledger</title>
+<meta name="description" content="Same 50 stocks, three weighting schemes. Minimum variance and mean-variance lagged equal weight by about 2.3 points a year — and the reason is style, not only estimation error.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
+<script src="../../assets/site.js"></script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="brand" href="../../">Noah Doose <span>Research</span></a>
-<nav><a href="../../">Home</a><a href="../../strategies/">Strategies</a><a href="../../research/" class=active>Research</a><a href="../../pitches/">Pitches</a><a href="../../methodology/">Methodology</a><a href="../../journal/">Journal</a><a href="../../about/">About</a></nav>
+ <a class="brand" href="../../"><span class="mark">ND</span><span><b>Research Ledger</b><small>Noah Doose · equity research &amp; data</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../../" class="">Home</a><a href="../../strategies/" class="">Strategies</a><a href="../../pitches/" class="">Stock pitches</a><a href="../../research/" class="on">Research</a><a href="../../database/" class="">Database</a><a href="../../journal/" class="">Journal</a><a href="../../about/" class="">About</a></nav>
+ <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
 </div></header>
-<main class="wrap">
-<article class="prose"><p class="meta">30 Oct 2026</p><h1>Why the optimiser lost to 1/N in a value portfolio</h1><h2 id="the-experiment">The experiment</h2>
+<main id="main">
+<div class="wrap"><header class="phead"><div class="crumbs"><a href="../">Research</a> / 30 Oct 2026</div>
+<h1>Why the optimiser lost to 1/N in a value portfolio</h1><p class="lede">Same 50 stocks, three weighting schemes. Minimum variance and mean-variance lagged equal weight by about 2.3 points a year — and the reason is style, not only estimation error.</p></header>
+<section class="sec"><article class="prose"><h2>The experiment</h2>
 <p>At each of ten semi-annual dates the same 50 cheap stocks were weighted three ways: equally, by minimum variance (Ledoit-Wolf covariance, 250 weeks) and by classic mean-variance, all under identical constraints (0.5%-4% per name, ±10 points by sector and country).</p>
-<h2 id="the-result">The result</h2>
-<table>
+<h2>The result</h2>
+<div class="tbl-wrap"><table class="t">
 <thead>
 <tr>
 <th>Weighting</th>
@@ -46,21 +55,23 @@
 <td>−0.2%</td>
 </tr>
 </tbody>
-</table>
-<h2 id="why">Why</h2>
+</table></div>
+<h2>Why</h2>
 <ul>
 <li><strong>Style drift.</strong> Minimum variance overweights the least volatile cheap stocks — staples, utilities, defensive health care — and adds a quality/investment tilt (RMW +0.12, CMA +0.23) with a lower beta. Over 2021-2026 the cheap <em>cyclicals</em> were the ones that paid.</li>
 <li><strong>Estimation error.</strong> Mean-variance uses historical average returns, which are notoriously noisy; it concentrates in past winners within a value book, partly undoing the signal (DeMiguel, Garlappi &amp; Uppal, 2009).</li>
 <li><strong>Turnover.</strong> Optimised weights move more: 70% a year vs 57% for equal weight.</li>
 </ul>
-<h2 id="what-i-take-from-it">What I take from it</h2>
-<p>Equal weight is a hard benchmark for an optimiser when the expected-return input carries little information. If I used an optimiser, I would feed it the score as the alpha (Grinold-style) and control factor exposures explicitly rather than minimising raw variance.</p></article>
+<h2>What I take from it</h2>
+<p>Equal weight is a hard benchmark for an optimiser when the expected-return input carries little information. If I used an optimiser, I would feed it the score as the alpha (Grinold-style) and control factor exposures explicitly rather than minimising raw variance.</p></article></section>
+<section class="sec noprint"><div class="btns"><a class="btn" href="../">← All research notes</a><a class="btn" href="../../strategies/value-developed/">The value strategy</a></div></section></div>
 </main>
-<footer><div class="wrap">
-<p>Student research for educational and interview purposes; not investment advice. Market data
-from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
-and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
-<p>© 2026 Noah Doose</p>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
+ <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
+ <div><b>Sections</b><a href="../../strategies/">Strategies</a><a href="../../pitches/">Stock pitches</a><a href="../../research/">Research</a><a href="../../database/">Database</a><a href="../../journal/">Journal</a><a href="../../about/">About</a><a href="../../methodology/">Methodology</a></div>
+ <div><b>Elsewhere</b><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub</a><a href="../../trend-following/">Trend-following report</a><a href="../../downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built 30 Oct 2026.</p></div>
 </div></footer>
+
 </body>
 </html>

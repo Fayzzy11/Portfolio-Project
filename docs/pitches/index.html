@@ -3,94 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pitches · Noah Doose</title>
-<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
-<link rel="stylesheet" href="../static/style.css">
+<title>Stock pitches · Research Ledger</title>
+<meta name="description" content="Eight stock pitches with decks and learning notes.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
+<script src="../assets/site.js"></script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="brand" href="../">Noah Doose <span>Research</span></a>
-<nav><a href="../">Home</a><a href="../strategies/">Strategies</a><a href="../research/">Research</a><a href="../pitches/" class=active>Pitches</a><a href="../methodology/">Methodology</a><a href="../journal/">Journal</a><a href="../about/">About</a></nav>
+ <a class="brand" href="../"><span class="mark">ND</span><span><b>Research Ledger</b><small>Noah Doose · equity research &amp; data</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../" class="">Home</a><a href="../strategies/" class="">Strategies</a><a href="../pitches/" class="on">Stock pitches</a><a href="../research/" class="">Research</a><a href="../database/" class="">Database</a><a href="../journal/" class="">Journal</a><a href="../about/" class="">About</a></nav>
+ <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
 </div></header>
-<main class="wrap">
-<article class="prose"><h1 id="stock-pitches">Stock pitches</h1>
-<p>Eight fundamental pitches on holdings of the December 2025 systematic value portfolio, written in October 2026: six conviction cases and two deliberate cautionary cases where the screen is likely wrong. Each deck states the thesis, why the stock is cheap against explicit peers, catalysts, a simple valuation, what would make me sell, and the position's place in the portfolio. Sources are dated on the last slide.</p>
-<table>
-<thead>
-<tr>
-<th>Company</th>
-<th>Sector · Country</th>
-<th>Call</th>
-<th>One-line thesis</th>
-<th>Deck</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Renault</td>
-<td>Autos · France</td>
-<td>Buy</td>
-<td>Net cash plus the finance arm cover most of the price</td>
-<td><a href="../assets/pitches/RNO_FP_Renault.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>BNP Paribas</td>
-<td>Banks · France</td>
-<td>Overweight</td>
-<td>13% RoTE at 0.8x tangible book</td>
-<td><a href="../assets/pitches/BNP_FP_BNP_Paribas.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>Carrefour</td>
-<td>Food retail · France</td>
-<td>Buy</td>
-<td>10%+ FCF yield; real estate covers the enterprise value</td>
-<td><a href="../assets/pitches/CA_FP_Carrefour.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>HP Inc</td>
-<td>Hardware · US</td>
-<td>Overweight</td>
-<td>~10x earnings, ~10% FCF yield, temporary cost squeeze</td>
-<td><a href="../assets/pitches/HPQ_US_HP_Inc.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>Nippon Steel</td>
-<td>Steel · Japan</td>
-<td>Buy</td>
-<td>Overseas profit about to double at 0.5-0.6x book</td>
-<td><a href="../assets/pitches/5401_JP_Nippon_Steel.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>Kansai Electric</td>
-<td>Utilities · Japan</td>
-<td>Hold</td>
-<td>Nuclear leader, modestly cheap after normalisation</td>
-<td><a href="../assets/pitches/9503_JP_Kansai_Electric.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>Centene</td>
-<td>Managed care · US</td>
-<td>Neutral (case study)</td>
-<td>Cheap on stale earnings: a process lesson</td>
-<td><a href="../assets/pitches/CNC_US_Centene.pdf">PDF</a></td>
-</tr>
-<tr>
-<td>Orient Overseas</td>
-<td>Shipping · Hong Kong</td>
-<td>Underweight (case study)</td>
-<td>Top score on cyclical peak earnings</td>
-<td><a href="../assets/pitches/316_HK_Orient_Overseas.pdf">PDF</a></td>
-</tr>
-</tbody>
-</table>
-<p><em>Student research for interview purposes; not investment advice. Market data as of 29 October 2026.</em></p></article>
+<main id="main">
+<div class="wrap"><header class="phead"><div class="eyebrow">Stock pitches · October 2026</div><h1>What the screen bought, examined one by one</h1>
+<p class="lede">Eight holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each has a twelve-slide deck in a
+buy-side format and a learning note that explains the business, the macro, the numbers and the valuation from first principles.</p></header>
+<section class="sec" data-filter-scope>
+<div class="filters"><div class="fgroup"><span>Call</span><button class="fbtn" data-f="rating" data-v="all" aria-pressed="true">All</button><button class="fbtn" data-f="rating" data-v="overweight" aria-pressed="false">Overweight</button><button class="fbtn" data-f="rating" data-v="neutral" aria-pressed="false">Neutral</button><button class="fbtn" data-f="rating" data-v="underweight" aria-pressed="false">Underweight</button></div><div class="fgroup"><span>Region</span><button class="fbtn" data-f="region" data-v="all" aria-pressed="true">All</button><button class="fbtn" data-f="region" data-v="europe" aria-pressed="false">Europe</button><button class="fbtn" data-f="region" data-v="americas" aria-pressed="false">Americas</button><button class="fbtn" data-f="region" data-v="asia" aria-pressed="false">Asia</button></div><div class="fgroup"><span>Sector</span><button class="fbtn" data-f="sector" data-v="all" aria-pressed="true">All</button><button class="fbtn" data-f="sector" data-v="consumer-discretionary" aria-pressed="false">Consumer Discretionary</button><button class="fbtn" data-f="sector" data-v="consumer-staples" aria-pressed="false">Consumer Staples</button><button class="fbtn" data-f="sector" data-v="financials" aria-pressed="false">Financials</button><button class="fbtn" data-f="sector" data-v="health-care" aria-pressed="false">Health Care</button><button class="fbtn" data-f="sector" data-v="industrials" aria-pressed="false">Industrials</button><button class="fbtn" data-f="sector" data-v="information-technology" aria-pressed="false">Information Technology</button><button class="fbtn" data-f="sector" data-v="materials" aria-pressed="false">Materials</button><button class="fbtn" data-f="sector" data-v="utilities" aria-pressed="false">Utilities</button></div><input class="search" type="search" placeholder="Search company, sector, thesis…" data-search aria-label="Search pitches"><span class="count"></span></div>
+<div class="grid"><article class="card" data-item data-rating="overweight" data-region="europe" data-sector="consumer-discretionary">
+<div class="meta"><span>RNO · Euronext Paris · France</span><span style="color:var(--green-ink)">Consumer Discretionary</span></div>
+<h3><a href="rno-renault/">Renault</a></h3>
+<div><span class="rating r-ow">Overweight</span> <span class="chip" style="height:24px">Conviction idea</span></div>
+<p>The cash pile and the finance arm cover the market value: the car business comes almost free</p>
+<div class="foot"><span class="figs"><span>Price <b>€28.17</b></span><span>Target <b>€36.00</b></span><b class="pos">+28%</b></span></div>
+<div class="links"><a class="chip" href="rno-renault/"><b>Read note</b></a><a class="chip" href="../assets/pitches/RNO_FP_Renault_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/RNO_FP_Renault_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/RNO_FP_Renault_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="overweight" data-region="europe" data-sector="financials">
+<div class="meta"><span>BNP · Euronext Paris · France</span><span style="color:var(--green-ink)">Financials</span></div>
+<h3><a href="bnp-bnp-paribas/">BNP Paribas</a></h3>
+<div><span class="rating r-ow">Overweight</span> <span class="chip" style="height:24px">Conviction idea</span></div>
+<p>A 13% return on tangible equity priced at 0.9x tangible book: the French discount has gone too far</p>
+<div class="foot"><span class="figs"><span>Price <b>€87.65</b></span><span>Target <b>€103.89</b></span><b class="pos">+19%</b></span></div>
+<div class="links"><a class="chip" href="bnp-bnp-paribas/"><b>Read note</b></a><a class="chip" href="../assets/pitches/BNP_FP_BNP_Paribas_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/BNP_FP_BNP_Paribas_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/BNP_FP_BNP_Paribas_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="overweight" data-region="europe" data-sector="consumer-staples">
+<div class="meta"><span>CA · Euronext Paris · France</span><span style="color:var(--green-ink)">Consumer Staples</span></div>
+<h3><a href="ca-carrefour/">Carrefour</a></h3>
+<div><span class="rating r-ow">Overweight</span> <span class="chip" style="height:24px">Contrarian idea</span></div>
+<p>A grocer priced at a double-digit free-cash-flow yield, with real estate worth more than the equity</p>
+<div class="foot"><span class="figs"><span>Price <b>€13.08</b></span><span>Target <b>€17.99</b></span><b class="pos">+38%</b></span></div>
+<div class="links"><a class="chip" href="ca-carrefour/"><b>Read note</b></a><a class="chip" href="../assets/pitches/CA_FP_Carrefour_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/CA_FP_Carrefour_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/CA_FP_Carrefour_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="overweight" data-region="americas" data-sector="information-technology">
+<div class="meta"><span>HPQ · NYSE · United States</span><span style="color:var(--green-ink)">Information Technology</span></div>
+<h3><a href="hpq-hp-inc/">HP Inc</a></h3>
+<div><span class="rating r-ow">Overweight</span> <span class="chip" style="height:24px">Conviction idea</span></div>
+<p>A cash machine priced for decline: about 10x earnings and a 10% free-cash-flow yield</p>
+<div class="foot"><span class="figs"><span>Price <b>$32.36</b></span><span>Target <b>$39.14</b></span><b class="pos">+21%</b></span></div>
+<div class="links"><a class="chip" href="hpq-hp-inc/"><b>Read note</b></a><a class="chip" href="../assets/pitches/HPQ_US_HP_Inc_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/HPQ_US_HP_Inc_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/HPQ_US_HP_Inc_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="overweight" data-region="asia" data-sector="materials">
+<div class="meta"><span>5401 · Tokyo Stock Exchange · Japan</span><span style="color:var(--green-ink)">Materials</span></div>
+<h3><a href="5401-nippon-steel/">Nippon Steel</a></h3>
+<div><span class="rating r-ow">Overweight</span> <span class="chip" style="height:24px">Conviction idea</span></div>
+<p>Priced as a declining Japanese steelmaker; becoming a global producer with overseas profit set to more than double</p>
+<div class="foot"><span class="figs"><span>Price <b>¥659.20</b></span><span>Target <b>¥915.56</b></span><b class="pos">+39%</b></span></div>
+<div class="links"><a class="chip" href="5401-nippon-steel/"><b>Read note</b></a><a class="chip" href="../assets/pitches/5401_JP_Nippon_Steel_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/5401_JP_Nippon_Steel_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/5401_JP_Nippon_Steel_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="neutral" data-region="americas" data-sector="health-care">
+<div class="meta"><span>CNC · NYSE · United States</span><span style="color:var(--green-ink)">Health Care</span></div>
+<h3><a href="cnc-centene/">Centene</a></h3>
+<div><span class="rating r-n">Neutral</span> <span class="chip" style="height:24px">Case study: value trap</span></div>
+<p>Cheap for the wrong reason: the screen read stale earnings, and the recovery came from elsewhere</p>
+<div class="foot"><span class="figs"><span>Price <b>$67.60</b></span><span>Target <b>$65.00</b></span><b class="neg">−4%</b></span></div>
+<div class="links"><a class="chip" href="cnc-centene/"><b>Read note</b></a><a class="chip" href="../assets/pitches/CNC_US_Centene_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/CNC_US_Centene_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/CNC_US_Centene_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="underweight" data-region="asia" data-sector="industrials">
+<div class="meta"><span>316 · HKEX · Hong Kong</span><span style="color:var(--green-ink)">Industrials</span></div>
+<h3><a href="316-orient-overseas-international/">Orient Overseas (International)</a></h3>
+<div><span class="rating r-uw">Underweight</span> <span class="chip" style="height:24px">Case study: cyclical trap</span></div>
+<p>The highest value score in our universe, on peak-cycle earnings: a call on freight rates, not a cheap compounder</p>
+<div class="foot"><span class="figs"><span>Price <b>HK$153.30</b></span><span>Target <b>HK$123.92</b></span><b class="neg">−19%</b></span></div>
+<div class="links"><a class="chip" href="316-orient-overseas-international/"><b>Read note</b></a><a class="chip" href="../assets/pitches/316_HK_Orient_Overseas_International_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/316_HK_Orient_Overseas_International_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/316_HK_Orient_Overseas_International_note.pdf">Note PDF</a></div></article><article class="card" data-item data-rating="neutral" data-region="asia" data-sector="utilities">
+<div class="meta"><span>9503 · Tokyo Stock Exchange · Japan</span><span style="color:var(--green-ink)">Utilities</span></div>
+<h3><a href="9503-kansai-electric-power/">Kansai Electric Power</a></h3>
+<div><span class="rating r-n">Neutral</span> <span class="chip" style="height:24px">Quality hold</span></div>
+<p>Japan&#x27;s nuclear leader is modestly cheap, once record 2025 profits are normalised</p>
+<div class="foot"><span class="figs"><span>Price <b>¥2,754</b></span><span>Target <b>¥2,970</b></span><b class="pos">+8%</b></span></div>
+<div class="links"><a class="chip" href="9503-kansai-electric-power/"><b>Read note</b></a><a class="chip" href="../assets/pitches/9503_JP_Kansai_Electric_Power_pitch.pptx">PPTX</a><a class="chip" href="../assets/pitches/9503_JP_Kansai_Electric_Power_pitch.pdf">Deck PDF</a><a class="chip" href="../assets/pitches/9503_JP_Kansai_Electric_Power_note.pdf">Note PDF</a></div></article></div><div class="empty">No pitch matches these filters.</div></section>
+<section class="sec"><div class="shead"><span class="idx">Σ</span><h2>The book at a glance</h2><p>Click a column header to sort. Upside is to the base-case scenario value.</p></div>
+<div class="tbl-wrap "><table class="t" data-sortable><thead><tr><th>Company</th><th>Sector</th><th>Country</th><th>Call</th><th class="n">Price</th><th class="n">Target</th><th class="n">Upside</th><th>Valuation method</th></tr></thead><tbody><tr class=""><td><a href="rno-renault/">Renault</a></td><td>Consumer Discretionary</td><td>France</td><td><span class="rating r-ow">Overweight</span></td><td class="n">€28.17</td><td class="n">€36.00</td><td class="n" data-v="0.278"><span class="pos">+28%</span></td><td>P/E on 2027 earnings, cross-checked with a sum of the parts</td></tr><tr class=""><td><a href="bnp-bnp-paribas/">BNP Paribas</a></td><td>Financials</td><td>France</td><td><span class="rating r-ow">Overweight</span></td><td class="n">€87.65</td><td class="n">€103.89</td><td class="n" data-v="0.1853"><span class="pos">+19%</span></td><td>Justified price to tangible book (Gordon growth)</td></tr><tr class=""><td><a href="ca-carrefour/">Carrefour</a></td><td>Consumer Staples</td><td>France</td><td><span class="rating r-ow">Overweight</span></td><td class="n">€13.08</td><td class="n">€17.99</td><td class="n" data-v="0.3751"><span class="pos">+38%</span></td><td>Free-cash-flow yield on normalised net free cash flow</td></tr><tr class=""><td><a href="hpq-hp-inc/">HP Inc</a></td><td>Information Technology</td><td>United States</td><td><span class="rating r-ow">Overweight</span></td><td class="n">$32.36</td><td class="n">$39.14</td><td class="n" data-v="0.2094"><span class="pos">+21%</span></td><td>Free-cash-flow yield</td></tr><tr class=""><td><a href="5401-nippon-steel/">Nippon Steel</a></td><td>Materials</td><td>Japan</td><td><span class="rating r-ow">Overweight</span></td><td class="n">¥659.20</td><td class="n">¥915.56</td><td class="n" data-v="0.3889"><span class="pos">+39%</span></td><td>Price to book against the return path</td></tr><tr class=""><td><a href="cnc-centene/">Centene</a></td><td>Health Care</td><td>United States</td><td><span class="rating r-n">Neutral</span></td><td class="n">$67.60</td><td class="n">$65.00</td><td class="n" data-v="-0.0385"><span class="neg">−4%</span></td><td>P/E on 2027 adjusted EPS</td></tr><tr class=""><td><a href="316-orient-overseas-international/">Orient Overseas (International)</a></td><td>Industrials</td><td>Hong Kong</td><td><span class="rating r-uw">Underweight</span></td><td class="n">HK$153.30</td><td class="n">HK$123.92</td><td class="n" data-v="-0.1917"><span class="neg">−19%</span></td><td>P/E on normalised earnings</td></tr><tr class=""><td><a href="9503-kansai-electric-power/">Kansai Electric Power</a></td><td>Utilities</td><td>Japan</td><td><span class="rating r-n">Neutral</span></td><td class="n">¥2,754</td><td class="n">¥2,970</td><td class="n" data-v="0.0784"><span class="pos">+8%</span></td><td>Justified price to book (Gordon growth)</td></tr></tbody></table></div>
+<p class="cap">Prices as of 29 October 2026. Calls: Overweight above +15% upside, Neutral between −10% and +15%, Underweight below −10%. Student research, not investment advice.</p></section></div>
 </main>
-<footer><div class="wrap">
-<p>Student research for educational and interview purposes; not investment advice. Market data
-from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
-and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
-<p>© 2026 Noah Doose</p>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
+ <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
+ <div><b>Sections</b><a href="../strategies/">Strategies</a><a href="../pitches/">Stock pitches</a><a href="../research/">Research</a><a href="../database/">Database</a><a href="../journal/">Journal</a><a href="../about/">About</a><a href="../methodology/">Methodology</a></div>
+ <div><b>Elsewhere</b><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub</a><a href="../trend-following/">Trend-following report</a><a href="../downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built 30 Oct 2026.</p></div>
 </div></footer>
+
 </body>
 </html>

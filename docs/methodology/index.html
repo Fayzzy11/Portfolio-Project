@@ -3,24 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Methodology · Noah Doose</title>
-<meta name="description" content="Equity research and portfolio construction by Noah Doose.">
-<link rel="stylesheet" href="../static/style.css">
+<title>Methodology · Research Ledger</title>
+<meta name="description" content="Where the data come from, the rules every result respects, and the tools used.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='%23FAFBF9' stroke='%23141A17' stroke-width='3'/%3E%3Crect x='7' y='22' width='18' height='3' fill='%230E6B4F'/%3E%3C/svg%3E">
+<script src="../assets/site.js"></script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="brand" href="../">Noah Doose <span>Research</span></a>
-<nav><a href="../">Home</a><a href="../strategies/">Strategies</a><a href="../research/">Research</a><a href="../pitches/">Pitches</a><a href="../methodology/" class=active>Methodology</a><a href="../journal/">Journal</a><a href="../about/">About</a></nav>
+ <a class="brand" href="../"><span class="mark">ND</span><span><b>Research Ledger</b><small>Noah Doose · equity research &amp; data</small></span></a>
+ <nav class="nav" id="nav" aria-label="Main"><a href="../" class="">Home</a><a href="../strategies/" class="">Strategies</a><a href="../pitches/" class="">Stock pitches</a><a href="../research/" class="">Research</a><a href="../database/" class="">Database</a><a href="../journal/" class="">Journal</a><a href="../about/" class="">About</a></nav>
+ <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+ <button class="tbtn" id="theme" aria-label="Switch light or dark theme" title="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
 </div></header>
-<main class="wrap">
-<article class="prose"><h1 id="data-and-methodology">Data and methodology</h1>
-<h2 id="sources">Sources</h2>
+<main id="main">
+<div class="wrap"><header class="phead"><div class="eyebrow">Methodology</div><h1>Data and methodology</h1><p class="lede">Where the data come from, the rules every result respects, and the tools used.</p></header>
+<section class="sec"><article class="prose"><h2>Sources</h2>
 <ul>
 <li><strong>Bloomberg terminal</strong> (SKEMA lab, extracted 26-29 October 2026): index compositions at ten dates, weekly prices in EUR, dividend history, annual standardised fundamentals as originally reported, market cap / free float / turnover snapshots, FX, MSCI World Net EUR, €STR. Licensed data are <strong>not</strong> published here: the site shows methodology and aggregated results only.</li>
 <li><strong>Kenneth French Data Library</strong> — Developed 5 factors and momentum (daily), for the factor decomposition.</li>
 <li><strong>OECD via FRED</strong> — 3-month interbank rates by currency, for the cost of FX hedging.</li>
 </ul>
-<h2 id="integrity-rules">Integrity rules</h2>
+<h2>Integrity rules</h2>
 <ol>
 <li><strong>No survivorship:</strong> the universe at each date is the index composition at that date, including later delisted names.</li>
 <li><strong>No look-ahead:</strong> a fiscal year is used from year-end + 6 months and never before its announcement; originally reported (not restated) figures; trades executed after the decision date.</li>
@@ -29,14 +36,15 @@
 <li><strong>Reproducible:</strong> one command rebuilds every number from the raw file; unit tests check the lag, returns and every portfolio constraint.</li>
 <li><strong>Every judgement call logged</strong> with its alternatives in a decision journal.</li>
 </ol>
-<h2 id="construction-toolkit">Construction toolkit</h2>
-<p>Python (pandas, NumPy, SciPy/HiGHS for the integer selection, cvxpy for the optimisers, scikit-learn for Ledoit-Wolf shrinkage, statsmodels for factor regressions), python-pptx and python-docx for the documents.</p></article>
+<h2>Construction toolkit</h2>
+<p>Python (pandas, NumPy, SciPy/HiGHS for the integer selection, cvxpy for the optimisers, scikit-learn for Ledoit-Wolf shrinkage, statsmodels for factor regressions), python-pptx and python-docx for the documents.</p></article></section></div>
 </main>
-<footer><div class="wrap">
-<p>Student research for educational and interview purposes; not investment advice. Market data
-from Bloomberg are used under the SKEMA licence and are not redistributed: this site shows methodology
-and aggregated results only. Firms mentioned elsewhere are not affiliated with this work.</p>
-<p>© 2026 Noah Doose</p>
+<footer class="sitefoot"><div class="wrap">
+ <div><b>Research Ledger</b><p>Student research by Noah Doose, MSc Financial Markets &amp; Investments (SKEMA Business School, Paris), CFA Level II candidate.</p>
+ <p>Educational and interview material. Nothing here is investment advice or an offer of any security. Licensed market data are not redistributed: pages show methodology and aggregated results only.</p></div>
+ <div><b>Sections</b><a href="../strategies/">Strategies</a><a href="../pitches/">Stock pitches</a><a href="../research/">Research</a><a href="../database/">Database</a><a href="../journal/">Journal</a><a href="../about/">About</a><a href="../methodology/">Methodology</a></div>
+ <div><b>Elsewhere</b><a href="https://github.com/Fayzzy11/Portfolio-Project">Code on GitHub</a><a href="../trend-following/">Trend-following report</a><a href="../downloads/Portfolio_Tracker_Bloomberg.xlsx">Portfolio tracker (Excel)</a><p style="margin-top:12px">Built 30 Oct 2026.</p></div>
 </div></footer>
+
 </body>
 </html>

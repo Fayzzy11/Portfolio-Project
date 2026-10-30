@@ -1,0 +1,4027 @@
+[
+ {
+  "code": "RNO_FP",
+  "bbg": "RNO FP Equity",
+  "name": "Renault",
+  "legal": "Renault SA",
+  "exchange": "Euronext Paris",
+  "ticker": "RNO",
+  "country": "France",
+  "ccy": "EUR",
+  "sym": "€",
+  "sector": "Consumer Discretionary",
+  "industry": "Automobiles",
+  "price": 28.17,
+  "price_note": "close, 29 Oct 2026",
+  "shares_m": 272.0,
+  "high52": 37.97,
+  "low52": 24.38,
+  "rating": "Overweight",
+  "conviction": "Medium-high",
+  "horizon": "12-18 months",
+  "role": "Conviction idea",
+  "headline": "The cash pile and the finance arm cover the market value: the car business comes almost free",
+  "one_liner": "Renault trades at about €7.7bn while its car business holds €6.6bn of net cash and its captive bank earns roughly €1.5bn of operating profit a year. The market prices the 2026 margin trough as permanent; we think the reset is done and a product cycle is starting.",
+  "key_stats": [
+   [
+    "Market cap",
+    "€7.7bn"
+   ],
+   [
+    "Automotive net cash",
+    "€6.6bn"
+   ],
+   [
+    "P/E 2026e (consensus)",
+    "4.3x"
+   ],
+   [
+    "Dividend yield",
+    "7.8%"
+   ]
+  ],
+  "thesis": [
+   [
+    "The balance sheet is the floor",
+    "Automotive net cash of €6.6bn at June 2026 equals about 86% of the market value. Mobilize Financial Services (the former RCI Banque) adds about €1.5bn of annual operating margin and pays dividends to the car business."
+   ],
+   [
+    "The reset is done",
+    "Guidance fell from at least 7% margin (early 2025) to about 5.5% for 2026. That guide was confirmed in February, July and October 2026, and the futuREady plan sets a 5-7% through-cycle band. Expectations are now low and credible."
+   ],
+   [
+    "A product cycle is starting",
+    "futuREady plans 36 launches by 2030 on a two-year development cycle. Clio VI, Boreal, Twingo E-Tech and Duster are already on sale, and Q3 2026 revenue beat consensus (+1.4% at constant FX versus −0.3% expected)."
+   ]
+  ],
+  "variant": [
+   [
+    "Chinese competition will crush margins.",
+    "Volumes are under pressure, but pricing and mix held. The plan cuts variable cost by about €400 per car a year and development time to two years."
+   ],
+   [
+    "The cash is trapped and will be burnt.",
+    "The car business generated €1.5bn of free cash flow in 2025, S&P upgraded Renault to investment grade (BBB−) in December 2025, and the €2.20 dividend was paid from that cash."
+   ],
+   [
+    "Management keeps cutting guidance.",
+    "The new CEO reset targets once, in July 2025. The 2026 guide has since been confirmed three times."
+   ],
+   [
+    "Nissan is a black hole.",
+    "The stake was written down by €9.3bn in 2025. Our valuation gives it no value, so any monetisation is upside."
+   ]
+  ],
+  "business": [
+   [
+    "Automotive (~88% of revenue)",
+    "Renault, Dacia and Alpine brands; a volume player in European B and C segments, with Dacia as the low-cost brand. 52% of European sales were electrified in H1 2026."
+   ],
+   [
+    "Mobilize Financial Services (~12%)",
+    "Captive car finance and leasing. Contributed €753m of operating margin in H1 2026 and pays dividends up to the car business (€250m in H1 2026, about €500m a year targeted)."
+   ],
+   [
+    "Nissan stake",
+    "About 35% after the 2023-2025 Alliance restructuring, according to press reports. Carried at fair value through equity since June 2025."
+   ],
+   [
+    "Geography",
+    "No US sales, so US tariffs are a second-order risk. Growth markets are India, Turkey, Morocco and Brazil (Geely partnership in Brazil since September 2026)."
+   ]
+  ],
+  "segments": {
+   "title": "Revenue split, 9M 2026",
+   "unit": "€m",
+   "labels": [
+    "Automotive",
+    "Mobilize Financial Services"
+   ],
+   "values": [
+    36641,
+    5207
+   ]
+  },
+  "macro": [
+   [
+    "European car demand",
+    "−6.0%",
+    "Group volumes in Q3 2026. European demand is flat and Chinese brands are gaining share in the low-cost segment where Dacia plays."
+   ],
+   [
+    "Input costs",
+    "Middle East",
+    "The 2026 Middle East conflict lifted raw-material, energy and logistics costs; management expects H2 margin only slightly above H1."
+   ],
+   [
+    "EV transition",
+    "25.8%",
+    "Share of electric cars in Q3 2026 passenger-car sales. EU CO2 rules force the mix shift and compress pricing."
+   ],
+   [
+    "Rates and credit",
+    "BBB−",
+    "Investment-grade rating (S&P, Dec 2025) lowers funding cost for Mobilize, whose margin depends on rates and used-car prices."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "H1 2026",
+    "2026 guide"
+   ],
+   "rows": [
+    [
+     "Group revenue",
+     "€56.2bn",
+     "€57.9bn",
+     "€30.3bn",
+     "—"
+    ],
+    [
+     "Group operating margin",
+     "7.6%",
+     "6.3%",
+     "5.2%",
+     "~5.5%"
+    ],
+    [
+     "Net income, group share",
+     "€0.75bn",
+     "−€10.9bn*",
+     "€0.7bn",
+     "—"
+    ],
+    [
+     "Automotive free cash flow",
+     "—",
+     "€1.5bn",
+     "€0.65bn",
+     "~€1.0bn"
+    ],
+    [
+     "Automotive net cash (period end)",
+     "—",
+     "€7.3bn",
+     "€6.6bn",
+     "—"
+    ],
+    [
+     "Dividend per share",
+     "—",
+     "€2.20",
+     "—",
+     "—"
+    ]
+   ],
+   "note": "*Includes a €9.3bn non-cash loss on the Nissan stake. FY2024 revenue derived from the +3.0% growth reported for 2025. Sources: Renault FY2025 and H1 2026 releases."
+  },
+  "valuation": {
+   "method": "P/E on 2027 earnings, cross-checked with a sum of the parts",
+   "explain": "We value Renault on 2027 earnings per share at a single-digit P/E, the range European volume carmakers have traded in through the cycle. Consensus implies about €6.6 of 2026 EPS (price / 4.3x); we use €6.0 in the base case to stay below the street. The sum of the parts is a sanity check, not the target.",
+   "kind": "pe",
+   "scenarios": [
+    [
+     "Bear",
+     4.0,
+     5.0,
+     "Margin falls below the 5% floor; Chinese price war"
+    ],
+    [
+     "Base",
+     6.0,
+     6.0,
+     "Margin holds around 5.5-6%; dividend maintained"
+    ],
+    [
+     "Bull",
+     7.0,
+     7.0,
+     "futuREady savings land; margin back above 6.5%"
+    ]
+   ],
+   "sotp": [
+    [
+     "Automotive net cash (Jun 2026)",
+     6.57
+    ],
+    [
+     "Mobilize at 7x after-tax earnings",
+     7.9
+    ],
+    [
+     "Car business, Nissan stake",
+     0.0
+    ]
+   ],
+   "consensus_target": 37.92
+  },
+  "catalysts": [
+   [
+    "Nov-Dec 2026",
+    "New Megane E-Tech, Dacia Striker, Sandero hybrid and New Spring launches"
+   ],
+   [
+    "Year-end 2026",
+    "Inventory back to 525-550k vehicles; free cash flow delivered against the €1.0bn guide"
+   ],
+   [
+    "Feb 2027",
+    "FY2026 results, dividend proposal, first year of futuREady savings"
+   ],
+   [
+    "2026-2027",
+    "Mobilize dividends ramping toward €500m a year; any Nissan stake monetisation"
+   ],
+   [
+    "Jul 2027",
+    "H1 2027 results: first full read of the cost programme"
+   ]
+  ],
+  "risks": [
+   [
+    "European price war with Chinese brands",
+    "Dacia's cost position; plan cuts €400 of variable cost per car a year"
+   ],
+   [
+    "Raw-material and energy inflation",
+    "Pricing power held in 2026; costs partly passed through"
+   ],
+   [
+    "Execution of futuREady",
+    "Two-year development cycle already used on 2026 launches"
+   ],
+   [
+    "Mobilize credit risk if used-car prices fall",
+    "Investment-grade funding; diversified retail book"
+   ]
+  ],
+  "triggers": [
+   "2026 operating margin below 5%, or automotive FCF well below €1bn",
+   "Automotive net cash below €5bn without a clear use",
+   "Another guidance cut at the February 2027 results, or a dividend cut"
+  ],
+  "peers_text": "Stellantis, Volkswagen, Mercedes-Benz, BMW, Toyota, Honda (pipeline peer set, December 2025).",
+  "note": {
+   "intro": "Renault is the clearest example in our portfolio of a stock that is cheap because the market does not trust the balance sheet to stay in the hands of shareholders. Our systematic score ranked it first of 102 Consumer Discretionary stocks in December 2025, and the stock has been in the top quintile of its sector at every rebalance since 2021. This note explains how the company makes money, why the market is sceptical, and what has to happen for the discount to close.",
+   "business_long": [
+    "Renault Group sells about 2.3 million vehicles a year (2.337m in 2025) under three brands. Renault is the core volume brand, Dacia is the low-cost brand built around simple platforms and low equipment levels, and Alpine is a small sports-car brand. Most sales are in Europe; Renault has no US business.",
+    "The group has two reporting segments since 2026. Automotive makes and sells cars. Mobilize Financial Services (MFS, the former RCI Banque) lends to customers and dealers to finance those cars. MFS is a bank: it takes deposits, funds itself in the bond market and earns a spread. This is why enterprise-value multiples on Renault mislead: you cannot add a bank's debt to a carmaker's equity value and call it an enterprise value.",
+    "The third asset is a stake of roughly 35% in Nissan, according to press reports. After the 2023-2025 Alliance restructuring, the stake is held at fair value through equity. Renault took a €9.3bn non-cash accounting loss on it in 2025, which is why reported net income was about −€10.9bn even though the business made an operating margin of 6.3%."
+   ],
+   "macro_long": [
+    "European car demand is flat. The pressure comes from Chinese manufacturers such as BYD and Geely, which sell electric cars at prices European brands struggle to match. Dacia is the most exposed because it competes on price: its volumes fell 12.8% in Q3 2026 while the group fell 6.0%.",
+    "Costs moved against carmakers in 2026. The Middle East conflict lifted raw materials, energy and freight, and Renault guided to a second half only slightly better than the first. The EU's CO2 rules push the mix toward electric cars, which are less profitable today; Renault's electric share reached 25.8% of passenger cars in Q3 2026.",
+    "Rates matter through MFS. Its margin depends on the spread between lending rates and its funding cost, and on used-car prices for leased vehicles. The S&P upgrade to BBB− in December 2025 lowers that funding cost."
+   ],
+   "history": [
+    [
+     "15 Jun 2025",
+     "CEO Luca de Meo announces his departure"
+    ],
+    [
+     "15 Jul 2025",
+     "Profit warning: 2025 margin cut to ~6.5%, FCF to €1.0-1.5bn; shares fall up to 17%"
+    ],
+    [
+     "30 Jul 2025",
+     "François Provost named CEO"
+    ],
+    [
+     "H1 2025",
+     "€9.3bn non-cash loss on the Nissan stake"
+    ],
+    [
+     "18 Dec 2025",
+     "S&P upgrade to BBB−, investment grade"
+    ],
+    [
+     "19 Feb 2026",
+     "FY2025: 6.3% margin, €1.5bn FCF, €2.20 dividend, 2026 guide ~5.5%"
+    ],
+    [
+     "10 Mar 2026",
+     "futuREady plan: 36 launches by 2030, 5-7% margin band"
+    ],
+    [
+     "29 Jul 2026",
+     "H1 2026: 5.2% margin, guidance confirmed"
+    ],
+    [
+     "29 Oct 2026",
+     "Q3 revenue +1.4% at constant FX, above consensus; guidance confirmed"
+    ]
+   ],
+   "model_long": "At the 31 December 2025 rebalance our lag rule (fiscal year end + 6 months) meant the score used FY2024 accounts. Renault scored above +3 standard deviations on EV/EBIT, book-to-price, FCF yield and sales-to-EV versus its sector. The EV/EBIT of 1.8x is not a real number: the enterprise value nets the automotive cash but ignores the bank's structure. Read the score as a flag, then rebuild the value by parts.",
+   "bear_long": "The bear case is a value trap: margins trend down (7.6% in 2024, 6.3% in 2025, ~5.5% in 2026), the low-cost niche is under attack from China, and the net cash is spent on product launches instead of returned. The medium-term band starts at 5%, so a bad year would sit inside management's own range.",
+   "glossary": [
+    [
+     "Operating margin",
+     "Renault's main profit measure: operating profit before restructuring and one-offs, divided by revenue."
+    ],
+    [
+     "Automotive free cash flow",
+     "Cash generated by the car business after capex and R&D, including the dividend received from MFS."
+    ],
+    [
+     "Captive finance arm",
+     "A bank owned by a manufacturer to finance its customers and dealers (here Mobilize Financial Services)."
+    ],
+    [
+     "Sum of the parts",
+     "Valuing each business separately and adding them, instead of applying one multiple to the whole group."
+    ]
+   ],
+   "interview": [
+    [
+     "Why is Renault's EV/EBIT of 1.8x misleading?",
+     "Because the group consolidates a bank. Its debt is the bank's funding, not leverage of the car business, so a single EV is meaningless. We value net cash, MFS and the car business separately."
+    ],
+    [
+     "What is the single number that would make you sell?",
+     "A 2026 operating margin below 5%, the bottom of management's own band. It would mean the reset was not enough."
+    ],
+    [
+     "Why not value the Nissan stake?",
+     "Its value is volatile and its monetisation has no timetable. Giving it zero keeps the thesis independent of Nissan."
+    ],
+    [
+     "How does a value screen end up holding a carmaker for five years?",
+     "Carmakers trade on low multiples through the cycle. Renault was in the top quintile of its sector at every date, so the real question is whether the discount closes, which needs cash returned to shareholders."
+    ]
+   ]
+  },
+  "target": 36.0,
+  "upside": 0.278,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "EPS €4.00 × 5x",
+    "value": 20.0,
+    "upside": -0.29,
+    "story": "Margin falls below the 5% floor; Chinese price war"
+   },
+   {
+    "name": "Base",
+    "inputs": "EPS €6.00 × 6x",
+    "value": 36.0,
+    "upside": 0.278,
+    "story": "Margin holds around 5.5-6%; dividend maintained"
+   },
+   {
+    "name": "Bull",
+    "inputs": "EPS €7.00 × 7x",
+    "value": 49.0,
+    "upside": 0.7394,
+    "story": "futuREady savings land; margin back above 6.5%"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 7.66,
+  "facts": {
+   "ticker": "RNO FP Equity",
+   "name": "RENAULT SA",
+   "sector": "Consumer Discretionary",
+   "industry_group": "Automobiles & Components",
+   "country": "FR",
+   "currency": "EUR",
+   "fy_used": "2024-12-31",
+   "mcap_eur_bn": 10.4744833,
+   "score": 3.4834477881082835,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 102,
+   "z": {
+    "ebit_ev": 3.6976918400393766,
+    "b_p": 3.28203257202924,
+    "fcf_p": 3.681959526612042,
+    "s_ev": 3.2721072137524745,
+    "e_p": 0.40659774513821156
+   },
+   "multiples": {
+    "EV/EBIT": 1.78,
+    "P/B": 0.35,
+    "P/FCF": 1.94,
+    "EV/Sales": 0.08,
+    "P/E": 13.93
+   },
+   "sector_median": {
+    "EV/EBIT": 18.33,
+    "P/B": 4.41,
+    "P/FCF": 22.13,
+    "EV/Sales": 2.45,
+    "P/E": 22.16
+   },
+   "peer_median": {
+    "EV/EBIT": 4.81,
+    "P/B": 0.6,
+    "P/FCF": 4.22,
+    "EV/Sales": 0.18,
+    "P/E": 6.76
+   },
+   "valuation": {
+    "fcf_yield": 0.5154430863429799,
+    "implied_perpetual_growth": -0.2840377776124287,
+    "upside_sector_EV_EBIT": 4.070001051728791,
+    "upside_peer_EV_EBIT": 0.7457533274741386
+   },
+   "score_history": {
+    "2021-06-30": 2.0733934909702167,
+    "2021-12-31": 2.1678717678971253,
+    "2022-06-30": 2.072226974588766,
+    "2022-12-30": 1.734042790356357,
+    "2023-06-30": 2.658964776541981,
+    "2023-12-29": 2.6193233273768297,
+    "2024-06-28": 1.8654675122850088,
+    "2024-12-31": 2.2203056789668745,
+    "2025-06-30": 3.3492299585766636,
+    "2025-12-31": 3.4834477881082835
+   },
+   "held_since": "2021-06-30",
+   "dates_held": [
+    "2021-06-30",
+    "2021-12-31",
+    "2022-06-30",
+    "2023-06-30",
+    "2023-12-29",
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.005000002324848492,
+    "MVO": 0.005000000009849323
+   },
+   "h1_2026_return": -0.24333394948525489,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "S1",
+    "label": "Renault Group, \"H1 2026 results\" press release, 29/07/2026, via MFN/GlobeNewswire",
+    "url": "https://mfn.se/one/a/renault/renault-group-delivers-robust-performance-confirms-its-2026-fy-guidance-and-rapidly-implements-futuready-be6781a8"
+   },
+   {
+    "tag": "S2",
+    "label": "Renault Group, \"Renault Group delivers resilient Q3 revenue and confirms its 2026 financial guidance\", 29/10/2026",
+    "url": "https://media.renaultgroup.com/renault-group-delivers-resilient-q3-revenue-and-confirms-its-2026-financial-guidance/?lang=eng"
+   },
+   {
+    "tag": "S3",
+    "label": "Ideal Investisseur, summary of Renault FY2025 results, 19/02/2026",
+    "url": "https://www.ideal-investisseur.fr/en/stock-news/renault-reports-operating-margin-of-63-in-2025-despite-nissan-impact/14111.html"
+   },
+   {
+    "tag": "S4",
+    "label": "NewMobility News, \"Renault's good results overshadowed by recalculation of participation in Nissan\", 19/02/2026",
+    "url": "https://newmobility.news/en/2026/02/19/renaults-good-results-overshadowed-by-recalculation-of-participation-in-nissan/"
+   },
+   {
+    "tag": "S5",
+    "label": "Profit warning and CEO change: Invezz, 16/07/2025",
+    "url": "https://invezz.com/news/2025/07/16/renault-shares-tumble-after-profit-warning-leadership-shake-up-analysts-slash-pts/"
+   },
+   {
+    "tag": "S6",
+    "label": "Renault Group, \"Renault Group launches futuREady, opening a new strategic era\", 10/03/2026",
+    "url": "https://mfn.se/one/a/renault/renault-group-launches-futuready-opening-a-new-strategic-era-a4dac7eb"
+   },
+   {
+    "tag": "S7",
+    "label": "Investing.com via Yahoo Finance, \"Renault revenue beats estimates as automaker reaffirms 2026 outlook\", 29/10/2026",
+    "url": "https://finance.yahoo.com/markets/stocks/articles/renault-revenue-beats-estimates-automaker-070552213.html"
+   },
+   {
+    "tag": "S8",
+    "label": "MarketScreener, Renault finances/consensus page, data 29/10/2026",
+    "url": "https://www.marketscreener.com/quote/stock/RENAULT-4688/finances/"
+   },
+   {
+    "tag": "S9",
+    "label": "StockAnalysis, Renault statistics, data 29/10/2026",
+    "url": "https://stockanalysis.com/quote/epa/RNO/statistics/"
+   },
+   {
+    "tag": "S10",
+    "label": "ad-hoc-news, \"Renault reports Q3 growth. Renault stock is valued at EUR 8.1 billion\", 29/10/2026",
+    "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/renault-reports-q3-growth-renault-stock-is-valued-at-eur-8-1-billion/70427294"
+   }
+  ]
+ },
+ {
+  "code": "BNP_FP",
+  "bbg": "BNP FP Equity",
+  "name": "BNP Paribas",
+  "legal": "BNP Paribas SA",
+  "exchange": "Euronext Paris",
+  "ticker": "BNP",
+  "country": "France",
+  "ccy": "EUR",
+  "sym": "€",
+  "sector": "Financials",
+  "industry": "Banks",
+  "price": 87.65,
+  "price_note": "close, 29 Oct 2026",
+  "shares_m": 1095.0,
+  "high52": 113.82,
+  "low52": 78.83,
+  "rating": "Overweight",
+  "conviction": "Medium",
+  "horizon": "12 months",
+  "role": "Conviction idea",
+  "headline": "A 13% return on tangible equity priced at 0.9x tangible book: the French discount has gone too far",
+  "one_liner": "BNP earned a 13.2% return on tangible equity over the first nine months of 2026, ahead of its own 12% target, yet trades below tangible book because the market treats it as a proxy for French sovereign risk. With CET1 at 12.9% and a €1.3bn buyback starting, we see value in the gap.",
+  "key_stats": [
+   [
+    "Market cap",
+    "€96bn"
+   ],
+   [
+    "RoTE, 9M 2026",
+    "13.2%"
+   ],
+   [
+    "P/E 2026e (consensus)",
+    "7.1x"
+   ],
+   [
+    "Dividend yield 2026e",
+    "6.8%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Returns are ahead of target",
+    "9M 2026 RoTE of 13.2% and a 59.0% cost/income ratio beat the 2026 targets (~12% and ~60%). In February 2026 the bank raised its 2028 targets to RoTE above 13% and cost/income below 56%."
+   ],
+   [
+    "The price is a sovereign discount, not a bank discount",
+    "Shares fell about 20% in the three months to late October 2026, to a 28-week low of €85.35, with no company-specific cause found, while French 10-year yields reached ~4.9% and the OAT-Bund spread ~155 bp. French government bonds held total about €19bn, €16bn of them at amortised cost."
+   ],
+   [
+    "Capital comes back to shareholders",
+    "2026 payout of 60% (at least 50% dividend, 10% buyback), a €1.3bn buyback from November 2026, and from 2027 the distribution of CET1 above 13%. A new 2030 plan is due on 2 February 2027."
+   ]
+  ],
+  "variant": [
+   [
+    "BNP is a leveraged bet on France.",
+    "Three of its four retail home markets are outside France, CIB is the leading EMEA investment bank, and IPS adds fee income. Earnings are more diversified than the share price implies."
+   ],
+   [
+    "Trading revenue is at a peak.",
+    "Global Markets is strong (+21.9% in Q3), but the RoTE target was beaten even after €408m of restructuring costs."
+   ],
+   [
+    "The Sudan litigation is an open-ended liability.",
+    "It is real and unprovisioned; we treat it as a tail risk that the appeal (2027) will clarify, and keep the position sized accordingly."
+   ]
+  ],
+  "business": [
+   [
+    "Commercial, Personal Banking & Services",
+    "Retail networks in France, Belgium, Italy and Luxembourg, Europe-Mediterranean, plus Personal Finance, Arval (car leasing, Athlon acquired July 2026) and Nickel."
+   ],
+   [
+    "Corporate & Institutional Banking",
+    "Global Banking, Global Markets and Securities Services; the bank describes itself as the leading EMEA investment bank."
+   ],
+   [
+    "Investment & Protection Services",
+    "Insurance, Wealth Management and Asset Management, including AXA IM, consolidated since July 2025."
+   ],
+   [
+    "Capital",
+    "CET1 12.9% at September 2026, against a 10.45% requirement; guided above 13% at end-2026."
+   ]
+  ],
+  "segments": {
+   "title": "Division revenues (NBI), 9M 2026",
+   "unit": "€m",
+   "labels": [
+    "Commercial, Personal Banking & Services",
+    "Corporate & Institutional Banking",
+    "Investment & Protection Services"
+   ],
+   "values": [
+    20660,
+    15725,
+    5915
+   ]
+  },
+  "macro": [
+   [
+    "French 10-year yield",
+    "~4.9%",
+    "Political and budget uncertainty pushed French yields up in 2026; French banks trade as a proxy for the sovereign."
+   ],
+   [
+    "OAT-Bund spread",
+    "~155 bp",
+    "A wider spread raises funding costs and the discount investors apply to French financials."
+   ],
+   [
+    "Oil and inflation",
+    "~$115",
+    "Brent around $115 a barrel with the Middle East conflict: a risk to credit quality and to rate expectations."
+   ],
+   [
+    "Cost of risk",
+    "39 bp",
+    "Q3 2026, at the top of the <40 bp guide. Arval used-car prices are the visible pressure point."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "9M 2026",
+    "2026 target"
+   ],
+   "rows": [
+    [
+     "Revenues (NBI)",
+     "€48.8bn",
+     "€51.2bn",
+     "€41.9bn",
+     "> 5% CAGR"
+    ],
+    [
+     "Cost / income",
+     "—",
+     "61.2%",
+     "59.0%",
+     "~60%"
+    ],
+    [
+     "Cost of risk",
+     "—",
+     "36 bp",
+     "39 bp (Q3)",
+     "< 40 bp"
+    ],
+    [
+     "Net income, group share",
+     "€11.7bn",
+     "€12.2bn",
+     "€11.0bn",
+     "> 7% CAGR"
+    ],
+    [
+     "Return on tangible equity",
+     "—",
+     "11.6%",
+     "13.2%",
+     "~12%"
+    ],
+    [
+     "CET1 ratio",
+     "—",
+     "12.6%",
+     "12.9%",
+     "> 13% (end-2026)"
+    ],
+    [
+     "Dividend per share",
+     "—",
+     "€5.16",
+     "€3.23 interim",
+     "payout 60%"
+    ]
+   ],
+   "note": "FY2024 figures derived from the 2025 growth rates reported by the bank. RoTE methodology changed in Q4 2025. Sources: BNP Paribas FY2025 and Q3 2026 releases."
+  },
+  "valuation": {
+   "method": "Justified price to tangible book (Gordon growth)",
+   "explain": "A bank is worth (RoTE − g) / (cost of equity − g) times its tangible book. We use the third-party tangible book per share of €98.7 at June 2026 (third-party estimate: the bank's release does not state it), long-term growth of 2%, and a cost of equity that falls as the French risk premium normalises.",
+   "kind": "ptbv",
+   "tbvps": 98.7,
+   "g": 0.02,
+   "scenarios": [
+    [
+     "Bear",
+     0.1,
+     0.12,
+     "RoTE slips to 10%; French spread widens"
+    ],
+    [
+     "Base",
+     0.12,
+     0.115,
+     "RoTE at the 2026 target; spread stable"
+    ],
+    [
+     "Bull",
+     0.135,
+     0.105,
+     "2028 targets met; spread normalises"
+    ]
+   ],
+   "consensus_target": 119.75
+  },
+  "catalysts": [
+   [
+    "Nov 2026",
+    "Launch of the €1.3bn share buyback (about 1.4% of market cap)"
+   ],
+   [
+    "Q4 2026",
+    "Closing of the BMCI sale (+15 bp CET1); CET1 above 13% at year-end"
+   ],
+   [
+    "2 Feb 2027",
+    "2030 strategic plan with new RoTE and distribution targets"
+   ],
+   [
+    "2027",
+    "Second Circuit ruling on the Sudan appeal; Allfunds offer (~€400m gain if completed)"
+   ],
+   [
+    "May 2027",
+    "AGM and final 2026 dividend"
+   ]
+  ],
+  "risks": [
+   [
+    "French sovereign and political stress",
+    "Diversified earnings; French bonds held mostly at amortised cost (€16bn of €19bn)"
+   ],
+   [
+    "Sudan litigation, no provision booked",
+    "Appeal pending; position sized below the 4% cap"
+   ],
+   [
+    "Normalisation of trading revenue",
+    "Targets beaten even after restructuring costs"
+   ],
+   [
+    "Cost of risk above 40 bp",
+    "Stage 3 ratio 1.6% with 67% coverage"
+   ]
+  ],
+  "triggers": [
+   "2026 RoTE below 12%, or 2028 targets cut in the 2030 plan",
+   "CET1 below 12.5%, forcing smaller buybacks",
+   "An adverse Sudan ruling with a material provision"
+  ],
+  "peers_text": "Société Générale, Crédit Agricole SA, Deutsche Bank, Santander, ING, UniCredit (pipeline peer set).",
+  "note": {
+   "intro": "BNP Paribas entered the portfolio at the December 2025 rebalance. Banks are scored only on book-to-price and earnings-to-price in our process, because enterprise value and free cash flow do not make sense for a bank. BNP ranked 5th of 203 financials. This note explains how a universal bank earns money, why its share price moves with French bonds, and how to value it from its tangible book.",
+   "business_long": [
+    "BNP Paribas is the largest bank in the euro area. It has three divisions. Commercial, Personal Banking & Services (CPBS) collects deposits and lends to households and companies in four home markets (France, Belgium, Italy and Luxembourg) and runs specialised businesses such as consumer credit and Arval, a car-leasing company.",
+    "Corporate & Institutional Banking (CIB) advises and finances large companies, trades bonds, currencies and equities for clients (Global Markets), and holds assets for institutions (Securities Services). It is about 38% of revenue and the most volatile part of earnings.",
+    "Investment & Protection Services (IPS) sells insurance, manages wealth and runs asset management, now including AXA IM. These are fee businesses that need little capital, which is why management keeps adding to them."
+   ],
+   "macro_long": [
+    "French government bonds sold off in 2026 on political and budget uncertainty. The 10-year yield reached about 4.9% and the spread over German Bunds about 155 bp. Investors sell French banks when the sovereign weakens, because banks hold government bonds, fund themselves at a spread to the sovereign, and depend on the domestic economy.",
+    "For BNP the direct exposure is limited: about €19bn of French government bonds, €16bn of them at amortised cost so price moves do not hit capital. The indirect effect is through funding costs and the risk premium investors demand.",
+    "The Middle East conflict pushed Brent to about $115 a barrel. That raises inflation risk and could slow the ECB's path, which helps net interest income but hurts credit quality. BNP's cost of risk was 39 bp in Q3 2026, at the top of its guidance."
+   ],
+   "history": [
+    [
+     "1 Jul 2025",
+     "AXA IM consolidated"
+    ],
+    [
+     "Oct 2025",
+     "Manhattan jury finds BNP liable in the Sudan case (~$20.75m to three plaintiffs; class ~23,000)"
+    ],
+    [
+     "5 Feb 2026",
+     "FY2025 results: RoTE 11.6%; 2028 targets raised"
+    ],
+    [
+     "23 Jul 2026",
+     "Q2 results: net income €4.3bn (+33%), RoTE 13.3%"
+    ],
+    [
+     "31 Jul 2026",
+     "Athlon acquisition completed (Arval)"
+    ],
+    [
+     "Sep-Oct 2026",
+     "Shares fall ~20% to €85.35 as French yields rise"
+    ],
+    [
+     "28 Oct 2026",
+     "Q3 results: net income €3.5bn (+13.5%); €1.3bn buyback announced"
+    ]
+   ],
+   "model_long": "At the 31 December 2025 rebalance BNP traded at 0.78x book and 7.7x earnings on FY2024 accounts, against a peer median of 1.2x and 11.6x. Its book-to-price z-score was +2.1 and earnings-to-price +2.0 within Financials. The minimum-variance portfolio gave it only the 0.5% floor; the mean-variance portfolio gave it the 4% cap.",
+   "bear_long": "The bear case: France is in a slow sovereign squeeze, BNP's earnings include one-offs (an €858m gain on Ageas, a €372m Allfunds revaluation) and peak trading, and the Sudan verdict could become a class-wide liability. In that world a bank at 0.9x tangible book is fairly priced, not cheap.",
+   "glossary": [
+    [
+     "RoTE",
+     "Return on tangible equity: net income divided by equity excluding goodwill and intangibles."
+    ],
+    [
+     "CET1 ratio",
+     "Core equity capital divided by risk-weighted assets; the regulator's main solvency measure."
+    ],
+    [
+     "Cost of risk",
+     "Loan-loss provisions as a share of outstanding loans, in basis points."
+    ],
+    [
+     "P/TBV",
+     "Price divided by tangible book value per share; the standard bank valuation multiple."
+    ]
+   ],
+   "interview": [
+    [
+     "Why do you value BNP on price to tangible book and not P/E?",
+     "Because a bank's earning power is its equity times its return. Justified P/TBV = (RoTE − g) / (CoE − g) links the two: a 12% RoTE with an 11.5% cost of equity justifies about 1.05x."
+    ],
+    [
+     "What drives the discount?",
+     "French sovereign risk. The share price fell 20% in a quarter without bad company news, while French yields rose."
+    ],
+    [
+     "What would make you wrong?",
+     "RoTE falling below 12%, CET1 below 12.5%, or a material Sudan provision."
+    ],
+    [
+     "Why did your model give BNP 4% in mean-variance and 0.5% in minimum variance?",
+     "Mean-variance rewards the high expected return from the score; minimum variance penalises the bank's high correlation with the rest of the European book."
+    ]
+   ]
+  },
+  "target": 103.89,
+  "upside": 0.1853,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "RoTE 10.0%, CoE 12.0% → 0.80x TBV",
+    "value": 78.96,
+    "upside": -0.0991,
+    "story": "RoTE slips to 10%; French spread widens"
+   },
+   {
+    "name": "Base",
+    "inputs": "RoTE 12.0%, CoE 11.5% → 1.05x TBV",
+    "value": 103.89,
+    "upside": 0.1853,
+    "story": "RoTE at the 2026 target; spread stable"
+   },
+   {
+    "name": "Bull",
+    "inputs": "RoTE 13.5%, CoE 10.5% → 1.35x TBV",
+    "value": 133.54,
+    "upside": 0.5235,
+    "story": "2028 targets met; spread normalises"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 95.98,
+  "facts": {
+   "ticker": "BNP FP Equity",
+   "name": "BNP PARIBAS",
+   "sector": "Financials",
+   "industry_group": "Banks",
+   "country": "FR",
+   "currency": "EUR",
+   "fy_used": "2024-12-31",
+   "mcap_eur_bn": 90.2250405,
+   "score": 2.0235959895019655,
+   "score_pct": 0.9802955665024631,
+   "sector_rank": 5,
+   "sector_n": 203,
+   "z": {
+    "ebit_ev": null,
+    "b_p": 2.080190600285275,
+    "fcf_p": null,
+    "s_ev": 0.1937973087092611,
+    "e_p": 1.9670013787186564
+   },
+   "multiples": {
+    "EV/EBIT": null,
+    "P/B": 0.78,
+    "P/FCF": null,
+    "EV/Sales": 1.49,
+    "P/E": 7.72
+   },
+   "sector_median": {
+    "EV/EBIT": 21.68,
+    "P/B": 1.89,
+    "P/FCF": 16.31,
+    "EV/Sales": 2.93,
+    "P/E": 14.25
+   },
+   "peer_median": {
+    "EV/EBIT": null,
+    "P/B": 1.2,
+    "P/FCF": null,
+    "EV/Sales": 2.87,
+    "P/E": 11.64
+   },
+   "valuation": {
+    "justified_P/B": 1.0093959037307771,
+    "actual_P/B": 0.7777484354527274,
+    "RoE": 0.10075167229846219,
+    "upside_justified_PB": 0.2978436956201753,
+    "upside_sector_PB": 1.4342136727677226,
+    "upside_sector_PE": 0.8460813093213684
+   },
+   "score_history": {
+    "2021-06-30": 1.212600166266849,
+    "2021-12-31": 1.0534028726836733,
+    "2022-06-30": 1.2064594635896528,
+    "2022-12-30": 0.9411460179317619,
+    "2023-06-30": 1.057021254671069,
+    "2023-12-29": 1.29049802985568,
+    "2024-06-28": 1.729871644550903,
+    "2024-12-31": 2.057733523148859,
+    "2025-06-30": 1.7996747892847853,
+    "2025-12-31": 2.0235959895019655
+   },
+   "held_since": "2025-12-31",
+   "dates_held": [
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.00500000421176802,
+    "MVO": 0.039999999790406096
+   },
+   "h1_2026_return": 0.2615911866390477,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "B1",
+    "label": "BNP Paribas, \"Third quarter 2026 results\" press release, Paris, 28/10/2026",
+    "url": "https://invest.bnpparibas/en/document/3q26-pr"
+   },
+   {
+    "tag": "B2",
+    "label": "BNP Paribas, \"4th quarter and full year 2025\" results press release, 05/02/2026, via WebDisclosure",
+    "url": "https://webdisclosure.com/press-release/bnp-paribas-epa-bnp-4th-quarter-and-full-year-2025-pLf3lKIYRLP"
+   },
+   {
+    "tag": "B3",
+    "label": "Sudan litigation: BNP Paribas statement, 08/01/2026",
+    "url": "https://www.nasdaq.com/press-release/statement-bnp-paribas-sudan-litigation-2026-01-08"
+   },
+   {
+    "tag": "B4",
+    "label": "MarketScreener, BNP Paribas finances/consensus page, data 29/10/2026",
+    "url": "https://www.marketscreener.com/quote/stock/BNP-PARIBAS-4618/finances/"
+   },
+   {
+    "tag": "B5",
+    "label": "Teleborsa, Q2 2026 results summary, 23/07/2026",
+    "url": "https://www.teleborsa.it/News/2026/07/23/bnp-paribas-utile-netto-balza-a-4-35-miliardi-33-4percent-in-crescita-i-ricavi-di-tutte-le-divisioni-33.html"
+   },
+   {
+    "tag": "B6",
+    "label": "StockAnalysis, BNP Paribas statistics, data 29/10/2026",
+    "url": "https://stockanalysis.com/quote/epa/BNP/statistics/"
+   },
+   {
+    "tag": "B7",
+    "label": "Ideal Investisseur, BNP Paribas stock page and news feed, data 29/10/2026",
+    "url": "https://www.ideal-investisseur.fr/actions/bnp-paribas-act-a-FR0000131104.html"
+   },
+   {
+    "tag": "B8",
+    "label": "KoalaGains, BNP fair value page (third-party TBVPS, Q2 2026)",
+    "url": "https://koalagains.com/stocks/XETRA/BNP/fair-value"
+   },
+   {
+    "tag": "B9",
+    "label": "Trading Economics, \"BNP Paribas shares hit 19-week low\", 08/10/2026 (and 22/10/2026 update, market data panel)",
+    "url": "https://tradingeconomics.com/bnp:fp/news/590438"
+   }
+  ]
+ },
+ {
+  "code": "CA_FP",
+  "bbg": "CA FP Equity",
+  "name": "Carrefour",
+  "legal": "Carrefour SA",
+  "exchange": "Euronext Paris",
+  "ticker": "CA",
+  "country": "France",
+  "ccy": "EUR",
+  "sym": "€",
+  "sector": "Consumer Staples",
+  "industry": "Food retail",
+  "price": 13.08,
+  "price_note": "close, 29 Oct 2026",
+  "shares_m": 707.6,
+  "high52": 17.54,
+  "low52": 12.63,
+  "rating": "Overweight",
+  "conviction": "Medium",
+  "horizon": "18-24 months",
+  "role": "Contrarian idea",
+  "headline": "A grocer priced at a double-digit free-cash-flow yield, with real estate worth more than the equity",
+  "one_liner": "Carrefour fell to €13 after cutting its 2026 guidance on French riots. At that price the market cap (€9.3bn) is below the appraised value of its property (€14.2bn), and even a reduced cash flow gives a double-digit yield. We buy the cash flow and the assets, not a margin recovery story.",
+  "key_stats": [
+   [
+    "Market cap",
+    "€9.3bn"
+   ],
+   [
+    "Real estate (appraised)",
+    "€14.2bn"
+   ],
+   [
+    "Forward P/E (third-party)",
+    "7.7x"
+   ],
+   [
+    "Dividend yield",
+    "7.4%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Cash flow at a discount",
+    "Net free cash flow was €1.3bn in 2025 (€1.6bn excluding Italy). Even the 'slight decline' now guided for 2026 leaves a free-cash-flow yield above 10% on a €9.3bn market cap."
+   ],
+   [
+    "Assets cover the enterprise value",
+    "The property portfolio in France, Spain and Brazil was independently valued at €14.2bn at end-2025, above the market cap plus year-end net debt (about €13.2bn). Sale-and-leasebacks of 35 stores in October 2026 crystallise part of it."
+   ],
+   [
+    "A simpler group",
+    "Italy and Romania are sold, Brazil is fully owned, and the three core countries make about 85% of sales and 99% of recurring operating income. Belgium, Poland and Argentina are under review for disposal."
+   ]
+  ],
+  "variant": [
+   [
+    "The French market is structurally broken.",
+    "France is a low-margin, price-war market, but Carrefour is No. 2 and the plan already prices €1bn a year of savings, half of them delivered by mid-2026."
+   ],
+   [
+    "The riots are a lasting hit.",
+    "Management estimates €80-200m of recurring operating income at risk in 2026. That is a one-year shock on a €2.2bn profit base, not a change in earning power."
+   ],
+   [
+    "The dividend will be cut.",
+    "This is the real risk: a 50-60% payout on flat EPS implies €0.80-0.96 against €0.97 paid. We assume a cut in the base case."
+   ]
+  ],
+  "business": [
+   [
+    "France (No. 2)",
+    "About half of sales: hypermarkets, supermarkets, convenience and e-commerce, moving toward franchise and location-gérance. ROI margin 1.5% in H1 2026."
+   ],
+   [
+    "Brazil (No. 1)",
+    "Atacadão cash & carry and retail; highest margin (4.0% in H1 2026) but exposed to rates near 15% and the real."
+   ],
+   [
+    "Spain (No. 2)",
+    "Steady growth and a 3.3% margin in H1 2026."
+   ],
+   [
+    "Other countries",
+    "Belgium, Poland and Argentina: loss-making in H1 2026 (−€34m) and under strategic review."
+   ]
+  ],
+  "segments": {
+   "title": "Sales incl. VAT by country, H1 2026",
+   "unit": "€bn",
+   "labels": [
+    "France",
+    "Brazil",
+    "Spain",
+    "Other countries"
+   ],
+   "values": [
+    22.9,
+    10.1,
+    5.7,
+    5.1
+   ]
+  },
+  "macro": [
+   [
+    "French unrest",
+    "€80-200m",
+    "Estimated hit to 2026 recurring operating income from the October riots, looting and curfews."
+   ],
+   [
+    "Food price war",
+    "200",
+    "Private-label products sold at cost to loyalty members under the 2030 plan: price investment caps margins."
+   ],
+   [
+    "Brazil policy rate",
+    "~15%",
+    "High rates hit cash & carry volumes in 2025; rate cuts would help Atacadão."
+   ],
+   [
+    "Currencies",
+    "−€102m",
+    "FX drag on 2025 operating income from the Brazilian real and the Argentine peso."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "H1 2026",
+    "2026 guide (Oct)"
+   ],
+   "rows": [
+    [
+     "Sales incl. VAT (pre-IAS 29)",
+     "—",
+     "€91.5bn",
+     "€43.8bn",
+     "—"
+    ],
+    [
+     "Recurring operating income",
+     "€2.28bn",
+     "€2.16bn",
+     "€0.76bn",
+     "growth"
+    ],
+    [
+     "ROI margin",
+     "—",
+     "2.6%",
+     "1.9%",
+     "+0 to +15 bp"
+    ],
+    [
+     "Adjusted EPS",
+     "€1.74",
+     "€1.60",
+     "€0.49",
+     "stable to slightly up"
+    ],
+    [
+     "Net free cash flow",
+     "—",
+     "€1.31bn",
+     "−€1.99bn*",
+     "slight decline"
+    ],
+    [
+     "Net financial debt",
+     "—",
+     "€3.97bn",
+     "€5.85bn*",
+     "—"
+    ],
+    [
+     "Dividend per share",
+     "—",
+     "€0.97 + €0.21",
+     "—",
+     "payout 50-60%"
+    ]
+   ],
+   "note": "*Seasonal: working capital reverses in H2. FY2024 ROI derived from the −5.4% reported for 2025. Sources: Carrefour FY2025, H1 2026 and Q3 2026 releases."
+  },
+  "valuation": {
+   "method": "Free-cash-flow yield on normalised net free cash flow",
+   "explain": "A grocer's value is its recurring cash. We divide a normalised net free cash flow by the yield an investor should demand for a low-growth, leveraged retailer (10-12%), then by 707.6m shares. The real-estate appraisal is a floor check, not part of the target.",
+   "kind": "fcf",
+   "shares_m": 707.6,
+   "scenarios": [
+    [
+     "Bear",
+     1.0,
+     0.12,
+     "French margin keeps falling; dividend cut"
+    ],
+    [
+     "Base",
+     1.4,
+     0.11,
+     "FCF back near the 2025 level; plan delayed a year"
+    ],
+    [
+     "Bull",
+     1.7,
+     0.1,
+     "€5bn 2026-28 FCF target met; disposals of other countries"
+    ]
+   ],
+   "consensus_target": 15.44
+  },
+  "catalysts": [
+   [
+    "Nov-Dec 2026",
+    "Evolution of the French unrest; insurance and state compensation"
+   ],
+   [
+    "Feb 2027",
+    "FY2026 results: dividend under the new payout policy; real-estate revaluation"
+   ],
+   [
+    "Q1 2027",
+    "Decisions on Belgium, Poland and Argentina"
+   ],
+   [
+    "Jul 2027",
+    "H1 2027: first test of the 3.2% margin path to 2028"
+   ],
+   [
+    "2027",
+    "Brazil rate cuts helping Atacadão volumes"
+   ]
+  ],
+  "risks": [
+   [
+    "French unrest persisting into 2027",
+    "Store base diversified; security costs one-off"
+   ],
+   [
+    "Price investment erodes margins",
+    "€1bn a year of savings; franchise model lowers costs"
+   ],
+   [
+    "Dividend reset",
+    "Already assumed in our base case"
+   ],
+   [
+    "Brazil macro and currency translation",
+    "Fully owned Brazil, No. 1 position"
+   ]
+  ],
+  "triggers": [
+   "2027 ROI margin not above 2025's 2.6%",
+   "Cumulative 2026-28 net FCF tracking well below €5bn",
+   "S&P outlook turning negative, or disposals that dilute EPS without deleveraging"
+  ],
+  "peers_text": "Ahold Delhaize, Tesco, Kroger, Jerónimo Martins (pipeline peer set).",
+  "note": {
+   "intro": "Carrefour ranked first of 76 Consumer Staples stocks on our December 2025 score and has been held since June 2022. It is a classic 'cheap for a reason' retailer: thin margins, a price war at home and emerging-market currency risk. This note explains how a grocer makes money, why the October 2026 guidance cut matters less than the share price suggests, and why the dividend is the real test.",
+   "business_long": [
+    "Carrefour sells food and everyday goods through hypermarkets, supermarkets, convenience stores, cash & carry and online. Grocery is a volume business: Carrefour makes about 2.6 cents of operating profit per euro of sales, so small changes in prices or costs move profit a lot.",
+    "The 2030 plan (February 2026) focuses the group on three countries where it is No. 1 or No. 2: France, Spain and Brazil. Italy and Romania have been sold; Belgium, Poland and Argentina may follow. In France the group is moving stores to franchise and location-gérance, which lowers its own costs and capital needs.",
+    "The group also owns a large property portfolio, valued by independent experts at €14.2bn at end-2025. Carrefour has started selling stores and leasing them back, which turns that value into cash."
+   ],
+   "macro_long": [
+    "France is one of the most competitive grocery markets in Europe. Leclerc, Carrefour, Intermarché and Lidl fight on price, and annual negotiations with suppliers cap how much inflation retailers can pass on. Carrefour's plan answers with 200 private-label products sold at cost to loyalty members, which defends traffic but limits margins.",
+    "In October 2026 riots, looting and curfews hit French retail: about 50 Carrefour stores were directly damaged and many more closed as a precaution. The company estimates €80-200m of 2026 operating income at risk and cut its guidance on 20 October; the stock fell 12% intraday the next day.",
+    "Brazil is the profit engine but brings macro risk: the policy rate near 15% hurt cash & carry volumes in 2025, and the real and the Argentine peso cost €102m of operating income in translation."
+   ],
+   "history": [
+    [
+     "Jul-Nov 2025",
+     "Carrefour Italia sold to NewPrinces (EV ~€1bn)"
+    ],
+    [
+     "17 Feb 2026",
+     "FY2025: ROI €2.16bn (−5.4%), adjusted EPS €1.60, dividend €0.97 + €0.21 special"
+    ],
+    [
+     "18 Feb 2026",
+     "Carrefour 2030 plan; shares fall ~4.8%"
+    ],
+    [
+     "H1 2026",
+     "Romania sold to Paval Holding (~€500m)"
+    ],
+    [
+     "23 Jul 2026",
+     "H1 2026: ROI +4%, targets confirmed"
+    ],
+    [
+     "Oct 2026",
+     "Sale-and-leaseback of 35 stores; €500m bond; RCF extended"
+    ],
+    [
+     "20 Oct 2026",
+     "Q3 sales +2.3% LFL; 2026 guidance cut on French unrest"
+    ],
+    [
+     "21 Oct 2026",
+     "Stock −12.2% intraday to €14.31"
+    ]
+   ],
+   "model_long": "At the December 2025 rebalance Carrefour scored +4.7 on sales-to-EV and +3.5 on FCF yield within Consumer Staples, using FY2024 accounts. P/FCF was 5.5x against 17.3x for its peers. Part of that is structural: grocers always look cheap on sales because margins are thin, so the FCF signal carries more information than EV/Sales here.",
+   "bear_long": "The bear case is that Carrefour is a value trap: French margins are permanently lower, the 2030 plan slipped in its first year, and a dividend cut removes the main support of the share price. Low multiples in grocery can simply reflect low returns on capital.",
+   "glossary": [
+    [
+     "Recurring operating income (ROI)",
+     "Carrefour's operating profit before non-recurring items."
+    ],
+    [
+     "LFL (like-for-like)",
+     "Sales growth in stores open in both periods, excluding fuel and calendar effects."
+    ],
+    [
+     "Net free cash flow",
+     "Cash generated after capex, lease payments and interest, before dividends and M&A."
+    ],
+    [
+     "Sale-and-leaseback",
+     "Selling a store to an investor and renting it back, to release the capital tied up in property."
+    ]
+   ],
+   "interview": [
+    [
+     "Why is Carrefour cheap on EV/Sales, and does it matter?",
+     "Grocers earn 2-3% margins, so EV/Sales is always low. We focus on the FCF yield, which captures what the business actually returns."
+    ],
+    [
+     "The company just cut guidance. Why buy now?",
+     "The cut is a €80-200m one-year hit on a €2.2bn profit base. At €13 the cash-flow yield is above 10% and property covers the enterprise value."
+    ],
+    [
+     "What is the main risk to the thesis?",
+     "A dividend cut under the new payout policy. We assume it in the base case and still find value."
+    ],
+    [
+     "How long has it been in the portfolio, and how did it do?",
+     "Since June 2022, at 8 of 10 rebalances. In H1 2026 it returned about +20% against +11% for the benchmark."
+    ]
+   ]
+  },
+  "target": 17.99,
+  "upside": 0.3751,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "FCF €1.0bn at 12.0% yield",
+    "value": 11.78,
+    "upside": -0.0996,
+    "story": "French margin keeps falling; dividend cut"
+   },
+   {
+    "name": "Base",
+    "inputs": "FCF €1.4bn at 11.0% yield",
+    "value": 17.99,
+    "upside": 0.3751,
+    "story": "FCF back near the 2025 level; plan delayed a year"
+   },
+   {
+    "name": "Bull",
+    "inputs": "FCF €1.7bn at 10.0% yield",
+    "value": 24.02,
+    "upside": 0.8368,
+    "story": "€5bn 2026-28 FCF target met; disposals of other countries"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 9.26,
+  "facts": {
+   "ticker": "CA FP Equity",
+   "name": "CARREFOUR SA",
+   "sector": "Consumer Staples",
+   "industry_group": "Consumer Staples Distribution",
+   "country": "FR",
+   "currency": "EUR",
+   "fy_used": "2024-12-31",
+   "mcap_eur_bn": 10.4777594,
+   "score": 2.7864820392874985,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 76,
+   "z": {
+    "ebit_ev": 0.980923703015236,
+    "b_p": 2.0037165012454765,
+    "fcf_p": 3.4805337388513684,
+    "s_ev": 4.680754214037913,
+    "e_p": 0.6047535709438127
+   },
+   "multiples": {
+    "EV/EBIT": 11.79,
+    "P/B": 0.97,
+    "P/FCF": 5.53,
+    "EV/Sales": 0.24,
+    "P/E": 14.49
+   },
+   "sector_median": {
+    "EV/EBIT": 16.93,
+    "P/B": 3.11,
+    "P/FCF": 17.41,
+    "EV/Sales": 1.84,
+    "P/E": 20.65
+   },
+   "peer_median": {
+    "EV/EBIT": 14.86,
+    "P/B": 3.27,
+    "P/FCF": 17.27,
+    "EV/Sales": 0.49,
+    "P/E": 17.2
+   },
+   "valuation": {
+    "fcf_yield": 0.18076383773423924,
+    "implied_perpetual_growth": -0.0811032948959547,
+    "upside_sector_EV_EBIT": 0.8771611780634279,
+    "upside_peer_EV_EBIT": 0.5245764823896266
+   },
+   "score_history": {
+    "2021-06-30": 1.6173671589928453,
+    "2021-12-31": 1.6519965111670158,
+    "2022-06-30": 2.2189522976889227,
+    "2022-12-30": 2.4440201098042564,
+    "2023-06-30": 2.108177170181062,
+    "2023-12-29": 2.174899585607563,
+    "2024-06-28": 2.816661173537815,
+    "2024-12-31": 3.0737816477161033,
+    "2025-06-30": 3.0471350969908615,
+    "2025-12-31": 2.7864820392874985
+   },
+   "held_since": "2022-06-30",
+   "dates_held": [
+    "2022-06-30",
+    "2022-12-30",
+    "2023-06-30",
+    "2023-12-29",
+    "2024-06-28",
+    "2024-12-31",
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.03999999748315268,
+    "MVO": 0.00500000009464793
+   },
+   "h1_2026_return": 0.2029572426039652,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "1",
+    "label": "Carrefour, \"Q4 2025 sales and FY 2025 results\", press release, 17 Feb 2026",
+    "url": "https://www.carrefour.com/sites/default/files/2026-02/Press%20release%20Carrefour%20Q4%2BFY%202025_1.pdf"
+   },
+   {
+    "tag": "2",
+    "label": "Carrefour, \"Carrefour 2030 Strategic Plan\", press release, 18 Feb 2026",
+    "url": "https://www.carrefour.com/sites/default/files/2026-02/PR%20Carrefour%202030%20Strategic%20Plan_0.pdf"
+   },
+   {
+    "tag": "3",
+    "label": "Carrefour, \"Q2 and H1 2026 results\", press release, 23 Jul 2026 (via WebDisclosure)",
+    "url": "https://www.webdisclosure.com/press-release/press-release-carrefour-q2-h1-2026-YZgWFwbn868"
+   },
+   {
+    "tag": "4",
+    "label": "Carrefour, \"Sales Q3 2026\", press release, 20 Oct 2026 (via WebDisclosure)",
+    "url": "https://www.webdisclosure.com/press-release/prcarrefour-sales-q3-2026-QP3gX4TpgM8"
+   },
+   {
+    "tag": "5",
+    "label": "Reuters via Business Day, \"Carrefour cuts outlook as French riots hit profits\", 20 Oct 2026",
+    "url": "https://www.businessday.co.za/world/international-companies/2026-10-20-carrefour-cuts-outlook-as-french-riots-hit-profits/"
+   },
+   {
+    "tag": "6",
+    "label": "Il Sole 24 Ore, \"Carrefour slumps in Paris, 2026 target revised downwards\", Oct 2026",
+    "url": "https://en.ilsole24ore.com/art/carrefour-paris-slumps-2026-target-revised-downwards-unrest-in-france-AJkjJ3pB"
+   },
+   {
+    "tag": "7",
+    "label": "BFM Bourse / Tradingsat, Carrefour 2030 plan market reaction, 18 Feb 2026",
+    "url": "https://www.tradingsat.com/carrefour-FR0000120172/actualites/carrefour-offensive-sur-le-frais-recentrage-sur-la-france-et-le-bresil-economies-carrefour-livre-son-plan-pour-faire-decoller-sa-marge-mais-l-accueil-en-bourse-est-glacial-48-1156806.html"
+   },
+   {
+    "tag": "8",
+    "label": "AFP via Fortuneo, \"Carrefour chute de plus de 12% en Bourse\", 21 Oct 2026",
+    "url": "https://bourse.fortuneo.fr/actualites/carrefour-chute-de-plus-de-12-en-bourse-plombe-par-les-violences-en-france-9310472"
+   },
+   {
+    "tag": "9",
+    "label": "stockanalysis.com, Carrefour SA (EPA:CA) quote page, data as of 29 Oct 2026 (third-party)",
+    "url": "https://stockanalysis.com/quote/epa/CA/"
+   },
+   {
+    "tag": "10",
+    "label": "Rallies.ai, \"Carrefour Q1 like-for-like sales rise 2.2% to €21.14bn, confirms 2026 targets\", Apr 2026 (secondary; TO VERIFY against company release)",
+    "url": "https://rallies.ai/news/carrefour-q1-like-for-like-sales-rise-22-to-2114bn-confirms-2026-targets"
+   },
+   {
+    "tag": "11",
+    "label": "ESM Magazine, \"Carrefour to sell Italian unit to NewPrinces Group\", Jul 2025",
+    "url": "https://www.esmmagazine.com/retail/carrefour-to-sell-italian-unit-to-newprinces-group-293057"
+   },
+   {
+    "tag": "12",
+    "label": "Carrefour, \"Carrefour announces the sale of Carrefour Romania to Paval Holding\", press release, Feb 2026",
+    "url": "https://www.carrefour.com/sites/default/files/2026-02/Press%20release%20-%20Carrefour%20announces%20the%20sale%20of%20Carrefour%20Romania%20to%20Paval%20Holding_0.pdf"
+   }
+  ]
+ },
+ {
+  "code": "HPQ_US",
+  "bbg": "HPQ UN Equity",
+  "name": "HP Inc",
+  "legal": "HP Inc",
+  "exchange": "NYSE",
+  "ticker": "HPQ",
+  "country": "United States",
+  "ccy": "USD",
+  "sym": "$",
+  "sector": "Information Technology",
+  "industry": "Technology hardware",
+  "price": 32.36,
+  "price_note": "intraday, 29 Oct 2026",
+  "shares_m": 901.8,
+  "high52": 36.23,
+  "low52": 17.56,
+  "rating": "Overweight",
+  "conviction": "Medium",
+  "horizon": "12 months",
+  "role": "Conviction idea",
+  "headline": "A cash machine priced for decline: about 10x earnings and a 10% free-cash-flow yield",
+  "one_liner": "HP generates about $3bn of free cash flow a year and returns most of it. At $32 the stock trades at about 10x fiscal 2026 earnings and a 10.6% FCF yield, as if printing were about to collapse. We think memory-cost pressure peaks now and the cost programme supports margins into fiscal 2027.",
+  "key_stats": [
+   [
+    "Market cap",
+    "$29.3bn"
+   ],
+   [
+    "FY26 FCF guide",
+    "$3.0-3.2bn"
+   ],
+   [
+    "P/E on FY26 guide",
+    "~10x"
+   ],
+   [
+    "Dividend yield",
+    "3.7%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Cash yield is the valuation",
+    "FY2026 FCF guidance was raised to $3.0-3.2bn in August 2026: about 10.6% of the market cap at the midpoint. HP returned $1.9bn (66% of FCF) to shareholders in FY2025 and raised the dividend to $0.30 a quarter."
+   ],
+   [
+    "The margin squeeze is temporary",
+    "Management expects DRAM and NAND costs to peak in Q4 FY2026 (Aug-Oct) and Personal Systems margins (4.6% in Q3) to recover sequentially in FY2027. The $1bn gross savings programme runs to FY2028."
+   ],
+   [
+    "Printing still funds the story",
+    "Printing is 30% of revenue but earns an 18-19% margin. It declines about 2% a year, slowly enough to keep funding buybacks and dividends."
+   ]
+  ],
+  "variant": [
+   [
+    "Printing is in terminal decline.",
+    "Revenue falls about 2% a year and the margin holds above 18%. A slow decline is priced as a fast one."
+   ],
+   [
+    "FY2026 PC demand was pulled forward by Windows 10.",
+    "Partly true. We use a base FCF of $3.0bn, below the guided midpoint, and exclude tariff refunds."
+   ],
+   [
+    "An interim CEO means strategic risk.",
+    "A permanent appointment, expected in the coming months, is more likely a catalyst than a threat."
+   ]
+  ],
+  "business": [
+   [
+    "Personal Systems",
+    "PCs, workstations and peripherals: $38.5bn of FY2025 revenue at a 5.3% operating margin."
+   ],
+   [
+    "Printing",
+    "Supplies (ink and toner), hardware and industrial graphics: $16.7bn at an 18.7% margin."
+   ],
+   [
+    "Growth areas",
+    "AI PCs with dedicated neural processors, workstations and services."
+   ],
+   [
+    "Capital",
+    "Negative book equity after years of buybacks; net debt about $5bn (own calculation)."
+   ]
+  ],
+  "segments": {
+   "title": "Revenue by segment, FY2025",
+   "unit": "$bn",
+   "labels": [
+    "Personal Systems",
+    "Printing"
+   ],
+   "values": [
+    38.5,
+    16.7
+   ]
+  },
+  "macro": [
+   [
+    "Memory prices",
+    "Q4 FY26",
+    "DRAM and NAND inflation squeezes PC margins; management expects the peak in Aug-Oct 2026."
+   ],
+   [
+    "Windows 10 end of support",
+    "Oct 2025",
+    "Drove a commercial refresh: Personal Systems revenue +18% in Q3 FY2026."
+   ],
+   [
+    "US tariffs",
+    "$0.19",
+    "IEEPA tariffs struck down in February 2026; FY26 EPS includes $0.19 of one-off refunds."
+   ],
+   [
+    "AI PCs",
+    "Mix",
+    "Higher-spec machines lift average selling prices as the installed base renews."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "Q3 FY2026",
+    "FY2026 guide"
+   ],
+   "rows": [
+    [
+     "Net revenue",
+     "$53.6bn",
+     "$55.3bn",
+     "$15.7bn",
+     "—"
+    ],
+    [
+     "Personal Systems margin",
+     "—",
+     "5.3%",
+     "4.6%",
+     "trough"
+    ],
+    [
+     "Printing margin",
+     "—",
+     "18.7%",
+     "18.1%",
+     "—"
+    ],
+    [
+     "Non-GAAP diluted EPS",
+     "$3.43",
+     "$3.12",
+     "$0.83",
+     "$3.19-3.29*"
+    ],
+    [
+     "Free cash flow",
+     "—",
+     "$2.9bn",
+     "$1.6bn",
+     "$3.0-3.2bn"
+    ],
+    [
+     "Shareholder returns",
+     "—",
+     "$1.9bn",
+     "$0.3bn buyback",
+     "—"
+    ]
+   ],
+   "note": "*Includes $0.19 of one-off tariff refunds. Fiscal year ends 31 October. FY2024 revenue derived from the +3.2% reported for FY2025. Sources: HP Q4 FY2025 and Q3 FY2026 releases."
+  },
+  "valuation": {
+   "method": "Free-cash-flow yield",
+   "explain": "HP's value to an owner is the cash it can distribute. We divide sustainable free cash flow by a required yield (7.5-10%) and by 901.8m shares. The base case uses $3.0bn, the bottom of the guide, and excludes tariff refunds.",
+   "kind": "fcf",
+   "shares_m": 901.8,
+   "scenarios": [
+    [
+     "Bear",
+     2.3,
+     0.1,
+     "Printing decline accelerates; PC cycle turns"
+    ],
+    [
+     "Base",
+     3.0,
+     0.085,
+     "FCF at the bottom of the FY26 guide"
+    ],
+    [
+     "Bull",
+     3.3,
+     0.075,
+     "Memory relief and savings lift FY27 margins"
+    ]
+   ],
+   "consensus_target": null
+  },
+  "catalysts": [
+   [
+    "~25 Nov 2026",
+    "Q4 FY2026 results and first FY2027 outlook"
+   ],
+   [
+    "Q4 FY26-H1 FY27",
+    "Memory-cost peak and sequential PC margin recovery"
+   ],
+   [
+    "2026-2027",
+    "Appointment of a permanent CEO"
+   ],
+   [
+    "To FY2028",
+    "$1bn gross run-rate savings, reported each quarter"
+   ],
+   [
+    "FY2027",
+    "AI PC mix and the tail of the commercial refresh"
+   ]
+  ],
+  "risks": [
+   [
+    "Printing decline speeds up",
+    "Supplies are recurring; margin held above 18%"
+   ],
+   [
+    "PC demand pulled forward into FY2026",
+    "Base case below the guide"
+   ],
+   [
+    "Memory costs do not peak as guided",
+    "Pricing passed through in Q3"
+   ],
+   [
+    "Negative equity and ~$5bn net debt",
+    "Payout flexible; buybacks can be cut first"
+   ]
+  ],
+  "triggers": [
+   "FY2027 FCF guide below about $2.5bn",
+   "Printing margin below 16%",
+   "A dividend or buyback cut, or FY2027 EPS guide down y/y ex tariff refunds"
+  ],
+  "peers_text": "Dell Technologies, Hewlett Packard Enterprise, Logitech, Canon (pipeline peer set).",
+  "note": {
+   "intro": "HP has been in the portfolio at all ten rebalances since June 2021: it is a permanent resident of the cheap end of the technology sector. In December 2025 it ranked 2nd of 128 IT stocks. This note explains the two halves of the business, why the market prices them for decline, and why the free-cash-flow yield is the right way to value it.",
+   "business_long": [
+    "HP Inc is the PC and printer half of the old Hewlett-Packard, split in 2015. Personal Systems sells notebooks, desktops and workstations to companies and consumers. It is large ($38.5bn) but earns thin margins (about 5%), because PCs are assembled from components bought from others, mostly processors and memory.",
+    "Printing sells printers and, more importantly, the ink and toner they consume. Supplies are a recurring revenue stream with high margins (the segment earns 18-19%). Page volumes are falling as offices print less, so the segment shrinks about 2% a year.",
+    "HP returns most of its cash: about two thirds of free cash flow through dividends and buybacks. Years of buybacks have pushed book equity below zero, which is why P/B is meaningless and why our model scored HP on the other three ratios."
+   ],
+   "macro_long": [
+    "Microsoft ended Windows 10 support in October 2025, which forced companies to replace old PCs. Personal Systems revenue rose 8%, 11% and then 18% in successive quarters, partly from higher prices.",
+    "The headwind is memory. DRAM and NAND prices rose sharply in 2026, and PC makers pay more for every machine. HP expects the peak in Q4 FY2026 (August to October).",
+    "Tariffs were the 2025 shock: HP moved production out of China. In February 2026 the Supreme Court ruled that IEEPA does not authorise tariffs, and HP is receiving refunds, which flatter FY2026 EPS by $0.19 one-off."
+   ],
+   "history": [
+    [
+     "25 Nov 2025",
+     "FY2025 results; $1bn cost programme with 4,000-6,000 job cuts; FY26 guide below consensus"
+    ],
+    [
+     "2 Feb 2026",
+     "CEO Enrique Lores leaves for PayPal; Bruce Broussard interim CEO"
+    ],
+    [
+     "20 Feb 2026",
+     "Supreme Court rules IEEPA tariffs unlawful"
+    ],
+    [
+     "24 Feb 2026",
+     "Q1 FY26: steered to the low end of the range on memory costs"
+    ],
+    [
+     "May 2026",
+     "Q2 FY26: range narrowed to $2.90-3.10"
+    ],
+    [
+     "26 Aug 2026",
+     "Q3 FY26 beat; guide raised to $3.19-3.29 and FCF to $3.0-3.2bn"
+    ]
+   ],
+   "model_long": "On the December 2025 score HP had z-scores of +4.2 on earnings-to-price, +3.9 on sales-to-EV, +3.8 on FCF yield and +3.8 on EBIT-to-EV within IT, and −1.2 on book-to-price because of negative equity. Its P/E was 6.8x against 20.4x for its peers on FY2024 accounts. The minimum-variance portfolio gave it 2.8%.",
+   "bear_long": "The bear case is that FY2026 was the best year of the PC cycle, helped by Windows 10 and price increases, while printing keeps shrinking. Strip out the tariff refunds and FY2026 EPS is close to the original guide. With negative equity and an interim CEO, there is little room for error.",
+   "glossary": [
+    [
+     "Free-cash-flow yield",
+     "Free cash flow divided by market cap; the cash return an owner would earn at today's price."
+    ],
+    [
+     "Non-GAAP EPS",
+     "Earnings per share excluding restructuring, amortisation and other items management treats as non-recurring."
+    ],
+    [
+     "Supplies",
+     "Ink and toner cartridges: the recurring, high-margin part of printing."
+    ],
+    [
+     "Negative equity",
+     "Liabilities exceed assets on the balance sheet, here because buybacks exceeded retained earnings."
+    ]
+   ],
+   "interview": [
+    [
+     "Why value HP on FCF yield rather than P/E?",
+     "Because the equity story is cash returned to owners, and FCF is less distorted by restructuring charges and tariff refunds."
+    ],
+    [
+     "Isn't printing a melting ice cube?",
+     "Yes, but slowly: about −2% a year with an 18% margin. At a 10% FCF yield the market prices a much faster melt."
+    ],
+    [
+     "What will you watch at the November results?",
+     "The FY2027 FCF guide (sell trigger below $2.5bn) and the memory-cost commentary."
+    ],
+    [
+     "Why did the model ignore negative book equity?",
+     "Book-to-price was negative and counted against HP (z −1.2), but the other three ratios dominated the composite."
+    ]
+   ]
+  },
+  "target": 39.14,
+  "upside": 0.2094,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "FCF $2.3bn at 10.0% yield",
+    "value": 25.5,
+    "upside": -0.2118,
+    "story": "Printing decline accelerates; PC cycle turns"
+   },
+   {
+    "name": "Base",
+    "inputs": "FCF $3.0bn at 8.5% yield",
+    "value": 39.14,
+    "upside": 0.2094,
+    "story": "FCF at the bottom of the FY26 guide"
+   },
+   {
+    "name": "Bull",
+    "inputs": "FCF $3.3bn at 7.5% yield",
+    "value": 48.79,
+    "upside": 0.5078,
+    "story": "Memory relief and savings lift FY27 margins"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 29.18,
+  "facts": {
+   "ticker": "HPQ UN Equity",
+   "name": "HP INC",
+   "sector": "Information Technology",
+   "industry_group": "Technology Hardware & Equipmen",
+   "country": "US",
+   "currency": "USD",
+   "fy_used": "2024-10-31",
+   "mcap_eur_bn": 17.4273135,
+   "score": 2.541024318511098,
+   "score_pct": 0.9921875,
+   "sector_rank": 2,
+   "sector_n": 128,
+   "z": {
+    "ebit_ev": 3.7847651846893497,
+    "b_p": -1.244319119958638,
+    "fcf_p": 3.76609940636818,
+    "s_ev": 3.8575518029455016,
+    "e_p": 4.148173840423011
+   },
+   "multiples": {
+    "EV/EBIT": 6.97,
+    "P/B": null,
+    "P/FCF": 6.0,
+    "EV/Sales": 0.5,
+    "P/E": 6.83
+   },
+   "sector_median": {
+    "EV/EBIT": 27.88,
+    "P/B": 6.79,
+    "P/FCF": 31.05,
+    "EV/Sales": 6.0,
+    "P/E": 33.48
+   },
+   "peer_median": {
+    "EV/EBIT": 18.52,
+    "P/B": 1.62,
+    "P/FCF": 17.14,
+    "EV/Sales": 1.23,
+    "P/E": 20.44
+   },
+   "valuation": {
+    "fcf_yield": 0.16666534976833922,
+    "implied_perpetual_growth": -0.06999895024271975,
+    "upside_sector_EV_EBIT": 4.215722792088775,
+    "upside_peer_EV_EBIT": 2.3281796420538754
+   },
+   "score_history": {
+    "2021-06-30": 1.7445782218131922,
+    "2021-12-31": 1.4256270373119868,
+    "2022-06-30": 1.5837149933265489,
+    "2022-12-30": 2.059388112431149,
+    "2023-06-30": 1.4247029781806235,
+    "2023-12-29": 1.6524811833730144,
+    "2024-06-28": 1.0205079564418964,
+    "2024-12-31": 1.175009186735953,
+    "2025-06-30": 2.1344844803051766,
+    "2025-12-31": 2.541024318511098
+   },
+   "held_since": "2021-06-30",
+   "dates_held": [
+    "2021-06-30",
+    "2021-12-31",
+    "2022-06-30",
+    "2022-12-30",
+    "2023-06-30",
+    "2023-12-29",
+    "2024-06-28",
+    "2024-12-31",
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.027611280564036396,
+    "MVO": 0.005000000001646629
+   },
+   "h1_2026_return": 0.08652655855086056,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "S1",
+    "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2025 Full Year and Fourth Quarter Results\", 25 Nov 2025",
+    "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721725000068/hp103125exhibit991q425.htm"
+   },
+   {
+    "tag": "S2",
+    "label": "HP Inc., Form 10-K for the fiscal year ended 31 Oct 2025, filed 10 Dec 2025",
+    "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721725000071/hpq-20251031.htm"
+   },
+   {
+    "tag": "S3",
+    "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2026 First Quarter Results\", 24 Feb 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721726000009/hp13126exhibit991q126.htm"
+   },
+   {
+    "tag": "S4",
+    "label": "HP Inc., Form 10-Q for the quarter ended 31 Jul 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0000047217/000004721726000051/hpq-20260731.htm"
+   },
+   {
+    "tag": "S5",
+    "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2026 Third Quarter Results\", 26 Aug 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0000047217/000004721726000048/hp73126exhibit991q326.htm"
+   },
+   {
+    "tag": "S6",
+    "label": "Coverage of HP 8-K on CEO transition, 3 Feb 2026: Action-Intell",
+    "url": "https://www.action-intell.com/2026/02/03/hp-names-bruce-broussard-interim-ceo-as-enrique-lores-steps-down/"
+   },
+   {
+    "tag": "S7",
+    "label": "investingLive, \"HP Q4 revenue beats; 2026 EPS guidance trails, 4k-6k jobs to go\", 25 Nov 2025",
+    "url": "https://investinglive.com/stocks/hp-q4-revenue-beats-2026-eps-guidance-trails-4k-6k-jobs-to-go-20251125/"
+   },
+   {
+    "tag": "S8",
+    "label": "Plante Moran, \"Supreme Court strikes down IEEPA tariffs\", Feb 2026",
+    "url": "https://plantemoran.com/explore-our-thinking/insight/2026/02/supreme-court-strikes-down-ieepa-tariffs"
+   },
+   {
+    "tag": "S9",
+    "label": "Futurum Group, \"HP Q2 FY 2026 Earnings Emphasize AI PC Mix Shift Amid Cost Pressure\", May 2026",
+    "url": "https://futurumgroup.com/insights/hp-q2-fy-2026-earnings-emphasize-ai-pc-mix-shift-amid-cost-pressure/"
+   },
+   {
+    "tag": "S10",
+    "label": "Massive, HPQ quote page (delayed quote, 52-week range, market cap, ratios), snapshot 29 Oct 2026 11:51 EDT",
+    "url": "https://massive.com/quote/hpq"
+   },
+   {
+    "tag": "S11",
+    "label": "Earnings Whispers, HPQ earnings page (Q3 consensus; next report date)",
+    "url": "https://www.earningswhispers.com/epsdetails/HPQ"
+   }
+  ]
+ },
+ {
+  "code": "5401_JP",
+  "bbg": "5401 JT Equity",
+  "name": "Nippon Steel",
+  "legal": "Nippon Steel Corporation",
+  "exchange": "Tokyo Stock Exchange",
+  "ticker": "5401",
+  "country": "Japan",
+  "ccy": "JPY",
+  "sym": "¥",
+  "sector": "Materials",
+  "industry": "Steel",
+  "price": 659.2,
+  "price_note": "close, 29 Oct 2026",
+  "shares_m": 5203.0,
+  "high52": 718.5,
+  "low52": 530.5,
+  "rating": "Overweight",
+  "conviction": "Medium",
+  "horizon": "2-3 years",
+  "role": "Conviction idea",
+  "headline": "Priced as a declining Japanese steelmaker; becoming a global producer with overseas profit set to more than double",
+  "one_liner": "Nippon Steel trades at about 0.54x book. The market sees a domestic steelmaker hit by Chinese exports. We see a group whose overseas profit is guided from ¥123bn to ¥320bn in one year, led by U.S. Steel behind US tariffs, with permanent financing in place and a ¥24 minimum dividend.",
+  "key_stats": [
+   [
+    "Market cap",
+    "¥3.43tn"
+   ],
+   [
+    "P/B (third-party)",
+    "0.54x"
+   ],
+   [
+    "FY26 underlying profit guide",
+    "≥ ¥700bn"
+   ],
+   [
+    "Yield on ¥24 floor",
+    "3.6%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Overseas profit is about to more than double",
+    "Overseas steel and raw materials made ¥123bn of underlying business profit in FY2025; the FY2026 forecast is ¥320bn. U.S. Steel alone swings from a ¥6bn loss to at least ¥180bn."
+   ],
+   [
+    "The domestic base is restructured",
+    "Kashima upstream closure and contract-price reform cut the domestic break-even by 40%. The H2 FY2026 run-rate target was raised to at least ¥900bn of annualised underlying profit."
+   ],
+   [
+    "Financing risk is gone",
+    "¥600bn of convertible bonds, a ¥500bn hybrid loan and ¥900bn of JBIC-led loans refinanced the U.S. Steel bridge loan by March 2026. The 2030 plan sets a ¥24 minimum dividend and a D/E target of about 0.7."
+   ]
+  ],
+  "variant": [
+   [
+    "Chinese steel exports will keep crushing spreads.",
+    "They hit the domestic business, which is why we focus on overseas: U.S. Steel sells behind Section 232 tariffs and India grows with local demand."
+   ],
+   [
+    "U.S. Steel was overpriced and is politically constrained.",
+    "The golden share limits closures, but FY2026 guidance already assumes U.S. Steel at ≥ ¥180bn after the Gary relining."
+   ],
+   [
+    "The balance sheet is stretched.",
+    "Adjusted D/E is 0.71 and the debt is now long-dated; the CEO calls ~1.0 acceptable during heavy investment."
+   ]
+  ],
+  "business": [
+   [
+    "Domestic steel",
+    "Japan's largest integrated steelmaker: ¥528bn of underlying business profit in FY2025, restructured."
+   ],
+   [
+    "U.S. Steel",
+    "100% owned since June 2025 (~$14.9bn), under a National Security Agreement with a US golden share."
+   ],
+   [
+    "India and other overseas",
+    "AM/NS India JV with ArcelorMittal (capacity 9 to 15 Mt/yr), Thai and ASEAN operations, Ovako, Nippon Steel Slovakia."
+   ],
+   [
+    "Raw materials",
+    "Coking coal interests: a partial hedge on input costs."
+   ]
+  ],
+  "segments": {
+   "title": "Underlying business profit (¥bn): FY2025 actual vs FY2026 forecast",
+   "unit": "¥bn",
+   "labels": [
+    "Domestic",
+    "Overseas incl. raw materials"
+   ],
+   "values": [
+    527.6,
+    122.8
+   ],
+   "values2": [
+    380.0,
+    320.0
+   ],
+   "series": [
+    "FY2025",
+    "FY2026f"
+   ]
+  },
+  "macro": [
+   [
+    "Chinese steel exports",
+    "~119 Mt",
+    "Record in 2025 per the company: the main pressure on Asian spreads."
+   ],
+   [
+    "US steel tariffs",
+    "Section 232",
+    "Protect U.S. Steel's pricing; the investment case leans on them."
+   ],
+   [
+    "Yen",
+    "¥160/$",
+    "FY2026 assumption: a weak yen lifts overseas profits in yen and inventory valuation gains (¥80bn)."
+   ],
+   [
+    "Middle East costs",
+    "−¥60bn",
+    "FY2026 impact from raw materials, fuel, logistics and lost exports, absorbed in the guide."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "Q1 FY2026",
+    "FY2026 guide"
+   ],
+   "rows": [
+    [
+     "Revenue",
+     "¥8,696bn",
+     "¥10,063bn",
+     "¥2,821bn",
+     "¥11,200bn"
+    ],
+    [
+     "Underlying business profit",
+     "¥794bn",
+     "¥650bn",
+     "¥108bn",
+     "≥ ¥700bn"
+    ],
+    [
+     "of which U.S. Steel",
+     "—",
+     "−¥6bn",
+     "¥32bn",
+     "≥ ¥180bn"
+    ],
+    [
+     "Profit to owners",
+     "—",
+     "¥17bn*",
+     "¥75bn",
+     "¥290bn"
+    ],
+    [
+     "EPS (post-split)",
+     "—",
+     "¥3",
+     "¥14",
+     "¥55"
+    ],
+    [
+     "DPS (post-split)",
+     "¥32",
+     "¥24",
+     "—",
+     "¥24 (minimum)"
+    ]
+   ],
+   "note": "*After ¥271bn of impairments and transfer losses (AM/NS Calvert, Usiminas). Fiscal year ends 31 March (FY2025 = Apr 2025-Mar 2026). Per-share data after the five-for-one split. Sources: Nippon Steel FY2025 and Q1 FY2026 materials."
+  },
+  "valuation": {
+   "method": "Price to book against the return path",
+   "explain": "Steelmakers trade on book value adjusted for returns. The 2030 plan targets ROE of about 10%, which would justify roughly 1x book; FY2025 ROE was 0.3%. We apply 0.45x (no recovery), 0.75x (FY2026 guide delivered) and 0.95x (path to the 2030 plan) to book value per share implied by the 0.54x third-party P/B.",
+   "kind": "pb",
+   "pb_now": 0.54,
+   "scenarios": [
+    [
+     "Bear",
+     0.45,
+     null,
+     "U.S. Steel turnaround stalls; equity raise"
+    ],
+    [
+     "Base",
+     0.75,
+     null,
+     "FY2026 guide delivered; H2 run-rate ≥ ¥900bn"
+    ],
+    [
+     "Bull",
+     0.95,
+     null,
+     "On track for ≥ ¥1tn and ROE ~10% by FY2030"
+    ]
+   ],
+   "consensus_target": null
+  },
+  "catalysts": [
+   [
+    "Early Nov 2026",
+    "H1 FY2026 results: does H1 underlying profit reach ¥250bn?"
+   ],
+   [
+    "H2 FY2026",
+    "Gary furnace back from relining; Big River 2 ramp-up; Nagoya hot strip mill"
+   ],
+   [
+    "FY2026",
+    "Asset sales of at least ¥100bn"
+   ],
+   [
+    "May 2027",
+    "FY2026 results and first FY2027 forecast"
+   ],
+   [
+    "2026-2028",
+    "Remaining ~$7bn of the $11bn US investment programme"
+   ]
+  ],
+  "risks": [
+   [
+    "U.S. Steel execution and capex overrun",
+    "Tariff protection; $0.3bn synergies in FY2026"
+   ],
+   [
+    "Leverage and convertible dilution",
+    "Long-dated financing; ¥730+ conversion prices"
+   ],
+   [
+    "Chinese oversupply",
+    "Domestic cost base reset"
+   ],
+   [
+    "Profit flattered by yen and inventory gains",
+    "Base case on operating run-rate"
+   ]
+  ],
+  "triggers": [
+   "H2 FY2026 underlying profit annualising well below ¥900bn",
+   "U.S. Steel profit falling back toward zero, or D/E above ~1.0",
+   "A cut to the ¥24 minimum dividend or further overseas impairments"
+  ],
+  "peers_text": "ArcelorMittal, Nucor, Steel Dynamics (pipeline peer set); JFE, POSCO, Kobe Steel for regional context.",
+  "note": {
+   "intro": "Nippon Steel entered the portfolio in June 2025, the month it closed the U.S. Steel acquisition, and ranked first of 62 Materials stocks in December 2025. It is a turnaround inside a cyclical industry, so the value signal is only a starting point. This note explains the three engines of the group, the policy context in the US and China, and how to think about book value when returns are depressed.",
+   "business_long": [
+    "Nippon Steel makes flat and long steel products for cars, construction, shipbuilding and energy. In Japan it runs integrated blast-furnace works. Domestic demand is shrinking, so the company has closed capacity (Kashima upstream) and moved customers to contract prices that pass through input costs.",
+    "Overseas is the growth engine. U.S. Steel, bought for about $14.9bn in June 2025, makes it a large US producer. The US government holds a golden share that lets it veto plant closures and capacity cuts. AM/NS India, a joint venture with ArcelorMittal, is expanding from about 9 to 15 Mt a year.",
+    "Japanese companies report several profit lines. 'Underlying business profit' strips out inventory valuation effects and is the best measure of operating earning power. FY2025 profit to owners was only ¥17bn because of ¥271bn of impairments and losses on exiting AM/NS Calvert and Usiminas."
+   ],
+   "macro_long": [
+    "Global steel is oversupplied. China exported a record of about 119 Mt in 2025, which depresses prices across Asia. That is the main reason the domestic business forecast was cut by ¥90bn in August 2026.",
+    "The US is protected. Section 232 tariffs keep imported steel out, so U.S. Steel sells at higher prices. The thesis relies on that protection lasting.",
+    "Currency and energy cut both ways. A yen at ¥160 per dollar lifts overseas profits in yen and creates inventory valuation gains (about ¥80bn), while the 2026 Middle East conflict raised raw-material, fuel and logistics costs by about ¥60bn."
+   ],
+   "history": [
+    [
+     "Jan 2025",
+     "Deal blocked by President Biden, later re-reviewed"
+    ],
+    [
+     "13 Jun 2025",
+     "National Security Agreement with a US golden share"
+    ],
+    [
+     "18 Jun 2025",
+     "U.S. Steel acquisition closes (~¥2tn bridge loan)"
+    ],
+    [
+     "12 Dec 2025",
+     "2030 plan: ≥ ¥1tn underlying profit, ROE ~10%, ¥24 minimum DPS"
+    ],
+    [
+     "24 Feb 2026",
+     "¥600bn zero-coupon convertibles (conversion ~¥730-737)"
+    ],
+    [
+     "18 Mar 2026",
+     "¥900bn JBIC-led financing; bridge loan fully repaid"
+    ],
+    [
+     "4 Aug 2026",
+     "FY2026 profit forecast raised to ¥290bn; U.S. Steel to ≥ ¥180bn"
+    ],
+    [
+     "1 Oct 2026",
+     "USSK becomes Nippon Steel Slovakia"
+    ]
+   ],
+   "model_long": "On the December 2025 score Nippon Steel had z-scores of +3.3 on book-to-price, +2.3 on FCF yield, +2.3 on sales-to-EV and +2.2 on earnings-to-price within Materials, using FY2024 (March 2025) accounts. Its P/B was 0.56x against 1.62x for its peers. EBIT-to-EV was only +0.5: the debt raised for U.S. Steel weighed on the enterprise value.",
+   "bear_long": "The bear case: the domestic business is in structural decline, ¥5tn of net debt and convertible dilution cap equity upside, the golden share stops the company from cutting capacity at U.S. Steel, and the profit upgrade relies partly on a weak yen. In that case 0.6x book is a value trap.",
+   "glossary": [
+    [
+     "Underlying business profit",
+     "Nippon Steel's operating profit excluding inventory valuation effects."
+    ],
+    [
+     "Golden share",
+     "A special share held by a government that gives veto rights over key decisions."
+    ],
+    [
+     "Integrated steelmaker",
+     "Makes steel from iron ore in blast furnaces, as opposed to recycling scrap in electric furnaces."
+    ],
+    [
+     "Section 232",
+     "US law used to impose tariffs on steel imports on national-security grounds."
+    ]
+   ],
+   "interview": [
+    [
+     "Why is P/B the right metric for a steelmaker?",
+     "Earnings swing with the cycle, book value is more stable. The question is the ROE the book can earn: 10% justifies about 1x."
+    ],
+    [
+     "What is the biggest risk?",
+     "That U.S. Steel's turnaround depends on tariffs. If protection weakens, the overseas story breaks."
+    ],
+    [
+     "How do the convertibles affect the thesis?",
+     "About ¥600bn converting at ~¥733 means roughly 820m new shares. They convert only if the stock rises ~11%, so dilution comes with success."
+    ],
+    [
+     "What will you check at the November results?",
+     "Whether H1 underlying profit reaches ¥250bn and the H2 run-rate target of ≥ ¥900bn holds."
+    ]
+   ]
+  },
+  "target": 915.56,
+  "upside": 0.3889,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "0.45x book (¥1,221 BVPS)",
+    "value": 549.33,
+    "upside": -0.1667,
+    "story": "U.S. Steel turnaround stalls; equity raise"
+   },
+   {
+    "name": "Base",
+    "inputs": "0.75x book (¥1,221 BVPS)",
+    "value": 915.56,
+    "upside": 0.3889,
+    "story": "FY2026 guide delivered; H2 run-rate ≥ ¥900bn"
+   },
+   {
+    "name": "Bull",
+    "inputs": "0.95x book (¥1,221 BVPS)",
+    "value": 1159.7,
+    "upside": 0.7593,
+    "story": "On track for ≥ ¥1tn and ROE ~10% by FY2030"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 3429.82,
+  "facts": {
+   "ticker": "5401 JT Equity",
+   "name": "NIPPON STEEL CORP",
+   "sector": "Materials",
+   "industry_group": "Materials",
+   "country": "JP",
+   "currency": "JPY",
+   "fy_used": "2025-03-31",
+   "mcap_eur_bn": 18.764547299999997,
+   "score": 2.1151367716008482,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 62,
+   "z": {
+    "ebit_ev": 0.5432131038547534,
+    "b_p": 3.3174243360173397,
+    "fcf_p": 2.3337569191656296,
+    "s_ev": 2.2661527273656694,
+    "e_p": 2.220947640279369
+   },
+   "multiples": {
+    "EV/EBIT": 13.58,
+    "P/B": 0.56,
+    "P/FCF": 8.06,
+    "EV/Sales": 0.62,
+    "P/E": 8.76
+   },
+   "sector_median": {
+    "EV/EBIT": 17.73,
+    "P/B": 2.28,
+    "P/FCF": 23.11,
+    "EV/Sales": 2.29,
+    "P/E": 24.47
+   },
+   "peer_median": {
+    "EV/EBIT": 13.14,
+    "P/B": 1.62,
+    "P/FCF": 57.99,
+    "EV/Sales": 1.26,
+    "P/E": 16.97
+   },
+   "valuation": {
+    "fcf_yield": 0.1240405250810394,
+    "implied_perpetual_growth": -0.03473231098872054,
+    "upside_sector_EV_EBIT": 0.539714271073302,
+    "upside_peer_EV_EBIT": -0.05673950848297127
+   },
+   "score_history": {
+    "2021-06-30": 0.19608494747767052,
+    "2021-12-31": 0.3881361365375816,
+    "2022-06-30": 0.16273077540629366,
+    "2022-12-30": 1.0612926543567576,
+    "2023-06-30": 0.6706550162898401,
+    "2023-12-29": 0.8160044094808796,
+    "2024-06-28": 0.9327129720556921,
+    "2024-12-31": 1.5123906022552136,
+    "2025-06-30": 2.278918577386851,
+    "2025-12-31": 2.1151367716008482
+   },
+   "held_since": "2025-06-30",
+   "dates_held": [
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.019737085000040205,
+    "MVO": 0.03999999987115626
+   },
+   "h1_2026_return": -0.14098517614719863,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "N1",
+    "label": "Nippon Steel Corp., \"Q1 FY2026 Financial Results\" (presentation), 4 Aug 2026",
+    "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20260804_200.pdf"
+   },
+   {
+    "tag": "N2",
+    "label": "Nippon Steel Corp., \"FY2025 Financial Results\" (presentation), 13 May 2026",
+    "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20260513_200.pdf"
+   },
+   {
+    "tag": "N3",
+    "label": "Nippon Steel Corp., IR presentation for individual investors, 23 Jun 2026 (not read in full)",
+    "url": "https://www.nipponsteel.com/en/ir/individual/pdf/20260623_nipponsteel_presentation.pdf"
+   },
+   {
+    "tag": "N4",
+    "label": "Nippon Steel Corp., 2030 Medium- to Long-term Management Plan, 12 Dec 2025",
+    "url": "https://www.nipponsteel.com/en/ir/library/strategy/pdf/20251212_100.pdf"
+   },
+   {
+    "tag": "N5",
+    "label": "Nippon Steel newsroom 2026 (press releases index)",
+    "url": "https://www.nipponsteel.com/en/newsroom/news/2026/"
+   },
+   {
+    "tag": "N6",
+    "label": "Hunton Andrews Kurth, \"Nippon Steel Completes Acquisition of US Steel Under National Security Agreement\", Jun 2025",
+    "url": "https://www.hunton.com/insights/legal/nippon-steel-completes-acquisition-of-us-steel-under-national-security-agreement"
+   },
+   {
+    "tag": "N7",
+    "label": "BusinessDay / Reuters (K. Golubkova), \"Nippon Steel plans Japan's biggest convertible bond offer yet\", 24 Feb 2026",
+    "url": "https://www.businessday.co.za/world/asia/2026-02-24-nippon-steel-plans-japans-biggest-convertible-bond-offer-yet"
+   },
+   {
+    "tag": "N8",
+    "label": "MarketScreener, Nippon Steel quotes and valuation pages (close 29 Oct 2026, 52-week range, market cap, multiples)",
+    "url": "https://www.marketscreener.com/quote/stock/NIPPON-STEEL-CORPORATION-6491235/quotes/"
+   },
+   {
+    "tag": "N9",
+    "label": "SteelOrbis, \"Nippon Steel to strengthen European and specialty steel operations with new strategic moves\", May 2026",
+    "url": "https://www.steelorbis.com/steel-news/latest-news/nippon-steel-to-strengthen-european-and-specialty-steel-operations-with-new-strategic-moves-1453204.htm"
+   },
+   {
+    "tag": "N10",
+    "label": "SteelOrbis, \"Nippon Steel swings to net profit in Q1 FY 2026-27…\", 4 Aug 2026",
+    "url": "https://www.steelorbis.com/steel-news/latest-news/nippon-steel-swings-to-net-profit-in-q1-fy-2026-27-warns-of-china-driven-oversupply-and-middle-east-risks-1468803.htm"
+   },
+   {
+    "tag": "N11",
+    "label": "GMK Center, \"Nippon Steel increased steel production by 27.5% y/y in FY2025/2026\", 14 May 2026",
+    "url": "https://gmk.center/en/news/nippon-steel-increased-steel-production-by-27-5-y-y-in-the-fy2025-2026/"
+   },
+   {
+    "tag": "N12",
+    "label": "GMK Center, \"Nippon Steel to raise $5.6 billion to finance deal with U.S. Steel\", 3 Jul 2025",
+    "url": "https://gmk.center/en/news/nippon-steel-to-raise-5-6-billion-to-finance-deal-with-u-s-steel/"
+   },
+   {
+    "tag": "N13",
+    "label": "Nippon Steel Q2 FY2025 presentation, 5 Nov 2025 (D/E 0.74 at Sep-2025; financing policy)",
+    "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20251105_500.pdf"
+   }
+  ]
+ },
+ {
+  "code": "CNC_US",
+  "bbg": "CNC UN Equity",
+  "name": "Centene",
+  "legal": "Centene Corporation",
+  "exchange": "NYSE",
+  "ticker": "CNC",
+  "country": "United States",
+  "ccy": "USD",
+  "sym": "$",
+  "sector": "Health Care",
+  "industry": "Managed care",
+  "price": 67.6,
+  "price_note": "intraday, 29 Oct 2026",
+  "shares_m": 495.1,
+  "high52": 72.5,
+  "low52": 31.63,
+  "rating": "Neutral",
+  "conviction": "Case study",
+  "horizon": "12 months",
+  "role": "Case study: value trap",
+  "headline": "Cheap for the wrong reason: the screen read stale earnings, and the recovery came from elsewhere",
+  "one_liner": "In December 2025 Centene was the cheapest health-care stock in our universe, on FY2024 earnings that no longer existed. 2025 adjusted EPS collapsed to $2.08 before a 2026 repricing rebound to a guided floor above $5.20. The stock has recovered; at $67.60 it is fairly priced, and the lesson is about process.",
+  "key_stats": [
+   [
+    "Market cap",
+    "$33.5bn"
+   ],
+   [
+    "2026 adj. EPS guide",
+    "> $5.20"
+   ],
+   [
+    "P/E on the guide",
+    "13.0x"
+   ],
+   [
+    "Membership, y/y",
+    "−8%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Why the model bought it",
+    "With a six-month accounting lag, the December 2025 score used FY2024 accounts: pre-collapse EBIT and book equity before a $6.7bn goodwill impairment. EV/EBIT, P/B and E/P all screened at the top of the sector."
+   ],
+   [
+    "What actually happened",
+    "In July 2025 Centene withdrew guidance on Marketplace risk adjustment and Medicaid cost trends. 2025 adjusted EPS came in at $2.08. Repricing then worked: the 2026 floor was raised four times, from $3.00 to $5.20."
+   ],
+   [
+    "Where it stands now",
+    "At $67.60 the stock trades at 13x a 2026 figure that includes about $0.50 of non-recurring items. Membership is shrinking (−8% y/y) and Medicaid still runs at a 93.6% benefits ratio. Upside and downside look balanced."
+   ]
+  ],
+  "variant": [
+   [
+    "The stock has doubled, so the model was right.",
+    "The 2026 rebound came from repricing and policy, not from the cheapness the model measured. The signal had no defence against a fast fundamental break."
+   ],
+   [
+    "Managed care is a stable compounder.",
+    "Margins are thin: each 10 bp of benefits ratio on ~$175bn of premiums is about $175m of pre-tax profit."
+   ],
+   [
+    "Guidance raises mean upside.",
+    "The floor format ('greater than $5.20') and ~$0.50 of non-recurring items flatter 2026; FY2027 guidance in February is the real test."
+   ]
+  ],
+  "business": [
+   [
+    "Medicaid",
+    "Largest US Medicaid managed-care organisation: 11.9m members at September 2026, down from 12.7m."
+   ],
+   [
+    "Marketplace (ACA)",
+    "Ambetter plans: 3.4m members versus 5.8m a year earlier after enhanced premium tax credits expired."
+   ],
+   [
+    "Medicare",
+    "Wellcare: 0.95m Medicare Advantage and supplement members plus 8.9m stand-alone Part D members."
+   ],
+   [
+    "Other",
+    "Remaining Magellan Health businesses held for sale ($513m impairment, December 2025)."
+   ]
+  ],
+  "segments": {
+   "title": "Members by product, Sep 2026",
+   "unit": "m",
+   "labels": [
+    "Medicaid",
+    "Medicare Part D (PDP)",
+    "Marketplace",
+    "Medicare Advantage & supplement"
+   ],
+   "values": [
+    11.9,
+    8.9,
+    3.4,
+    0.95
+   ]
+  },
+  "macro": [
+   [
+    "ACA subsidies",
+    "−42%",
+    "Marketplace membership y/y after enhanced premium tax credits expired on 31 Dec 2025."
+   ],
+   [
+    "Medicaid reform",
+    "2027",
+    "OBBBA work requirements and more frequent eligibility checks phase in from end-2026."
+   ],
+   [
+    "Medicare rates",
+    "+2.48%",
+    "CMS final 2027 Medicare Advantage rate notice (April 2026), versus +0.09% proposed."
+   ],
+   [
+    "Medical cost trend",
+    "93.6%",
+    "Medicaid benefits ratio in Q3 2026: behavioural health, home health and high-cost drugs."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2025",
+    "9M 2026",
+    "Q3 2026",
+    "2026 guide"
+   ],
+   "rows": [
+    [
+     "Total revenues",
+     "$194.8bn",
+     "$154.2bn",
+     "$50.6bn",
+     "$196.5-200.5bn"
+    ],
+    [
+     "Health benefits ratio",
+     "91.9%",
+     "89.9%",
+     "92.7%",
+     "90.4-91.1%"
+    ],
+    [
+     "Adjusted diluted EPS",
+     "$2.08",
+     "$6.45",
+     "$0.58",
+     "> $5.20"
+    ],
+    [
+     "GAAP diluted EPS",
+     "−$13.53*",
+     "$5.15",
+     "−$0.14",
+     "> $3.46"
+    ],
+    [
+     "Total debt",
+     "$17.4bn",
+     "—",
+     "$15.5bn",
+     "—"
+    ],
+    [
+     "Debt / capital",
+     "46.5%",
+     "—",
+     "41.1%",
+     "—"
+    ]
+   ],
+   "note": "*Includes a $6.7bn non-cash goodwill impairment (Q3 2025). No dividend. Sources: Centene FY2025 and Q3 2026 releases."
+  },
+  "valuation": {
+   "method": "P/E on 2027 adjusted EPS",
+   "explain": "Managed-care insurers are valued on earnings. We apply peer-range P/E multiples to three 2027 adjusted EPS outcomes: a reset below the 2026 floor ex one-offs (~$4.70), a flat year, and continued margin repair.",
+   "kind": "pe",
+   "scenarios": [
+    [
+     "Bear",
+     3.5,
+     11.0,
+     "Medicaid margins stay under water; risk-adjustment shock"
+    ],
+    [
+     "Base",
+     5.0,
+     13.0,
+     "2026 earnings power holds ex one-offs"
+    ],
+    [
+     "Bull",
+     6.5,
+     14.0,
+     "Medicaid rates catch up; buybacks resume"
+    ]
+   ],
+   "consensus_target": 74.5
+  },
+  "catalysts": [
+   [
+    "Nov 2026-Jan 2027",
+    "ACA open enrolment for 2027 (median premiums +15%)"
+   ],
+   [
+    "Feb 2027",
+    "Q4 2026 results and first FY2027 guidance"
+   ],
+   [
+    "From Jan 2027",
+    "Medicaid work requirements and eligibility checks"
+   ],
+   [
+    "Apr 2027",
+    "Final 2028 Medicare Advantage rate notice"
+   ],
+   [
+    "Jun-Jul 2027",
+    "Risk-adjustment data for benefit year 2026"
+   ]
+  ],
+  "risks": [
+   [
+    "Marketplace risk pool worsens as healthier members lapse",
+    "Repricing already filed; membership smaller"
+   ],
+   [
+    "Medicaid rate adequacy versus acuity",
+    "State rate increases in 2026"
+   ],
+   [
+    "Low Medicare Star ratings limit bonuses",
+    "Small MA book (0.95m members)"
+   ],
+   [
+    "Little unregulated cash ($175m)",
+    "Debt reduced from $17.4bn to $15.5bn"
+   ]
+  ],
+  "triggers": [
+   "FY2027 guidance materially below ~$4.70 of adjusted EPS",
+   "Medicaid benefits ratio failing to improve from ~93.5%",
+   "Another mid-year risk-adjustment shock"
+  ],
+  "peers_text": "Elevance Health, Humana, Cigna, UnitedHealth, CVS Health (pipeline peer set).",
+  "note": {
+   "intro": "Centene is in this pitch set as a case study. It shows the main weakness of a value screen that uses lagged accounts: when earnings break fast, trailing multiples fall faster than the price only because the earnings are stale. Centene ranked first of 108 health-care stocks in December 2025 and was held at all ten rebalances. This note explains how a managed-care insurer makes money, what went wrong in 2025 and what the episode teaches.",
+   "business_long": [
+    "Centene is a health insurer paid by governments and individuals to cover medical costs. It receives a premium per member and pays the doctors, hospitals and pharmacies. The key number is the health benefits ratio (HBR): medical costs divided by premiums. At 90% the insurer keeps 10 cents per dollar to cover admin costs and profit; at 93% there is almost nothing left.",
+    "Medicaid (health cover for low-income Americans, run by states) is the core: 11.9m members. The Marketplace (Ambetter) sells subsidised individual plans under the Affordable Care Act. Medicare covers people over 65, mostly through stand-alone drug plans (Part D) at Centene.",
+    "Two technical mechanisms drive surprises. Risk adjustment moves money between insurers depending on how sick their members are, and the data arrives months after the year. State Medicaid rates are reset with a lag, so when costs jump the insurer absorbs them for a while."
+   ],
+   "macro_long": [
+    "US health policy moved against Centene in 2025-2026. The enhanced ACA premium tax credits expired at the end of 2025, and Marketplace membership fell from 5.5m to 3.4m. Healthier members tend to leave first, which worsens the risk pool.",
+    "The One Big Beautiful Bill Act (July 2025) brings Medicaid work requirements and more frequent eligibility checks from end-2026. Fewer members means less revenue, and the members who remain are usually sicker.",
+    "Medical cost trends rose across the industry: behavioural health, home health and expensive drugs. On the positive side, the final 2027 Medicare Advantage rate notice (+2.48%) was much better than the January proposal."
+   ],
+   "history": [
+    [
+     "1 Jul 2025",
+     "2025 guidance withdrawn: Marketplace risk adjustment ~$1.8bn worse; Medicaid trend up"
+    ],
+    [
+     "Q3 2025",
+     "$6.7bn goodwill impairment"
+    ],
+    [
+     "31 Dec 2025",
+     "Enhanced ACA premium tax credits expire"
+    ],
+    [
+     "6 Feb 2026",
+     "FY2025 adjusted EPS $2.08; 2026 floor above $3.00"
+    ],
+    [
+     "28 Apr 2026",
+     "Floor raised to $3.40"
+    ],
+    [
+     "28 Jul 2026",
+     "Floor raised to $4.80 (incl. ~$0.50 non-recurring)"
+    ],
+    [
+     "27 Oct 2026",
+     "Q3 beat ($0.58 vs ~$0.10 consensus); floor raised to $5.20"
+    ]
+   ],
+   "model_long": "On the December 2025 score Centene had z-scores of +4.1 on book-to-price, +4.0 on earnings-to-price, +4.4 on sales-to-EV and +3.2 on EBIT-to-EV, but −1.8 on FCF yield. The lag rule meant FY2024 accounts were used, before the 2025 collapse. EV/Sales is structurally low for any insurer (about $195bn of revenue on a $33bn market cap) and says nothing about margins. A revision or quality filter (estimate momentum, HBR trend, goodwill-to-equity) would have flagged the break.",
+   "bear_long": "Even after the recovery, the bear case is credible: membership is shrinking, Medicaid margins are negative on an HBR basis, 2026 includes one-offs, and only $175m of cash sits outside regulated subsidiaries.",
+   "glossary": [
+    [
+     "Health benefits ratio (HBR)",
+     "Medical costs divided by premium revenue; the core margin measure for an insurer."
+    ],
+    [
+     "Risk adjustment",
+     "Transfers between insurers based on members' health status, settled after the plan year."
+    ],
+    [
+     "Medicaid / Medicare",
+     "US public health programmes for low-income people (states) and for people over 65 (federal)."
+    ],
+    [
+     "Guidance floor",
+     "A 'greater than' figure: the company commits to a minimum, not a midpoint."
+    ]
+   ],
+   "interview": [
+    [
+     "Your model held Centene through a 2025 collapse. What does that tell you?",
+     "That lagged trailing multiples cannot see a fast fundamental break. The fix is to add a quality or revision signal, not to drop value."
+    ],
+    [
+     "The stock doubled from its low. Wasn't the model right?",
+     "The outcome was good, but for reasons the model did not measure: repricing and policy. I judge the process, not the outcome."
+    ],
+    [
+     "Why Neutral now?",
+     "13x a 2026 floor that includes one-offs, shrinking membership and no 2027 guidance: upside and downside look balanced."
+    ],
+    [
+     "What one metric would you watch?",
+     "The Medicaid benefits ratio. Below about 92% the earnings recovery is real; stuck near 93.5% it is not."
+    ]
+   ]
+  },
+  "target": 65.0,
+  "upside": -0.0385,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "EPS $3.50 × 11x",
+    "value": 38.5,
+    "upside": -0.4305,
+    "story": "Medicaid margins stay under water; risk-adjustment shock"
+   },
+   {
+    "name": "Base",
+    "inputs": "EPS $5.00 × 13x",
+    "value": 65.0,
+    "upside": -0.0385,
+    "story": "2026 earnings power holds ex one-offs"
+   },
+   {
+    "name": "Bull",
+    "inputs": "EPS $6.50 × 14x",
+    "value": 91.0,
+    "upside": 0.3462,
+    "story": "Medicaid rates catch up; buybacks resume"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 33.47,
+  "facts": {
+   "ticker": "CNC UN Equity",
+   "name": "CENTENE CORP",
+   "sector": "Health Care",
+   "industry_group": "Health Care Equipment & Servic",
+   "country": "US",
+   "currency": "USD",
+   "fy_used": "2024-12-31",
+   "mcap_eur_bn": 17.2341221,
+   "score": 2.467482264250571,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 108,
+   "z": {
+    "ebit_ev": 3.1884904250740274,
+    "b_p": 4.064460959791948,
+    "fcf_p": -1.767193662484839,
+    "s_ev": 4.384171334621149,
+    "e_p": 4.0487146981058295
+   },
+   "multiples": {
+    "EV/EBIT": 6.81,
+    "P/B": 0.68,
+    "P/FCF": null,
+    "EV/Sales": 0.13,
+    "P/E": 5.64
+   },
+   "sector_median": {
+    "EV/EBIT": 22.71,
+    "P/B": 4.23,
+    "P/FCF": 20.95,
+    "EV/Sales": 4.54,
+    "P/E": 28.1
+   },
+   "peer_median": {
+    "EV/EBIT": 9.85,
+    "P/B": 1.66,
+    "P/FCF": 13.31,
+    "EV/Sales": 0.39,
+    "P/E": 19.73
+   },
+   "valuation": {
+    "fcf_yield": -0.0262897000132081,
+    "implied_perpetual_growth": 0.11429446727093029,
+    "upside_sector_EV_EBIT": 2.7094451107555817,
+    "upside_peer_EV_EBIT": 0.5191622433847454
+   },
+   "score_history": {
+    "2021-06-30": 1.5367930824900964,
+    "2021-12-31": 1.2717972601089031,
+    "2022-06-30": 0.7294039238171063,
+    "2022-12-30": 0.8668750253333428,
+    "2023-06-30": 1.9044257999116128,
+    "2023-12-29": 1.6675256959302223,
+    "2024-06-28": 1.753045162121988,
+    "2024-12-31": 2.8465442368968326,
+    "2025-06-30": 1.7766573735743676,
+    "2025-12-31": 2.467482264250571
+   },
+   "held_since": "2021-06-30",
+   "dates_held": [
+    "2021-06-30",
+    "2021-12-31",
+    "2022-06-30",
+    "2022-12-30",
+    "2023-06-30",
+    "2023-12-29",
+    "2024-06-28",
+    "2024-12-31",
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.01667539503477422,
+    "MVO": 0.005000000019216931
+   },
+   "h1_2026_return": 0.6203412940151134,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "1",
+    "label": "Centene, \"Centene Corporation Reports Third Quarter 2026 Results\", 8-K Ex. 99.1, 27 Oct 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000194/a20261027ex991pressrelease.htm"
+   },
+   {
+    "tag": "2",
+    "label": "Centene, \"Centene Corporation Reports 2025 Results and Announces 2026 Guidance\", 8-K Ex. 99.1, 6 Feb 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000031/a20260206ex991pressrelease.htm"
+   },
+   {
+    "tag": "3",
+    "label": "Centene, Form 10-Q for the quarter ended 30 Sep 2026 (financial statements and notes only), filed Oct 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000192/cnc-20260930.htm"
+   },
+   {
+    "tag": "4",
+    "label": "Centene, \"Centene Corporation Withdraws 2025 Guidance\", 8-K Ex. 99.1, 1 Jul 2025",
+    "url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173925000128/a7012025formex991pressrele.htm"
+   },
+   {
+    "tag": "5",
+    "label": "Centene, \"Centene Corporation Reports Third Quarter 2025 Results\", 8-K Ex. 99.1, 29 Oct 2025 (content via search excerpt)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173925000185/a20251029ex991pressrelease.htm"
+   },
+   {
+    "tag": "6",
+    "label": "Centene, \"Centene Corporation Reports First Quarter 2026 Results\", 8-K Ex. 99.1, 28 Apr 2026 (content via search excerpt)",
+    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000099/a20260428ex991pressrelease.htm"
+   },
+   {
+    "tag": "7",
+    "label": "Centene, \"Centene Corporation Reports Second Quarter 2026 Results\", 8-K Ex. 99.1, 28 Jul 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000154/a20260728ex991pressrelease.htm"
+   },
+   {
+    "tag": "8",
+    "label": "Fierce Healthcare, \"CMS gives Medicare Advantage rates a 2.48% bump for 2027 plan year in final rule\", Apr 2026",
+    "url": "https://www.fiercehealthcare.com/regulatory/cms-gives-medicare-advantage-rates-248-bump-2027-plan-year-final-rule"
+   },
+   {
+    "tag": "9",
+    "label": "American Hospital Association, \"CMS releases 2027 Medicare Advantage, Part D star ratings\", 9 Oct 2026; Becker's Payer Issues, 2027 star ratings coverage, Oct 2026",
+    "url": "https://www.aha.org/news/headline/2026-10-09-cms-releases-2027-medicare-advantage-part-d-star-ratings"
+   },
+   {
+    "tag": "10",
+    "label": "Fierce Healthcare, \"Centene posts $71M loss, $50.6B in revenue for Q3\", Oct 2026 (page blocked; content via search excerpt)",
+    "url": "https://www.fiercehealthcare.com/payers/centene-posts-71m-loss-506b-revenue-q3"
+   },
+   {
+    "tag": "11",
+    "label": "Becker's Payer Issues, ACA enhanced subsidy coverage (expiry 31 Dec 2025; talks collapsed per WSJ, 5 Feb 2026); Fierce Healthcare, \"Centene, Oscar Health outline 2027 ACA marketplace plans\" (KFF 15% median 2027 increase), 2026",
+    "url": "https://www.beckerspayer.com/payer/aca/page/7/"
+   },
+   {
+    "tag": "12",
+    "label": "stockanalysis.com, Centene (CNC) quote page, data as of 29 Oct 2026 (third-party)",
+    "url": "https://stockanalysis.com/stocks/cnc/"
+   }
+  ]
+ },
+ {
+  "code": "316_HK",
+  "bbg": "316 HK Equity",
+  "name": "Orient Overseas (International)",
+  "legal": "Orient Overseas (International) Ltd",
+  "exchange": "HKEX",
+  "ticker": "316",
+  "country": "Hong Kong",
+  "ccy": "HKD",
+  "sym": "HK$",
+  "sector": "Industrials",
+  "industry": "Container shipping",
+  "price": 153.3,
+  "price_note": "close, 29 Oct 2026",
+  "shares_m": 660.37,
+  "high52": 178.9,
+  "low52": 117.9,
+  "rating": "Underweight",
+  "conviction": "Case study",
+  "horizon": "12 months",
+  "role": "Case study: cyclical trap",
+  "headline": "The highest value score in our universe, on peak-cycle earnings: a call on freight rates, not a cheap compounder",
+  "one_liner": "OOIL (OOCL) had the top score of our entire universe in December 2025. The screen saw a P/E under 4x on FY2024 profit; FY2025 profit then fell 41% and H1 2026 another 24%. A 2026 war shock lifted freight rates again, but on normalised earnings the stock is not cheap. We hold the model weight floor and expect mean reversion.",
+  "key_stats": [
+   [
+    "Market cap",
+    "HK$101bn"
+   ],
+   [
+    "Net cash (Jun 2026)",
+    "US$4.5bn"
+   ],
+   [
+    "Forward P/E (third-party)",
+    "8.0x"
+   ],
+   [
+    "Dividend yield (trailing)",
+    "5.8%"
+   ]
+  ],
+  "thesis": [
+   [
+    "Why the model bought it",
+    "With a six-month lag, the December 2025 score used FY2024 accounts: EBIT of US$2.6bn. FY2025 then delivered US$1.5bn. On the earnings actually being produced the stock was about 40% less cheap than the screen showed."
+   ],
+   [
+    "Earnings are a freight rate times a volume",
+    "Profit rose more than 60-fold from the 2019 operating base to the 2022 peak, then fell 86% in a year. A screen that buys the lowest trailing P/E in shipping buys just after peak earnings."
+   ],
+   [
+    "2026 was rescued by a war, not by value",
+    "The US-Iran war and Hormuz disruption pushed Asia-US rates up 109% by June 2026 and Q3 liner revenue up 45%. Fleet growth (4.6%) still runs ahead of demand (4.1%), and ships are returning to Suez."
+   ]
+  ],
+  "variant": [
+   [
+    "Net cash of US$4.5bn makes it safe.",
+    "Yard and charter commitments (~US$7.5bn) exceed net cash; FCF after leases was negative in 2025 and H1 2026."
+   ],
+   [
+    "The dividend yield is attractive.",
+    "Dividends follow profits: US$10.56 per share in 2022, US$1.14 in 2025. A trailing yield overstates future income."
+   ],
+   [
+    "Q3 2026 shows a new up-cycle.",
+    "The spike is geopolitical. Port fees on Chinese operators may return on 10 November 2026."
+   ]
+  ],
+  "business": [
+   [
+    "Container shipping (OOCL)",
+    "A pure-play liner: 139 vessels and 1.15m TEU of capacity at end-2025, member of the Ocean Alliance."
+   ],
+   [
+    "Trade lanes",
+    "Trans-Pacific (most US policy exposure), Asia-Europe, Trans-Atlantic and Intra-Asia (most volume)."
+   ],
+   [
+    "Control",
+    "COSCO Shipping holds 71.07% and Shanghai International Port Group 9.06%: the free float is about 20%."
+   ],
+   [
+    "Balance sheet",
+    "No bank debt; US$5.8bn of cash against US$1.3bn of lease liabilities at June 2026."
+   ]
+  ],
+  "segments": {
+   "title": "Liner revenue by trade lane, FY2025",
+   "unit": "US$m",
+   "labels": [
+    "Trans-Pacific",
+    "Intra-Asia / Australasia",
+    "Asia-Europe",
+    "Trans-Atlantic"
+   ],
+   "values": [
+    3213,
+    3010,
+    1846,
+    708
+   ]
+  },
+  "macro": [
+   [
+    "Freight rates",
+    "+109%",
+    "Asia-US spot rates by early June 2026 after the Hormuz disruption (Cape routing again)."
+   ],
+   [
+    "Fleet vs demand",
+    "4.6% vs 4.1%",
+    "2026 fleet growth ahead of demand growth: the structural pressure on rates."
+   ],
+   [
+    "US port fees",
+    "10 Nov 2026",
+    "Section 301 fees on Chinese operators (US$50 per net ton) resume unless extended."
+   ],
+   [
+    "Bunker fuel",
+    "US$582/t",
+    "Average H1 2026 cost (+8%): the largest variable cost."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "H1 2026",
+    "Trend"
+   ],
+   "rows": [
+    [
+     "Revenue",
+     "US$10.7bn",
+     "US$9.7bn",
+     "US$5.2bn",
+     "Q3 liner rev. +45%"
+    ],
+    [
+     "Operating profit",
+     "US$2.62bn",
+     "US$1.54bn",
+     "US$0.72bn",
+     "—"
+    ],
+    [
+     "Operating margin",
+     "24.6%",
+     "15.9%",
+     "13.9%",
+     "—"
+    ],
+    [
+     "Profit attributable",
+     "US$2.58bn",
+     "US$1.51bn",
+     "US$0.73bn",
+     "—"
+    ],
+    [
+     "EPS",
+     "US$3.90",
+     "US$2.29",
+     "US$1.10",
+     "—"
+    ],
+    [
+     "DPS",
+     "US$1.95",
+     "US$1.14",
+     "US$0.55 interim",
+     "payout ~50%"
+    ],
+    [
+     "Net cash (cash − leases)",
+     "—",
+     "US$4.96bn",
+     "US$4.51bn",
+     "—"
+    ]
+   ],
+   "note": "No numeric guidance. FCF after lease payments was about −US$0.69bn in 2025 and −US$0.35bn in H1 2026 (derived). Sources: OOIL annual report 2025 and interim report 2026."
+  },
+  "valuation": {
+   "method": "P/E on normalised earnings",
+   "explain": "For a liner, value the average year, not the last one. We average profit over 2019-2025 excluding the 2021-22 supercycle and the 2019 one-off gain (about US$1.3bn, or US$1.99 per share), then apply 7-9x and convert at HK$7.8 per US$.",
+   "kind": "norm_pe",
+   "fx": 7.8,
+   "profits": {
+    "2019": 195,
+    "2020": 903,
+    "2021": 7128,
+    "2022": 9965,
+    "2023": 1368,
+    "2024": 2577,
+    "2025": 1514
+   },
+   "exclude": [
+    2021,
+    2022
+   ],
+   "scenarios": [
+    [
+     "Bear",
+     0.7,
+     7.0,
+     "Suez reopens fully; overcapacity"
+    ],
+    [
+     "Base",
+     1.0,
+     8.0,
+     "Normalised earnings, normal multiple"
+    ],
+    [
+     "Bull",
+     1.5,
+     9.0,
+     "Disruption persists; capacity absorbed"
+    ]
+   ],
+   "consensus_target": 142.7,
+   "normal_profit_usd_m": 1311.4,
+   "normal_eps_usd": 1.986
+  },
+  "catalysts": [
+   [
+    "10 Nov 2026",
+    "US port fees on Chinese operators resume or are extended"
+   ],
+   [
+    "10 Jan 2027",
+    "US-China truce expiry"
+   ],
+   [
+    "Mid-Jan 2027",
+    "Q4 2026 operational update"
+   ],
+   [
+    "Mar 2027",
+    "FY2026 results and new dividend policy for 2027+"
+   ],
+   [
+    "Spring 2027",
+    "Trans-Pacific annual contract season"
+   ]
+  ],
+  "risks": [
+   [
+    "Disruption lasts longer (Hormuz, Cape routing)",
+    "Underweight, not short: we hold the model weight"
+   ],
+   [
+    "Special dividend from the cash pile",
+    "Possible under the payout policy; would narrow the gap"
+   ],
+   [
+    "COSCO-related capital allocation",
+    "Governance set by the parent; thin float"
+   ],
+   [
+    "US-China policy swings",
+    "Fees and tariffs cut both ways"
+   ]
+  ],
+  "triggers": [
+   "We would turn positive if the price fell below normalised value (about HK$124)",
+   "Or if the orderbook were cut and the cash returned to shareholders",
+   "Or if structural capacity discipline emerged across the industry"
+  ],
+  "peers_text": "Maersk, NYK, Mitsui OSK, Kawasaki Kisen (pipeline peer set); COSCO Shipping, Hapag-Lloyd, Evergreen for context.",
+  "note": {
+   "intro": "OOIL is the second case study in this set. It had the highest value score in our whole developed-market universe in December 2025 (z-score +5.5, ranked first of 199 Industrials) and shows why trailing multiples mislead in cyclical industries. This note explains how a container line makes money, why its profits swing so much, and how to normalise earnings before calling a cyclical stock cheap.",
+   "business_long": [
+    "OOIL owns OOCL, a container shipping line. It moves standard containers (measured in TEU, twenty-foot equivalent units) on fixed routes between Asia, North America and Europe. Revenue is the number of containers carried (liftings) times the freight rate per container.",
+    "Costs are mostly fixed in the short run: ships, crews, port charges and fuel. So when freight rates double, almost all the extra revenue becomes profit, and when rates fall, profits collapse. That operating leverage is why profit went from about US$0.2bn (2019 operations) to US$10bn (2022) and back to US$1.5bn (2025).",
+    "COSCO Shipping, a Chinese state-owned group, controls 71% of OOIL. The group has no bank debt and a large cash pile, but it is spending heavily on new ships (contracted capex of US$5.45bn at June 2026), much of it at COSCO-linked yards."
+   ],
+   "macro_long": [
+    "Freight rates depend on the balance between ship supply and trade demand, and on disruptions that lengthen routes. Since 2024 ships have avoided the Red Sea and sailed around the Cape of Good Hope, which absorbs capacity. In 2026 the US-Iran war disrupted the Strait of Hormuz and Asia-US spot rates more than doubled.",
+    "Underneath, the industry is oversupplied: the fleet grows 4.6% in 2026 against 4.1% demand growth, with large orderbooks still to deliver. When ships return to Suez, effective capacity jumps and rates fall.",
+    "US policy adds risk for a Chinese-controlled carrier. Section 301 port fees of US$50 per net ton took effect in October 2025, were suspended for a year in November 2025, and may resume on 10 November 2026."
+   ],
+   "history": [
+    [
+     "14 Oct 2025",
+     "US Section 301 port fees on Chinese operators take effect"
+    ],
+    [
+     "10 Nov 2025",
+     "Fees suspended for one year (US-China truce)"
+    ],
+    [
+     "28 Feb 2026",
+     "US-Iran war begins; Hormuz disrupted"
+    ],
+    [
+     "Mar 2026",
+     "FY2025 results: profit −41%, final dividend US$0.42"
+    ],
+    [
+     "Apr 2026",
+     "12 × 13,600 TEU LNG dual-fuel ships ordered"
+    ],
+    [
+     "27 Aug 2026",
+     "H1 2026: profit US$728m (−24%)"
+    ],
+    [
+     "9 Oct 2026",
+     "Q3 update: liner revenue +45.1%, revenue per TEU +33.1%"
+    ]
+   ],
+   "model_long": "On the December 2025 score OOIL had z-scores of +7.9 on EBIT-to-EV, +6.7 on sales-to-EV, +4.6 on FCF yield, +3.5 on earnings-to-price and +2.9 on book-to-price within Industrials. EV/EBIT was 1.6x: net cash shrinks the enterprise value and FY2024 EBIT inflates the denominator. Equal weight gives every holding 2%, and mean-variance gave OOIL the 4% cap.",
+   "bear_long": "The bull case deserves respect: if disruption persists and rates stay high, H2 2026 earnings exceed H1, the forward P/E is about 8x and the cash could fund a special dividend. That is why we are underweight rather than short.",
+   "glossary": [
+    [
+     "TEU",
+     "Twenty-foot equivalent unit: the standard measure of container volume."
+    ],
+    [
+     "Liftings",
+     "Number of containers carried in the period."
+    ],
+    [
+     "Normalised earnings",
+     "Average earnings over a full cycle, used to value a cyclical company."
+    ],
+    [
+     "Operating leverage",
+     "High fixed costs mean small revenue changes produce large profit changes."
+    ]
+   ],
+   "interview": [
+    [
+     "Why is a stock with a P/E under 4x not cheap?",
+     "Because the 'E' is a peak. Normalised over the cycle, profit is about US$1.3bn and the stock trades near 10x."
+    ],
+    [
+     "What does this case teach about your model?",
+     "A value composite needs a cyclical adjustment, such as normalised or average earnings for deep cyclicals."
+    ],
+    [
+     "What would change your view?",
+     "A price below normalised value, an orderbook cut with cash returned, or real capacity discipline."
+    ],
+    [
+     "Why Underweight and not Sell?",
+     "Disruption can last and the cash could come back as a special dividend. The risk is asymmetric but not one-way."
+    ]
+   ]
+  },
+  "target": 123.92,
+  "upside": -0.1917,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "US$1.39 EPS × 7x",
+    "value": 75.9,
+    "upside": -0.5049,
+    "story": "Suez reopens fully; overcapacity"
+   },
+   {
+    "name": "Base",
+    "inputs": "US$1.99 EPS × 8x",
+    "value": 123.92,
+    "upside": -0.1917,
+    "story": "Normalised earnings, normal multiple"
+   },
+   {
+    "name": "Bull",
+    "inputs": "US$2.98 EPS × 9x",
+    "value": 209.11,
+    "upside": 0.3641,
+    "story": "Disruption persists; capacity absorbed"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 101.23,
+  "facts": {
+   "ticker": "316 HK Equity",
+   "name": "ORIENT OVERSEAS INTL LTD",
+   "sector": "Industrials",
+   "industry_group": "Transportation",
+   "country": "HK",
+   "currency": "HKD",
+   "fy_used": "2024-12-31",
+   "mcap_eur_bn": 9.0650393,
+   "score": 5.542467837830709,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 199,
+   "z": {
+    "ebit_ev": 7.90190818073518,
+    "b_p": 2.9340387294903496,
+    "fcf_p": 4.59646191723744,
+    "s_ev": 6.737462523859864,
+    "e_p": 3.527162884483733
+   },
+   "multiples": {
+    "EV/EBIT": 1.63,
+    "P/B": 0.71,
+    "P/FCF": 4.11,
+    "EV/Sales": 0.28,
+    "P/E": 3.8
+   },
+   "sector_median": {
+    "EV/EBIT": 21.25,
+    "P/B": 4.44,
+    "P/FCF": 23.39,
+    "EV/Sales": 3.1,
+    "P/E": 23.54
+   },
+   "peer_median": {
+    "EV/EBIT": 13.03,
+    "P/B": 0.62,
+    "P/FCF": 6.45,
+    "EV/Sales": 1.18,
+    "P/E": 4.08
+   },
+   "valuation": {
+    "fcf_yield": 0.24308371172753768,
+    "implied_perpetual_growth": -0.1271706082511898,
+    "upside_sector_EV_EBIT": 3.6568755432652207,
+    "upside_peer_EV_EBIT": 2.1243132646963994
+   },
+   "score_history": {
+    "2021-06-30": 0.5346162229018435,
+    "2021-12-31": 0.3552530768441485,
+    "2022-12-30": 3.388615454267817,
+    "2023-06-30": null,
+    "2023-12-29": null,
+    "2024-06-28": 4.396503511243894,
+    "2024-12-31": 1.459941974312319,
+    "2025-06-30": 4.985337591398296,
+    "2025-12-31": 5.542467837830709
+   },
+   "held_since": "2022-12-30",
+   "dates_held": [
+    "2022-12-30",
+    "2024-06-28",
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.017870234301870607,
+    "MVO": 0.03999999999945887
+   },
+   "h1_2026_return": 0.004122887976564904,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "O1",
+    "label": "OOIL, *Announcement of Interim Results for the six months ended 30 June 2026*, HKEX, 27 Aug 2026",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0827/2026082701643.pdf"
+   },
+   {
+    "tag": "O2",
+    "label": "OOIL, *Annual Report 2025*: financial highlights, Chairman's statement, ship operations, dividend policy, 10-year summary, substantial shareholders. HKEX, 22 Apr 2026",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0422/2026042200995.pdf"
+   },
+   {
+    "tag": "O3",
+    "label": "OOIL, *2019 Annual Results Announcement*, HKEX, 20 Mar 2020",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2020/0320/2020032000935.pdf"
+   },
+   {
+    "tag": "O4",
+    "label": "OOIL, *2022 Annual Results Announcement*, HKEX, 22 Mar 2023 (cross-check of 2021–22 profit)",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2023/0322/2023032200448.pdf"
+   },
+   {
+    "tag": "O5",
+    "label": "OOIL, *2024 Annual Results Announcement*, HKEX, 13 Mar 2025 (not opened; 2023–24 figures taken from [O2])",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/0313/2025031301239.pdf"
+   },
+   {
+    "tag": "O6",
+    "label": "Container News, \"OOCL reports 45% revenue surge in third quarter of 2026\", 9 Oct 2026",
+    "url": "https://container-news.com/oocl-reports-45-revenue-surge-in-third-quarter-of-2026/"
+   },
+   {
+    "tag": "O7",
+    "label": "Tiger Brokers news, OOIL shares after the Q3 update, 12 Oct 2026",
+    "url": "https://www.itiger.com/news/1126944002"
+   },
+   {
+    "tag": "O8",
+    "label": "Container News, FY2025 results (13 Mar 2026) and H1 2026 results (28 Aug 2026)",
+    "url": "https://container-news.com/oocl-announces-2025-full-year-results/"
+   },
+   {
+    "tag": "O9",
+    "label": "Tiger Brokers news, \"Faulkner sells 469 million shares to COSCO SHIP HOLD Hong Kong\", 11 Dec 2025",
+    "url": "https://www.itiger.com/news/1182616808"
+   },
+   {
+    "tag": "O10",
+    "label": "Holland & Knight, \"USTR Port Fee Suspension: What You Need to Know\", 12 Nov 2025",
+    "url": "https://www.hklaw.com/en/insights/publications/2025/11/ustr-port-fee-suspension-what-you-need-to-know"
+   },
+   {
+    "tag": "O11",
+    "label": "FreightWaves, \"No mention of U.S.-China ship taxes in trade truce\", 28 Sep 2026",
+    "url": "https://www.freightwaves.com/news/no-mention-of-u-s-china-ship-taxes-in-trade-truce"
+   },
+   {
+    "tag": "O12",
+    "label": "gCaptain / Bloomberg, \"Asia-to-US container rates spike 109% since Iran war started\", 6 Jun 2026",
+    "url": "https://gcaptain.com/asia-to-us-container-rates-spike-109-since-iran-war-started/"
+   },
+   {
+    "tag": "O13",
+    "label": "Samsung SDS Cello Square, *Ocean Container Market Outlook, October 2026*, 15–16 Oct 2026",
+    "url": "https://www.cello-square.com/en/whitepaper/view-640.do"
+   },
+   {
+    "tag": "O14",
+    "label": "Cyprus Shipping News, \"Drewry World Container Index – 22 Oct\", 26 Oct 2026",
+    "url": "https://cyprusshippingnews.com/2026-10-26/drewry-world-container-index-22-oct/"
+   },
+   {
+    "tag": "O15",
+    "label": "StockAnalysis.com, 0316 quote and statistics (third-party, delayed), 29 Oct 2026",
+    "url": "https://stockanalysis.com/quote/hkg/0316/statistics/"
+   }
+  ]
+ },
+ {
+  "code": "9503_JP",
+  "bbg": "9503 JT Equity",
+  "name": "Kansai Electric Power",
+  "legal": "The Kansai Electric Power Co., Inc.",
+  "exchange": "Tokyo Stock Exchange",
+  "ticker": "9503",
+  "country": "Japan",
+  "ccy": "JPY",
+  "sym": "¥",
+  "sector": "Utilities",
+  "industry": "Electric utilities",
+  "price": 2754.0,
+  "price_note": "close, 29 Oct 2026, before H1 results",
+  "shares_m": 1115.0,
+  "high52": 3053.0,
+  "low52": 2183.5,
+  "rating": "Neutral",
+  "conviction": "Medium",
+  "horizon": "12 months",
+  "role": "Quality hold",
+  "headline": "Japan's nuclear leader is modestly cheap, once record 2025 profits are normalised",
+  "one_liner": "Kansai runs 45% of Japan's operating nuclear capacity and trades at 0.85x book. But FY2025 was a peak year (84% nuclear capacity factor, fuel time-lag gains), and the company's own plan guides ordinary profit down 44% in FY2026 and ROE to about 8-9%. On normalised returns the upside is single-digit: we keep the model weight.",
+  "key_stats": [
+   [
+    "Market cap",
+    "¥3.07tn"
+   ],
+   [
+    "P/B (third-party)",
+    "0.85x"
+   ],
+   [
+    "FY26 ordinary profit guide",
+    "¥290bn (−44%)"
+   ],
+   [
+    "Dividend yield",
+    "2.9%"
+   ]
+  ],
+  "thesis": [
+   [
+    "A unique asset",
+    "Seven pressurised-water reactors (6,578 MW), 45% of Japan's operating nuclear capacity. Each point of capacity factor is worth about ¥5.7bn of ordinary profit."
+   ],
+   [
+    "But the trailing earnings are a peak",
+    "FY2025 ordinary profit of ¥518.5bn benefited from an 84% capacity factor and fuel time-lag gains. The FY2026 guide is ¥290bn and the 2026-28 plan averages ¥270bn. Trailing P/E overstates value."
+   ],
+   [
+    "Capital returns are steady, not large",
+    "A 25-35% payout, a progressive dividend (¥80 guided) and at least ¥270bn of returns over FY2026-28, funded partly by asset sales. Yield 2.9%."
+   ]
+  ],
+  "variant": [
+   [
+    "Data centres will drive a demand boom.",
+    "Kansai-area demand is flat: 133.7 TWh in FY2025 and 133.1 TWh forecast for FY2026."
+   ],
+   [
+    "The H1 collapse is temporary.",
+    "Partly: the −¥87bn fuel time lag should reverse. But outages (62.7% capacity factor) and ¥2.5tn of capex are structural."
+   ],
+   [
+    "At 0.85x book it must be cheap.",
+    "Only if ROE holds near 9%; the plan itself guides ROE down to about 8.7%, and normalised ROE is closer to 6-7%."
+   ]
+  ],
+  "business": [
+   [
+    "Energy",
+    "Generation, retail and gas: ¥377bn of the ¥519bn FY2025 ordinary profit. Generation mix 49% nuclear, 37% thermal, 14% hydro."
+   ],
+   [
+    "Transmission & distribution",
+    "Regulated network (Kansai T&D): ¥63bn. Revenue cap raised by ¥149.6bn from November 2026."
+   ],
+   [
+    "ICT",
+    "Optage fibre and data centres: ¥47bn."
+   ],
+   [
+    "Real estate",
+    "Kanden Realty: ¥36bn; more than ¥550bn of property to be recycled under the 2026 plan."
+   ]
+  ],
+  "segments": {
+   "title": "Own generation mix, FY2025 (94.2 TWh)",
+   "unit": "%",
+   "labels": [
+    "Nuclear",
+    "Thermal",
+    "Hydro"
+   ],
+   "values": [
+    49,
+    37,
+    14
+   ]
+  },
+  "macro": [
+   [
+    "Nuclear availability",
+    "62.7%",
+    "H1 FY2026 capacity factor (77.2% a year earlier): outages are the main swing factor."
+   ],
+   [
+    "Crude oil",
+    "$108/bbl",
+    "H1 FY2026 average versus an $80 plan assumption; fuel costs pass through with a 3-5 month lag."
+   ],
+   [
+    "Yen",
+    "¥160/$",
+    "Each ¥1 move against the dollar is worth about −¥1.2bn of profit."
+   ],
+   [
+    "Regulation",
+    "1 Nov 2026",
+    "New T&D wheeling tariffs apply after the revenue-cap approval."
+   ]
+  ],
+  "financials": {
+   "cols": [
+    "",
+    "FY2024",
+    "FY2025",
+    "H1 FY2026",
+    "FY2026 guide"
+   ],
+   "rows": [
+    [
+     "Net sales",
+     "—",
+     "¥4,057bn",
+     "¥2,235bn",
+     "¥4,500bn"
+    ],
+    [
+     "Ordinary profit",
+     "¥532bn",
+     "¥519bn",
+     "¥112bn",
+     "¥290bn"
+    ],
+    [
+     "Net profit",
+     "¥420bn",
+     "¥380bn",
+     "¥183bn*",
+     "¥310bn"
+    ],
+    [
+     "EPS",
+     "¥436",
+     "¥341",
+     "—",
+     "¥278"
+    ],
+    [
+     "DPS",
+     "—",
+     "¥75",
+     "¥40 interim",
+     "¥80"
+    ],
+    [
+     "Free cash flow",
+     "¥233bn",
+     "¥80bn",
+     "−¥300bn",
+     "—"
+    ],
+    [
+     "Net debt / EBITDA",
+     "—",
+     "3.8x",
+     "—",
+     "~5x (plan)"
+    ]
+   ],
+   "note": "*Includes a ¥105bn gain on Kinden shares. Fiscal year ends 31 March (FY2025 = Apr 2025-Mar 2026). Sources: Kansai Electric FY2025 and H1 FY2026 results."
+  },
+  "valuation": {
+   "method": "Justified price to book (Gordon growth)",
+   "explain": "A regulated-plus-merchant utility is worth (ROE − g) / (cost of equity − g) times book. We take book per share implied by the 0.85x third-party P/B, long-term growth of 1%, a 6.5-7% cost of equity, and ROE between the normalised level (~5.5-6.5%) and the plan's ~8.5%.",
+   "kind": "pb_just",
+   "pb_now": 0.85,
+   "g": 0.01,
+   "scenarios": [
+    [
+     "Bear",
+     0.055,
+     0.07,
+     "Outages persist; capex dilutes returns"
+    ],
+    [
+     "Base",
+     0.065,
+     0.07,
+     "Normalised ROE on plan profits"
+    ],
+    [
+     "Bull",
+     0.085,
+     0.065,
+     "Plan ROE delivered; nuclear above 70%"
+    ]
+   ],
+   "consensus_target": 2958
+  },
+  "catalysts": [
+   [
+    "1 Nov 2026",
+    "Wheeling tariff uplift"
+   ],
+   [
+    "Late Jan 2027",
+    "Q3 FY2026: does the fuel time lag reverse as crude eases?"
+   ],
+   [
+    "End Apr 2027",
+    "FY2026 results, FY2027 guide and first full year under the 25-35% payout"
+   ],
+   [
+    "FY2026-28",
+    "Further shareholding sales (¥230bn of a ¥380bn+ target done)"
+   ],
+   [
+    "Ongoing",
+    "Reactor restart dates driving the capacity factor back toward 70%+"
+   ]
+  ],
+  "risks": [
+   [
+    "Extended outages or court injunctions",
+    "Largest fleet in Japan: diversified across 3 sites"
+   ],
+   [
+    "Fuel and yen",
+    "Pass-through with a lag"
+   ],
+   [
+    "¥2.5tn capex and possible equity raise",
+    "Asset recycling > ¥550bn"
+   ],
+   [
+    "Regulated tariffs",
+    "T&D cap just raised"
+   ]
+  ],
+  "triggers": [
+   "Upgrade if ROE guidance moves back above 9% with capacity factor above 75%",
+   "Downgrade on a new equity raise or a nuclear injunction",
+   "Downgrade if the progressive dividend policy is abandoned"
+  ],
+  "peers_text": "Engie, Power Assets, American Electric Power, Iberdrola, Enel, EDP (pipeline peer set); Kyushu and Chubu Electric for Japan.",
+  "note": {
+   "intro": "Kansai Electric entered the portfolio in June 2025 and ranked first of 59 utilities in December 2025. Unlike the case studies, it is a solid business; the question is how much of its cheapness survives once you normalise a record year. This note explains how a Japanese utility earns money, why nuclear availability dominates the numbers, and why our call is Neutral.",
+   "business_long": [
+    "Kansai Electric supplies the Osaka-Kyoto-Kobe region. It generates power (nuclear, thermal and hydro), sells it to households and businesses, and owns the regulated transmission and distribution network through Kansai T&D.",
+    "Its edge is nuclear: seven reactors at Takahama, Ohi and Mihama, 45% of Japan's operating nuclear capacity. Nuclear power is cheap once plants run, so every point of capacity factor (the share of the year the reactors produce) adds about ¥5.7bn of profit. When reactors are in outage, the company burns more expensive fuel.",
+    "Japanese utilities report 'ordinary profit', which includes financial income and equity-method results. Fuel costs are passed to customers with a 3-5 month lag, which creates 'time-lag' gains when fuel prices fall and losses when they rise."
+   ],
+   "macro_long": [
+    "Japan restarted nuclear plants slowly after Fukushima (2011). Kansai is the most advanced, but older units (Takahama 1 and 2 are over 50 years old) need regulatory approvals and are exposed to court injunctions.",
+    "The 2026 Middle East conflict pushed crude to an average of $108 a barrel in H1 FY2026, against an $80 plan assumption, and the yen weakened to ¥160. Combined with outages, ordinary profit fell 65% in H1.",
+    "Data centres and electrification are the long-term demand story, but they have not yet moved total Kansai-area demand, which is flat at about 133 TWh."
+   ],
+   "history": [
+    [
+     "Nov 2024",
+     "Equity raise (~¥264bn new shares + treasury stock); shares fell ~18%"
+    ],
+    [
+     "Nov 2025",
+     "Surveys for a successor reactor at Mihama begin"
+    ],
+    [
+     "30 Apr 2026",
+     "FY2025 results; Management Plan 2026 resets targets lower; ¥80 DPS guide"
+    ],
+    [
+     "1-2 Jun 2026",
+     "Sale of 33.5m Kinden shares (~¥224bn)"
+    ],
+    [
+     "4 Sep 2026",
+     "T&D revenue cap raised by ¥149.6bn"
+    ],
+    [
+     "29 Oct 2026",
+     "H1 FY2026: ordinary profit −65%; guidance and ¥80 dividend maintained"
+    ]
+   ],
+   "model_long": "On the December 2025 score Kansai had z-scores of +4.0 on earnings-to-price and +3.3 on book-to-price within Utilities, using FY2024 (March 2025) accounts, but only +0.9 on FCF yield: heavy capex consumes cash. Its P/E was 5.8x against 18.4x for its peers. Both risk-based portfolios gave it the 4% cap because utilities lower portfolio volatility.",
+   "bear_long": "The bear case: FY2025 was the peak, ordinary profit averages about half of it over the plan, capex keeps FCF negative and could force another equity raise, and the stock depends on ageing reactors and court decisions.",
+   "glossary": [
+    [
+     "Capacity factor",
+     "Actual output divided by the maximum possible output over a period."
+    ],
+    [
+     "Ordinary profit",
+     "Japanese profit line: operating profit plus financial income and equity-method results."
+    ],
+    [
+     "Fuel time lag",
+     "Delay between fuel-cost changes and the tariff adjustment passed to customers."
+    ],
+    [
+     "Justified P/B",
+     "(ROE − g) / (cost of equity − g): the price-to-book a company deserves for its returns."
+    ]
+   ],
+   "interview": [
+    [
+     "Why is Kansai Neutral when it screens as the cheapest utility?",
+     "The screen used peak FY2024-25 earnings. On normalised ROE of about 6.5% the justified P/B is about 0.92x, close to today's 0.85x."
+    ],
+    [
+     "What is the most important number for Kansai?",
+     "The nuclear capacity factor: each point is worth about ¥5.7bn of ordinary profit."
+    ],
+    [
+     "Why did the minimum-variance portfolio give it 4%?",
+     "Utilities have low volatility and low correlation with cyclicals, so a risk-minimising optimiser loads them to the cap."
+    ],
+    [
+     "What would make you upgrade?",
+     "Capacity factor back above 75% and ROE guidance above 9%, with no new equity raise."
+    ]
+   ]
+  },
+  "target": 2970.0,
+  "upside": 0.0784,
+  "scenarios_out": [
+   {
+    "name": "Bear",
+    "inputs": "ROE 5.5%, CoE 7.0% → 0.75x book",
+    "value": 2430.0,
+    "upside": -0.1176,
+    "story": "Outages persist; capex dilutes returns"
+   },
+   {
+    "name": "Base",
+    "inputs": "ROE 6.5%, CoE 7.0% → 0.92x book",
+    "value": 2970.0,
+    "upside": 0.0784,
+    "story": "Normalised ROE on plan profits"
+   },
+   {
+    "name": "Bull",
+    "inputs": "ROE 8.5%, CoE 6.5% → 1.36x book",
+    "value": 4418.18,
+    "upside": 0.6043,
+    "story": "Plan ROE delivered; nuclear above 70%"
+   }
+  ],
+  "rating_consistent": true,
+  "mcap_bn": 3070.71,
+  "facts": {
+   "ticker": "9503 JT Equity",
+   "name": "KANSAI ELECTRIC POWER CO INC",
+   "sector": "Utilities",
+   "industry_group": "Utilities",
+   "country": "JP",
+   "currency": "JPY",
+   "fy_used": "2025-03-31",
+   "mcap_eur_bn": 14.892528800000001,
+   "score": 1.8138550267859601,
+   "score_pct": 1.0,
+   "sector_rank": 1,
+   "sector_n": 59,
+   "z": {
+    "ebit_ev": 1.2749326735729731,
+    "b_p": 3.31165594060876,
+    "fcf_p": 0.9024902560621832,
+    "s_ev": 1.7663412368999243,
+    "e_p": 4.021241595529071
+   },
+   "multiples": {
+    "EV/EBIT": 12.96,
+    "P/B": 0.79,
+    "P/FCF": 30.29,
+    "EV/Sales": 1.4,
+    "P/E": 5.79
+   },
+   "sector_median": {
+    "EV/EBIT": 22.47,
+    "P/B": 2.02,
+    "P/FCF": 19.05,
+    "EV/Sales": 4.96,
+    "P/E": 20.08
+   },
+   "peer_median": {
+    "EV/EBIT": 19.18,
+    "P/B": 1.9,
+    "P/FCF": 21.03,
+    "EV/Sales": 3.61,
+    "P/E": 18.44
+   },
+   "valuation": {
+    "fcf_yield": 0.03301216379047727,
+    "implied_perpetual_growth": 0.050326451160808666,
+    "upside_sector_EV_EBIT": 1.8313964202704067,
+    "upside_peer_EV_EBIT": 1.1987818120399516
+   },
+   "score_history": {
+    "2021-06-30": 0.5617057382608805,
+    "2021-12-31": 0.023229531456925134,
+    "2022-06-30": 0.1596092766678109,
+    "2022-12-30": 0.36473819501212346,
+    "2023-06-30": 0.19004524810859796,
+    "2023-12-29": -0.19453484134266513,
+    "2024-06-28": -0.4093269173968218,
+    "2024-12-31": 2.3320756829539433,
+    "2025-06-30": 2.9178524987485406,
+    "2025-12-31": 1.8138550267859601
+   },
+   "held_since": "2025-06-30",
+   "dates_held": [
+    "2025-06-30",
+    "2025-12-31"
+   ],
+   "weights_last": {
+    "EW": 0.02,
+    "MV": 0.03999998037407425,
+    "MVO": 0.03999999998026412
+   },
+   "h1_2026_return": -0.06365605950853681,
+   "h1_2026_benchmark": 0.10832407855972814
+  },
+  "sources": [
+   {
+    "tag": "K1",
+    "label": "Kansai Electric Power, *FY2025 Financial Report* (results presentation), 30 Apr 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/ir/brief/earnings/2026/pdf/pdf2026_04_05.pdf"
+   },
+   {
+    "tag": "K2",
+    "label": "Kansai Electric Power, *Q1 FY2026 Financial Report*, 31 Jul 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/ir/brief/earnings/2027/pdf/pdf2027_01_04.pdf"
+   },
+   {
+    "tag": "K3",
+    "label": "Kansai Electric Power, *Q2 FY2026 Financial Report*, 29 Oct 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/ir/brief/earnings/2027/pdf/pdf2027_02_04.pdf"
+   },
+   {
+    "tag": "K4",
+    "label": "Kansai Electric Power Group, *Management Plan 2026: Kanden Transformation toward 2040*, April 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/info/policy/pdf/plan_2026.pdf"
+   },
+   {
+    "tag": "K5",
+    "label": "Kansai Electric Power, *Notice Regarding Revision of Shareholder Return Policy*, 30 Apr 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/ir/brief/pdf/2026_apr30_4.pdf"
+   },
+   {
+    "tag": "K6",
+    "label": "Kansai Electric Power, notice on the sale of Kinden shares in the tender offer, 2 Jun 2026",
+    "url": "https://www.kepco.co.jp/english/corporate/ir/brief/pdf/2026_jun2_1.pdf"
+   },
+   {
+    "tag": "K7",
+    "label": "World Nuclear News, \"Kansai begins surveys of Mihama site for new reactor\", Nov 2025",
+    "url": "https://www.world-nuclear-news.org/articles/kansai-begins-surveys-of-mihama-site-for-new-reactor"
+   },
+   {
+    "tag": "K8",
+    "label": "BNN Bloomberg, \"Kansai Electric to raise up to $3.3 billion from share sale\", 13 Nov 2024",
+    "url": "https://bnnbloomberg.ca/business/international/2024/11/13/kansai-electric-to-raise-up-to-33-billion-from-share-sale"
+   },
+   {
+    "tag": "K9",
+    "label": "StockAnalysis.com, 9503 quote and statistics (third-party, delayed), 29 Oct 2026",
+    "url": "https://stockanalysis.com/quote/tyo/9503/statistics/"
+   }
+  ]
+ }
+]
