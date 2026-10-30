@@ -30,7 +30,8 @@ REGION = {"France": "europe", "United States": "americas", "Japan": "asia", "Hon
 for s in PITCHES:
     s["slug"] = slugify(f"{s['ticker']}-{s['name']}")
     stem = f"{s['code']}_{re.sub(r'[^A-Za-z0-9]+', '_', s['name']).strip('_')}"
-    s["files"] = {k: f"assets/pitches/{stem}{suf}" for k, suf in [("pptx", "_pitch.pptx"), ("pdf", "_pitch.pdf")]
+    s["files"] = {k: f"assets/pitches/{stem}{suf}" for k, suf in [("pptx", "_pitch.pptx"), ("pdf", "_pitch.pdf"),
+                                                                  ("pptx_fr", "_pitch_FR.pptx"), ("pdf_fr", "_pitch_FR.pdf")]
                   if (DOCS / f"assets/pitches/{stem}{suf}").exists()}
 
 H = VALUE["headline"]
@@ -536,12 +537,25 @@ def build_value_screen(lang):
 
 
 # ---------------------------------------------------------------- PITCHES
+def deck_links(f, root, small=True, lang="en"):
+    """Download buttons for the English and French decks (PowerPoint and PDF)."""
+    out = []
+    for code, keys in (("EN", ("pptx", "pdf")), ("FR", ("pptx_fr", "pdf_fr"))):
+        if keys[0] not in f:
+            continue
+        primary = (code == "EN") == (lang == "en") and not small
+        out.append(f'<a class="btn {"sm" if small else ""} {"primary" if primary else ""}" href="{root}{f[keys[0]]}" hreflang="{code.lower()}">{ICON_DL} {code} · PowerPoint</a>')
+        if keys[1] in f:
+            out.append(f'<a class="btn {"sm" if small else ""}" href="{root}{f[keys[1]]}" hreflang="{code.lower()}">{code} · PDF</a>')
+    return "".join(out)
+
+
 def build_pitch_index(lang):
     cards = []
     for s in PITCHES:
         f = s["files"]
         root = "../" if lang == "en" else "../../"
-        dl = "".join(f'<a class="btn sm" href="{root}{f[k]}">{ICON_DL} {lab}</a>' for k, lab in [("pptx", "PowerPoint"), ("pdf", "PDF")] if k in f)
+        dl = deck_links(f, root, small=True)
         cards.append(f"""<article class="card" data-item data-rating="{s['rating'].lower()}" data-region="{REGION.get(s['country'], 'other')}">
 <div class="meta">{esc(s['ticker'])} · {esc(tr(lang, s['exchange']))} · {esc(tr(lang, s['country']))} · {esc(tr(lang, s['sector']))}</div>
 <h3><a href="{s['slug']}/">{esc(s['name'])}</a></h3>
@@ -556,8 +570,8 @@ def build_pitch_index(lang):
     filt = (group("rating", L(lang, "Call", "Avis"), [("overweight", t(lang, "Overweight")), ("neutral", t(lang, "Neutral")), ("underweight", t(lang, "Underweight"))]) +
             group("region", L(lang, "Region", "Région"), [("europe", "Europe"), ("americas", L(lang, "Americas", "Amériques")), ("asia", L(lang, "Asia", "Asie"))]))
     body = phead(t(lang, "pitches"), L(lang, "What the screen bought, examined one by one", "Ce que le screen a acheté, examiné titre par titre"),
-                 L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each pitch has a twelve-slide deck in a buy-side format.",
-                   "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026. Chaque pitch a un deck de douze slides au format buy-side."))
+                 L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each pitch has a twelve-slide deck in a buy-side format, in English and French.",
+                   "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026. Chaque pitch a un deck de douze slides au format buy-side, en anglais et en français."))
     body += f"""<section class="sec"><div class="wrap" data-filter-scope>
 <div class="filters">{filt}<input class="search" type="search" placeholder="{L(lang, 'Search a company, a sector…', 'Chercher une société, un secteur…')}" data-search aria-label="Search"><span class="count"></span></div>
 <div class="grid">{"".join(cards)}</div><div class="empty">{L(lang, "No pitch matches these filters.", "Aucun pitch ne correspond à ces filtres.")}</div>
@@ -572,8 +586,7 @@ def build_pitch(s, lang):
     sym = s["sym"]
     f = s["files"]
     lr = "../../"
-    dl = "".join(f'<a class="btn {"primary" if k == "pptx" else ""}" href="{lr if lang == "en" else "../../../"}{f[k]}">{ICON_DL} {lab}</a>'
-                 for k, lab in [("pptx", L(lang, "Download the deck (PowerPoint)", "Télécharger le deck (PowerPoint)")), ("pdf", L(lang, "PDF version", "Version PDF"))] if k in f)
+    dl = deck_links(f, lr if lang == "en" else "../../../", small=False, lang=lang)
     up = s["upside"]
     head = f"""<header class="pitchhead"><div class="wrap"><div>
 <div class="crumbs"><a href="../">{t(lang, "pitches")}</a> / {esc(s["ticker"])}</div>
@@ -621,7 +634,7 @@ def build_pitch(s, lang):
         section("valuation", L(lang, "Valuation", "Valorisation"), val),
         section("catalysts", L(lang, "Catalysts and risks", "Catalyseurs et risques"), f'<div class="cols2" style="align-items:start"><div>{cat}</div>{trig}</div>'),
         section("strategies", L(lang, "In our strategies", "Dans nos stratégies"), strat),
-        section("deck", "Deck", f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap"><div><h4>{L(lang, "The full pitch", "Le pitch complet")}</h4><p>{L(lang, "Twelve slides: summary, company, macro, why the screen picked it, track record, financials, variant perception, valuation, catalysts, risks and sources.", "Douze slides : synthèse, société, macro, pourquoi le screen l’a choisi, historique, financiers, variant perception, valorisation, catalyseurs, risques et sources.")}</p></div><div class="btns">{dl}</div></div>'),
+        section("deck", "Deck", f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap"><div><h4>{L(lang, "The full pitch", "Le pitch complet")}</h4><p>{L(lang, "Twelve slides: summary, company, macro, why the screen picked it, track record, financials, variant perception, valuation, catalysts, risks and sources. Available in English and French.", "Douze slides : synthèse, société, macro, pourquoi le screen l’a choisi, historique, financiers, variant perception, valorisation, catalyseurs, risques et sources. Disponible en anglais et en français.")}</p></div><div class="btns">{dl}</div></div>'),
     ]
     body = head + doc_layout(lang, toc, secs) + f'<div class="wrap"><p class="cap" style="margin:8px 0 48px">{L(lang, "Student research for educational and interview purposes. Not investment advice.", "Travail de recherche étudiant à visée pédagogique et de préparation aux entretiens. Pas un conseil en investissement.")}</p></div>'
     page(f"pitches/{s['slug']}/index.html", lang, s["name"], body, "pitches", pf(s, lang, "headline"))
