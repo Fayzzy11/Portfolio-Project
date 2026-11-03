@@ -4,3 +4,6 @@ data/*.csv
 __pycache__/
 *.pyc
 .venv/
+
+# Parsed Bloomberg extract for the ETF strategies (licensed)
+data/etf/
