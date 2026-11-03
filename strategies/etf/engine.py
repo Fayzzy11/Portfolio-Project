@@ -232,3 +232,42 @@ def overlay_sma(W, months=10):
     idx = col(MK, "MSDEWIN Index")
     on = (idx > idx.rolling(months).mean()).reindex(W.index).fillna(True)
     return W.mul(on.astype(float), axis=0)
+
+
+ASSET_CLASS = {"EQ": "Equities", "BD": "Bonds", "CM": "Commodities"}
+
+
+def trend_class_budget(target_vol=0.10, lookbacks=(3, 6, 12), vol_win=12, cov_win=36, max_gross=1.0):
+    """Trend with an equal risk budget per asset class (1/3 equities, 1/3 bonds, 1/3 commodities),
+    inverse volatility inside each class. Unused budget (class in downtrend) stays in cash."""
+    R = trend_returns()
+    cash = CASH.reindex(R.index).fillna(0)
+    ex = R.sub(cash, axis=0)
+    sig = sum(np.sign((1 + ex).rolling(L).apply(np.prod, raw=True) - 1) for L in lookbacks) / len(lookbacks)
+    pos = sig.clip(lower=0)
+    vol = R.rolling(vol_win, min_periods=vol_win).std() * 12 ** .5
+    classes = {c: [a for a in R.columns if a.startswith(c)] for c in ASSET_CLASS}
+    rows = {}
+    for t in R.index:
+        p, v = pos.loc[t], vol.loc[t]
+        if v.isna().all():
+            continue
+        raw = pd.Series(0.0, index=R.columns)
+        for c, names in classes.items():
+            iv = (1 / v[names]).replace([np.inf, -np.inf], np.nan).fillna(0)
+            if iv.sum() == 0:
+                continue
+            raw[names] = (iv / iv.sum() * p[names].fillna(0)) / len(classes)   # class budget scaled by signal
+        if raw.sum() == 0:
+            rows[t] = raw
+            continue
+        hist = R.loc[:t].dropna(how="all").tail(cov_win).dropna(axis=1, thresh=vol_win)
+        common = [c for c in raw.index if c in hist.columns and raw[c] != 0]
+        cov = hist[common].cov(min_periods=vol_win) * 12
+        x = raw[common]
+        pv = float(np.sqrt(x @ cov @ x))
+        w = raw * (target_vol / pv if pv > 0 else 0)
+        if w.sum() > max_gross:
+            w = w * max_gross / w.sum()
+        rows[t] = w
+    return pd.DataFrame(rows).T.fillna(0.0), R
