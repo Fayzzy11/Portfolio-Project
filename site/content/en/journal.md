@@ -15,3 +15,4 @@ title: Journal
 | 30 Oct 2026 | Research Ledger site published; eight decks rebuilt in a buy-side format. |
 | 30 Oct 2026 | Both strategies redesigned to be replicable with UCITS ETFs and rebalanced monthly: value rotation across countries and sectors, trend following across asset classes. Rules fixed before the data extraction. |
 | 30 Oct 2026 | Horus Smart Beta 60/40 (Horus AM) added to the strategies. |
+| 3 Nov 2026 | ETF backtests run on the Bloomberg extract (results, variants, current portfolios). Site renamed Thoth Ledger, new light design in the Horus AM family. |

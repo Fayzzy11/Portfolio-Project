@@ -1,4 +1,4 @@
-/* Research Ledger — small, dependency-free behaviours. */
+/* Thoth Ledger — small, dependency-free behaviours. */
 (function () {
   var root = document.documentElement;
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }

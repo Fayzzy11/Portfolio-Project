@@ -1,4 +1,4 @@
-"""Build the Research Ledger site (English at docs/, French at docs/fr/) for GitHub Pages.
+"""Build the Thoth Ledger site (English at docs/, French at docs/fr/) for GitHub Pages.
 
 Usage (from the repository root):
     python site/build_site.py
@@ -188,9 +188,9 @@ def build_home(lang):
 <section class="hero"><div class="wrap">
  <div>
   <div class="eyebrow">{L(lang, "Equity research · Systematic strategies · Open data", "Recherche actions · Stratégies systématiques · Données ouvertes")}</div>
-  <h1>{L(lang, "Rules written before results. Every number traceable.", "Des règles écrites avant les résultats. Chaque chiffre traçable.")}</h1>
-  <p class="lede">{L(lang, "I am Noah Doose, an MSc Financial Markets & Investments student at SKEMA and a CFA Level II candidate. This site is my research ledger: strategies anyone can replicate with ETFs, stock pitches that test them name by name, and the data behind every result.",
-                     "Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Ce site est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.")}</p>
+  <h1>{L(lang, "Rules written before results. <em>Every number traceable.</em>", "Des règles écrites avant les résultats. <em>Chaque chiffre traçable.</em>")}</h1>
+  <p class="lede">{L(lang, "I am Noah Doose, an MSc Financial Markets & Investments student at SKEMA and a CFA Level II candidate. Thoth Ledger is my research ledger: strategies anyone can replicate with ETFs, stock pitches that test them name by name, and the data behind every result.",
+                     "Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Thoth Ledger est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.")}</p>
   <div class="btns"><a class="btn primary" href="strategies/">{L(lang, "Explore the strategies", "Découvrir les stratégies")}</a><a class="btn" href="pitches/">{L(lang, "Read the stock pitches", "Lire les stock pitches")}</a></div>
  </div>
  <div class="panel"><header><span>{L(lang, "Key figures", "Chiffres clés")}</span><span>{L(lang, "backtests, net of costs", "backtests, nets de frais")}</span></header>
@@ -881,6 +881,7 @@ def main():
     (DOCS / "assets").mkdir(parents=True, exist_ok=True)
     for f in ("site.css", "site.js"):
         shutil.copy(HERE / "static" / f, DOCS / "assets" / f)
+    shutil.copytree(HERE / "static" / "brand", DOCS / "assets" / "brand", dirs_exist_ok=True)
     (DOCS / ".nojekyll").touch()
     for lang in LANGS:
         build_home(lang)

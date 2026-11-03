@@ -1,4 +1,4 @@
-"""Shared helpers for the Research Ledger site: formatting, i18n, HTML shell, tables and SVG charts."""
+"""Shared helpers for the Thoth Ledger site: formatting, i18n, HTML shell, tables and SVG charts."""
 import html
 import re
 from datetime import date
@@ -12,7 +12,7 @@ DOCS = ROOT / "docs"
 DATA = HERE / "data"
 CONTENT = HERE / "content"
 
-SITE = "Research Ledger"
+SITE = "Thoth Ledger"
 AUTHOR = "Noah Doose"
 REPO = "https://github.com/Fayzzy11/Portfolio-Project"
 HORUS_URL = "https://fayzzy11.github.io/HORUS_AM/"
@@ -208,19 +208,18 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
 <meta name="description" content="{esc(desc)}">
 <link rel="alternate" hreflang="{alt_lang}" href="{other}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="{r}assets/site.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B6E4F'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3END%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="{r}assets/brand/favicon.png">
 <script src="{r}assets/site.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">{t(lang, "skip")}</a>
 <header class="top"><div class="wrap">
- <a class="brand" href="{lr}"><span class="mark">ND</span><span><b>{AUTHOR}</b><small>{SITE} · {t(lang, "tagline")}</small></span></a>
+ <a class="brand" href="{lr}"><img src="{r}assets/brand/mark_96.png" alt="" width="48" height="48"><span><b>THOTH LEDGER</b><small>{AUTHOR} · {t(lang, "tagline")}</small></span></a>
  <nav class="nav" id="nav" aria-label="Main">{nav}</nav>
  <div class="tools">
   <a class="tbtn" href="{other}" hreflang="{alt_lang}" title="{t(lang, "lang_label")}">{t(lang, "lang_other")}</a>
-  <button class="tbtn" id="theme" aria-label="{t(lang, "theme")}" title="{t(lang, "theme")}"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
   <button class="tbtn menu" id="menu" aria-label="{t(lang, "menu")}" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
  </div>
 </div></header>
@@ -228,7 +227,7 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
 {body}
 </main>
 <footer class="sitefoot"><div class="wrap">
- <div><b>{AUTHOR} · {SITE}</b><p>{t(lang, "foot1")}</p><p>{t(lang, "foot2")}</p></div>
+ <div><img class="flogo" src="{r}assets/brand/logo_full_light.png" alt="Thoth Ledger"><b>{AUTHOR} · {SITE}</b><p>{t(lang, "foot1")}</p><p>{t(lang, "foot2")}</p></div>
  <div><b>{t(lang, "sections")}</b>{"".join(f'<a href="{lr}{href}">{t(lang, lab)}</a>' for key, lab, href in NAV[1:])}<a href="{lr}journal/">{t(lang, "journal")}</a><a href="{lr}methodology/">{t(lang, "methodology")}</a></div>
  <div><b>{t(lang, "elsewhere")}</b><a href="{HORUS_URL}">Horus Asset Management ↗</a><a href="{REPO}">{t(lang, "code")} ↗</a><p style="margin-top:12px">{t(lang, "built")} {built(lang)}.</p></div>
 </div></footer>
