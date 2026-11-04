@@ -367,3 +367,27 @@ def world_value():
     s = pd.read_pickle(p)
     s = s.iloc[:, 0] if hasattr(s, "columns") else s
     return s.pct_change().rename("MSCI World Value Net EUR")
+
+
+# ---------------------------------------------------------------- ETF core V7 (Noah, 4 Nov 2026): V4c selection + 50% de-risking
+def risk_state():
+    """Month-end risk indicators and the fast re-entry signal (round 5 / round 6 rules)."""
+    mkt = col(MK, "MSDEWIN Index")
+    red_trend = mkt < mkt.rolling(10).mean()
+    hy, g13 = col(TREND_PLUS, "LP01TREU"), col(TREND_PLUS, "LET1TREU")
+    red_credit = (hy.pct_change(3) - g13.pct_change(3)) < 0
+    lines = pd.concat([country_returns(), sector_returns_tr()], axis=1)
+    idx = (1 + lines.fillna(0)).cumprod()
+    breadth = (idx > idx.rolling(10).mean()).where(lines.notna()).mean(axis=1)
+    red_breadth = breadth < 0.5
+    fast = (mkt.pct_change(3) > 0) | (mkt > mkt.rolling(5).mean())
+    return pd.DataFrame({"trend": red_trend, "credit": red_credit, "breadth": red_breadth, "fast": fast, "breadth_share": breadth})
+
+
+def value_core(fast_reentry=True, cut=0.5):
+    W, R, on, zc, zs = value_v4c(timing=False)
+    rs = risk_state()
+    nred = rs[["trend", "credit", "breadth"]].astype(int).sum(axis=1)
+    reduce = (nred >= 2) & (~rs["fast"] if fast_reentry else True)
+    expo = (1 - cut * reduce.astype(float)).reindex(W.index).fillna(1.0)
+    return W.mul(expo, axis=0), R, expo, rs

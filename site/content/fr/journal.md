@@ -20,3 +20,4 @@ title: Journal
 | 4 nov. 2026 | Trend following abandonné : une version long/short sur 40 thèmes avec sélection walk-forward a fait moins bien que les règles simples, et les règles simples apportaient peu à côté du filtre de tendance de la stratégie value. |
 | 4 nov. 2026 | Simulateur de portefeuille et factsheets mensuelles (anglais et français) ajoutés. |
 | 4 nov. 2026 | Simulateur : les deux stratégies peuvent être combinées (mix value / Horus, en euros, rebalancé chaque mois). Page d'archives des factsheets ajoutée. |
+| 4 nov. 2026 | Stratégie value restructurée en cœur-satellite : cœur ETF V7 (sélection V4c, réduction à 50 % au lieu de 100 % cash quand au moins deux indicateurs de risque sur trois sont rouges, retour rapide) pour 70 % ; satellite actions (30 %) en construction. |

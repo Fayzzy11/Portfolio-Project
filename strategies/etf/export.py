@@ -34,7 +34,9 @@ world = E.BENCH.loc[S:END]
 wv = E.world_value()
 bench, bench2 = (wv.loc[S:END], world) if wv is not None else (world, None)
 
-W, R, on, zc, zs = E.value_v4c()
+W, R, expo, rs = E.value_core()          # official ETF core V7 (4 Nov 2026): V4c selection + 50% de-risking
+on = expo >= 1
+zc, zs = E.value_v4c(timing=False)[3:5]
 r, to, wn = E.run(W, R, 0.001, 0.0025, S)
 res = {"value": pack(r, bench, bench2)}
 v = res["value"]
@@ -42,13 +44,14 @@ v["turnover"] = float(to.mean() * 12)
 v["risk_off_months"] = int((~on.loc[S:END]).sum()); v["months"] = int(len(on.loc[S:END]))
 v["switches"] = int(on.loc[S:END].astype(int).diff().abs().sum())
 v["invested_avg"] = float(wn.sum(axis=1).mean())
-v["line_changes_per_year"] = float(((W > 0).astype(int).diff().abs().sum(axis=1) / 2).loc[S:END][on.loc[S:END] & on.loc[S:END].shift(1, fill_value=True)].mean() * 12)
+v["line_changes_per_year"] = float(((W > 0).astype(int).diff().abs().sum(axis=1) / 2).loc[S:END].mean() * 12)
 last = W.iloc[-1]
-v["holdings"] = {"date": W.index[-1].strftime("%Y-%m"), "risk_on": bool(on.iloc[-1]),
-                 "lines": [k for k, x in last.items() if x > 0] if on.iloc[-1] else []}
-# value selection before the timing switch, for the current-portfolio table when risk-off
-Wsel = E.value_v4c(timing=False)[0]
-v["holdings"]["selection"] = [k for k, x in Wsel.iloc[-1].items() if x > 0]
+nr = rs[["trend", "credit", "breadth"]].iloc[-1]
+v["holdings"] = {"date": W.index[-1].strftime("%Y-%m"), "risk_on": bool(on.iloc[-1]), "exposure": float(expo.iloc[-1]),
+                 "lines": [k for k, x in last.items() if x > 0],
+                 "selection": [k for k, x in E.value_v4c(timing=False)[0].iloc[-1].items() if x > 0],
+                 "indicators": {k: bool(nr[k]) for k in ("trend", "credit", "breadth")},
+                 "fast": bool(rs["fast"].iloc[-1]), "breadth_share": float(rs["breadth_share"].iloc[-1])}
 
 # every value version tested (rounds 1-4), same period
 cands = pd.read_pickle(os.path.join(E.D, "cands.pkl")); r2 = pd.read_pickle(os.path.join(E.D, "round2.pkl"))
@@ -59,7 +62,9 @@ versions = [
     ("VB 50% MSCI World + 50% V6", r2["VB 50% MSCI World ETF + 50% rotation with overlay"], "pre"),
     ("V3 Cap-weighted world, value tilt", r3["V3-core Tilted World (tilt 0.5)"], "pre"),
     ("V4b Per-line trend filter", r4["V4b per-line filter"], "pre"),
-    ("V4c Buffer + market trend filter (official)", r, "pre"),
+    ("V4c Buffer + 100% cash trend filter", E.run(E.value_v4c()[0], R, 0.001, 0.0025, S)[0], "pre"),
+    ("V5 3 sectors, 50% de-risking, fast re-entry", pd.read_pickle(os.path.join(E.D, "round5.pkl"))["V5 3 sectors, 50% cut, fast re-entry"], "pre"),
+    ("V7 ETF core: V4c selection + 50% de-risking (official)", r, "pre"),
     ("V4d 12 tranches + market trend filter", r4["V4d 12 tranches + market filter"], "pre"),
     ("V4e 12 tranches + filter, bonds risk-off", r4["V4e 12 tranches + filter, bonds risk-off"], "pre"),
     ("MSCI World Net EUR", world, "bench"),
@@ -74,8 +79,8 @@ res["variants"] = rows
 res["signal"] = {"ic12_countries": -0.046, "ic12_sectors": -0.026}
 json.dump(res, open(os.path.join(HERE, "..", "..", "site", "data", "etf_strategies.json"), "w"))
 # private files for the note and the Excel (not published)
-pd.to_pickle(dict(r=r, to=to, W=W, wn=wn, on=on, zc=zc, zs=zs, R=R, world=world, wv=wv), os.path.join(E.D, "v4c_full.pkl"))
-print("V4c", round(v["stats"]["cagr"], 4), round(v["stats"]["sharpe"], 3), round(v["stats"]["mdd"], 3), "| bench", bench.name,
+pd.to_pickle(dict(r=r, to=to, W=W, wn=wn, on=on, zc=zc, zs=zs, R=R, world=world, wv=wv), os.path.join(E.D, "v7_full.pkl"))
+print("V7", round(v["stats"]["cagr"], 4), round(v["stats"]["sharpe"], 3), round(v["stats"]["mdd"], 3), "| bench", bench.name,
       "| risk-off", v["risk_off_months"], "/", v["months"], "switches", v["switches"], "| line changes/yr", round(v["line_changes_per_year"], 1), "|", v["holdings"])
 
 # Horus Smart Beta converted to EUR (Horus AM publishes USD), for the mixed portfolio in the tracker
