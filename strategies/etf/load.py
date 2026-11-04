@@ -1,6 +1,6 @@
 """Load the Bloomberg ETF extract into tidy monthly DataFrames.
 
-Usage: python strategies/etf/load.py data/ETF_EXTRACT_VALUE.xlsx   then   python strategies/etf/run3.py ; python strategies/etf/export.py
+Usage: python strategies/etf/load.py data/ETF_EXTRACT_VALUE.xlsx ; python strategies/etf/load.py data/VALUE_ETF_2.xlsx   then   python strategies/etf/run3.py ; python strategies/etf/export.py
 """
 import sys
 import openpyxl
@@ -41,7 +41,7 @@ def block(name):
 
 import os
 os.makedirs(OUT, exist_ok=True)
-for name in ["Valo_Pays", "Valo_Secteurs", "Rendements", "Marche"]:
+for name in [n for n in ["Valo_Pays", "Valo_Secteurs", "Rendements", "Marche", "Capi", "Secteurs_TR", "Trend_Plus"] if n in wb.sheetnames]:   # extract #1 and #2
     b = block(name)
     df = pd.DataFrame(b)
     df.columns = pd.MultiIndex.from_tuples(df.columns, names=["ticker", "field"])
