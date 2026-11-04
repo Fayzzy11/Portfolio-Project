@@ -20,4 +20,4 @@ title: Journal
 | 4 Nov 2026 | Trend following dropped: a long/short, 40-theme, walk-forward version did worse than the simple rules, and the simple rules added little next to the value strategy's own trend filter. |
 | 4 Nov 2026 | Portfolio tracker and monthly factsheets (English and French) added. |
 | 4 Nov 2026 | Tracker: both strategies can be combined (value / Horus mix, in euros, rebalanced monthly). Factsheet archive page added. |
-| 4 Nov 2026 | Value strategy restructured as core-satellite: ETF core V7 (V4c selection, cut to 50% instead of 100% cash when at least two of three risk indicators are red, fast re-entry) as 70%; stock satellite (30%) in construction. |
+| 4 Nov 2026 | Value strategy restructured as core-satellite: ETF core V7 (V4c selection, cut to 50% instead of 100% cash when at least two of three risk indicators are red) as 70%; stock satellite (30%) in construction. |

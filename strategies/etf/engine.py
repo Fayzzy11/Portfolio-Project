@@ -384,7 +384,8 @@ def risk_state():
     return pd.DataFrame({"trend": red_trend, "credit": red_credit, "breadth": red_breadth, "fast": fast, "breadth_share": breadth})
 
 
-def value_core(fast_reentry=True, cut=0.5):
+def value_core(fast_reentry=False, cut=0.5):
+    """Official ETF core (Noah, 4 Nov 2026 14:54): no fast re-entry; back to 100% when fewer than two indicators are red."""
     W, R, on, zc, zs = value_v4c(timing=False)
     rs = risk_state()
     nred = rs[["trend", "credit", "breadth"]].astype(int).sum(axis=1)

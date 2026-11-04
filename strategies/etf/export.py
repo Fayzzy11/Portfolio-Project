@@ -34,7 +34,7 @@ world = E.BENCH.loc[S:END]
 wv = E.world_value()
 bench, bench2 = (wv.loc[S:END], world) if wv is not None else (world, None)
 
-W, R, expo, rs = E.value_core()          # official ETF core V7 (4 Nov 2026): V4c selection + 50% de-risking
+W, R, expo, rs = E.value_core()          # official ETF core V7 (4 Nov 2026): V4c selection + 50% de-risking, no fast re-entry
 on = expo >= 1
 zc, zs = E.value_v4c(timing=False)[3:5]
 r, to, wn = E.run(W, R, 0.001, 0.0025, S)
@@ -51,7 +51,7 @@ v["holdings"] = {"date": W.index[-1].strftime("%Y-%m"), "risk_on": bool(on.iloc[
                  "lines": [k for k, x in last.items() if x > 0],
                  "selection": [k for k, x in E.value_v4c(timing=False)[0].iloc[-1].items() if x > 0],
                  "indicators": {k: bool(nr[k]) for k in ("trend", "credit", "breadth")},
-                 "fast": bool(rs["fast"].iloc[-1]), "breadth_share": float(rs["breadth_share"].iloc[-1])}
+                 "breadth_share": float(rs["breadth_share"].iloc[-1])}
 
 # every value version tested (rounds 1-4), same period
 cands = pd.read_pickle(os.path.join(E.D, "cands.pkl")); r2 = pd.read_pickle(os.path.join(E.D, "round2.pkl"))
@@ -64,6 +64,7 @@ versions = [
     ("V4b Per-line trend filter", r4["V4b per-line filter"], "pre"),
     ("V4c Buffer + 100% cash trend filter", E.run(E.value_v4c()[0], R, 0.001, 0.0025, S)[0], "pre"),
     ("V5 3 sectors, 50% de-risking, fast re-entry", pd.read_pickle(os.path.join(E.D, "round5.pkl"))["V5 3 sectors, 50% cut, fast re-entry"], "pre"),
+    ("V7 with fast re-entry", E.run(E.value_core(fast_reentry=True)[0], R, 0.001, 0.0025, S)[0], "pre"),
     ("V7 ETF core: V4c selection + 50% de-risking (official)", r, "pre"),
     ("V4d 12 tranches + market trend filter", r4["V4d 12 tranches + market filter"], "pre"),
     ("V4e 12 tranches + filter, bonds risk-off", r4["V4e 12 tranches + filter, bonds risk-off"], "pre"),
