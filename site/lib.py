@@ -187,6 +187,8 @@ ICON_DL = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m-3.5-3.5L
 
 
 def page(rel, lang, title, body, active, desc="", scripts=""):
+    if lang == "fr":   # French typography: no line break before : ; ? !
+        body = re.sub(r" ([:;?!])", "\u00a0\\1", body)
     """rel: path relative to the language root, e.g. 'pitches/index.html'."""
     prefix = "fr/" if lang == "fr" else ""
     out = DOCS / prefix / rel

@@ -28,7 +28,7 @@
  <div>
   <div class="eyebrow">Recherche actions · Stratégies systématiques · Données ouvertes</div>
   <h1>Des règles écrites avant les résultats. <em>Chaque chiffre traçable.</em></h1>
-  <p class="lede">Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Thoth Ledger est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.</p>
+  <p class="lede">Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Thoth Ledger est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.</p>
   <div class="btns"><a class="btn primary" href="strategies/">Découvrir les stratégies</a><a class="btn" href="pitches/">Lire les stock pitches</a></div>
  </div>
  <div class="panel"><header><span>Chiffres clés</span><span>backtests, nets de frais</span></header>
@@ -43,24 +43,19 @@
 </div></section>
 
 <section class="sec"><div class="wrap">
- <div class="shead"><h2>Trois stratégies, une même discipline</h2>
+ <div class="shead"><h2>Deux stratégies, une même discipline</h2>
  <p>Chaque stratégie se détient avec quelques ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.</p></div>
- <div class="grid three">
+ <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
  <article class="card"><div class="tags"><span class="tag green">Actions · ETF</span><span class="tag">Mensuel · 8 ETF</span></div>
   <h3><a href="strategies/value-rotation/">Rotation Value mondiale</a></h3>
-  <p>Chaque mois, acheter les pays et secteurs développés les moins chers par rapport à leur propre historique : huit ETF à parts égales.</p>
-  <div class="mini"><div><span>CAGR</span><b>7,6 %</b></div><div><span>Sharpe</span><b>0,49</b></div><div><span>Max DD</span><b>−50 %</b></div></div>
-  <div class="foot"><span>MSCI World : 9,0 % · 2006-2026</span><b>→</b></div></article>
- <article class="card"><div class="tags"><span class="tag green">Multi-actifs · ETF</span><span class="tag">Mensuel · 14 ETF</span></div>
-  <h3><a href="strategies/trend-following/">Trend multi-actifs</a></h3>
-  <p>Détenir actions, obligations et matières premières seulement quand elles sont en tendance haussière, dimensionnées par le risque, sinon du cash. Long uniquement, sans levier.</p>
-  <div class="mini"><div><span>CAGR</span><b>4,6 %</b></div><div><span>Sharpe</span><b>0,47</b></div><div><span>Max DD</span><b>−21 %</b></div></div>
-  <div class="foot"><span>Corrélation avec les actions 0,29 · 2001-2026</span><b>→</b></div></article>
- <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">Backtest depuis 2007</span></div>
+  <p>Le value décide quoi détenir : les pays et secteurs développés les moins chers par rapport à leur propre historique. La tendance décide quand : hors du marché tant que les actions mondiales sont sous leur moyenne de 10 mois.</p>
+  <div class="mini"><div><span>CAGR</span><b>8,5 %</b></div><div><span>Sharpe</span><b>0,79</b></div><div><span>Max DD</span><b>−19 %</b></div></div>
+  <div class="foot"><span>MSCI World : 9,0 % · 0,59 · −49 % · 2006-2026</span><b>→</b></div></article>
+ <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">Annuel · 4 ETF</span></div>
   <h3><a href="strategies/horus-smart-beta/">Horus Smart Beta 60/40</a></h3>
   <p>Un 60/40 permanent dont la poche actions détient les deux ETF les plus exposés à la taille, la croissance et le momentum, choisis chaque janvier.</p>
   <div class="mini"><div><span>CAGR</span><b>8,9 %</b></div><div><span>Sharpe</span><b>0,66</b></div><div><span>Max DD</span><b>−23 %</b></div></div>
-  <div class="foot"><span>60/40 : 6,1 %</span><b>→</b></div></article>
+  <div class="foot"><span>60/40 : 6,1 % · 2007-2026 · USD</span><b>→</b></div></article>
 </div>
 </div></section>
 
@@ -69,7 +64,7 @@
   <div><div class="shead"><h2>Du top-down au bottom-up</h2>
    <p>La rotation value choisit les pays et secteurs bon marché. Le screen titres trouve les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.</p></div>
    <div class="btns"><a class="btn" href="pitches/">Tous les pitches →</a></div></div>
-  <div class="notes"><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/rno-renault/"><div><h3>Renault</h3><p>La trésorerie et la banque captive couvrent la capitalisation : l&#x27;activité automobile est presque gratuite</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/bnp-bnp-paribas/"><div><h3>BNP Paribas</h3><p>13 % de rentabilité des fonds propres tangibles pour 0,9x l&#x27;actif net tangible : la décote française va trop loin</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/ca-carrefour/"><div><h3>Carrefour</h3><p>Un distributeur à plus de 10 % de rendement de free cash flow, dont l&#x27;immobilier vaut plus que les fonds propres</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/hpq-hp-inc/"><div><h3>HP Inc</h3><p>Une machine à cash valorisée comme en déclin : environ 10x les bénéfices et 10 % de rendement de free cash flow</p></div><span><span class="rating r-ow">Surpondérer</span></span></a></div>
+  <div class="notes"><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/rno-renault/"><div><h3>Renault</h3><p>La trésorerie et la banque captive couvrent la capitalisation : l&#x27;activité automobile est presque gratuite</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/bnp-bnp-paribas/"><div><h3>BNP Paribas</h3><p>13 % de rentabilité des fonds propres tangibles pour 0,9x l&#x27;actif net tangible : la décote française va trop loin</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/ca-carrefour/"><div><h3>Carrefour</h3><p>Un distributeur à plus de 10 % de rendement de free cash flow, dont l&#x27;immobilier vaut plus que les fonds propres</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/hpq-hp-inc/"><div><h3>HP Inc</h3><p>Une machine à cash valorisée comme en déclin : environ 10x les bénéfices et 10 % de rendement de free cash flow</p></div><span><span class="rating r-ow">Surpondérer</span></span></a></div>
  </div>
 </div></section>
 

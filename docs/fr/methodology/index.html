@@ -25,17 +25,17 @@
 <main id="main">
 <header class="phead"><div class="wrap"><div class="eyebrow">Méthodologie</div><h1>Données et méthodologie</h1><p class="lede">D’où viennent les données et les règles que chaque résultat respecte.</p></div></header><section class="sec"><div class="wrap"><article class="prose"><h2>Sources</h2>
 <ul>
-<li><strong>Terminal Bloomberg</strong> (salle SKEMA, extractions d'octobre 2026) : compositions d'indices, prix, dividendes, fondamentaux standardisés tels que publiés à l'origine, capitalisations, change, MSCI World Net EUR, €STR ; indices pays, secteurs, obligataires et matières premières pour les stratégies ETF. Les données sous licence <strong>ne sont pas</strong> publiées ici : le site montre la méthode et des résultats agrégés.</li>
-<li><strong>Kenneth French Data Library</strong> : facteurs Developed (5 facteurs + momentum).</li>
-<li><strong>OCDE via FRED</strong> : taux interbancaires 3 mois par devise, pour le coût de couverture de change.</li>
+<li><strong>Terminal Bloomberg</strong> (salle SKEMA, extractions d'octobre 2026) : compositions d'indices, prix, dividendes, fondamentaux standardisés tels que publiés à l'origine, capitalisations, change, MSCI World Net EUR, €STR ; indices pays, secteurs, obligataires et matières premières pour les stratégies ETF. Les données sous licence <strong>ne sont pas</strong> publiées ici : le site montre la méthode et des résultats agrégés.</li>
+<li><strong>Kenneth French Data Library</strong> : facteurs Developed (5 facteurs + momentum).</li>
+<li><strong>OCDE via FRED</strong> : taux interbancaires 3 mois par devise, pour le coût de couverture de change.</li>
 </ul>
 <h2>Règles d'intégrité</h2>
 <ol>
-<li><strong>Pas de biais du survivant :</strong> l'univers à chaque date est la composition de l'indice à cette date, y compris les titres radiés ensuite.</li>
-<li><strong>Pas de look-ahead :</strong> un exercice comptable n'est utilisé qu'à partir de la clôture + 6 mois et jamais avant sa publication ; chiffres d'origine (non retraités) ; les ordres sont exécutés après la date de décision.</li>
-<li><strong>Unités vérifiées :</strong> capitalisation vs prix × actions, réplique du benchmark à partir des rendements des titres (corrélation 0,996 avec le MSCI World Net), étude d'événement sur les dates de détachement.</li>
-<li><strong>Net vs brut :</strong> rendements nets de retenue à la source, comme le benchmark.</li>
-<li><strong>Reproductible :</strong> une commande reconstruit chaque chiffre depuis le fichier brut ; des tests unitaires vérifient le décalage, les rendements et chaque contrainte.</li>
+<li><strong>Pas de biais du survivant :</strong> l'univers à chaque date est la composition de l'indice à cette date, y compris les titres radiés ensuite.</li>
+<li><strong>Pas de look-ahead :</strong> un exercice comptable n'est utilisé qu'à partir de la clôture + 6 mois et jamais avant sa publication ; chiffres d'origine (non retraités) ; les ordres sont exécutés après la date de décision.</li>
+<li><strong>Unités vérifiées :</strong> capitalisation vs prix × actions, réplique du benchmark à partir des rendements des titres (corrélation 0,996 avec le MSCI World Net), étude d'événement sur les dates de détachement.</li>
+<li><strong>Net vs brut :</strong> rendements nets de retenue à la source, comme le benchmark.</li>
+<li><strong>Reproductible :</strong> une commande reconstruit chaque chiffre depuis le fichier brut ; des tests unitaires vérifient le décalage, les rendements et chaque contrainte.</li>
 <li><strong>Chaque arbitrage consigné</strong> avec ses alternatives dans un journal de décisions.</li>
 </ol>
 <h2>Outils</h2>

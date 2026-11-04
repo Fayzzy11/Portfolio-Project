@@ -16,3 +16,6 @@ title: Journal
 | 30 Oct 2026 | Both strategies redesigned to be replicable with UCITS ETFs and rebalanced monthly: value rotation across countries and sectors, trend following across asset classes. Rules fixed before the data extraction. |
 | 30 Oct 2026 | Horus Smart Beta 60/40 (Horus AM) added to the strategies. |
 | 3 Nov 2026 | ETF backtests run on the Bloomberg extract (results, variants, current portfolios). Site renamed Thoth Ledger, new light design in the Horus AM family. |
+| 4 Nov 2026 | Value strategy: four new candidates pre-registered and run; V4c (holding buffer + 10-month market trend filter) adopted as the official version. Benchmark changed to MSCI World Value (style benchmark), MSCI World kept alongside. |
+| 4 Nov 2026 | Trend following dropped: a long/short, 40-theme, walk-forward version did worse than the simple rules, and the simple rules added little next to the value strategy's own trend filter. |
+| 4 Nov 2026 | Portfolio tracker and monthly factsheets (English and French) added. |

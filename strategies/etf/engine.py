@@ -318,3 +318,52 @@ def tilted_world(tilt=0.5, use_tilt=True):
     valid = (zc.notna().sum(axis=1) >= 10) & (zs.notna().sum(axis=1) >= 8)
     rets = pd.concat([rc.add_prefix("C_"), rs.add_prefix("S_")], axis=1)
     return W[valid.reindex(W.index).fillna(False)], rets
+
+
+# ---------------------------------------------------------------- official value strategy (Noah, 4 Nov 2026): V4c
+def _picks_buffer(z, n=4, keep=6):
+    held, out = [], {}
+    for t in z.index:
+        s = z.loc[t].dropna()
+        if len(s) < n:
+            out[t] = list(held); continue
+        rank = s.rank(ascending=False)
+        held = [h for h in held if h in rank and rank[h] <= keep]
+        for c in rank.sort_values().index:
+            if len(held) >= n: break
+            if c not in held: held.append(c)
+        out[t] = list(held)
+    return out
+
+
+def value_v4c(n=4, keep=6, sma=10, timing=True):
+    """Value decides WHAT: 4 cheapest countries + 4 cheapest sectors (z-score vs own 10-year history), a held line is kept
+    until it leaves the 6 cheapest. Trend decides WHEN: invested only while MSCI World Net EUR is above its 10-month average,
+    otherwise cash. Equal weight 12.5 %, monthly."""
+    rc, rs = country_returns(), sector_returns_tr()
+    zc = value_score(VP, {k: v[0] for k, v in COUNTRIES.items()})
+    zs = value_score(VS, SECTORS)
+    valid = (zc.notna().sum(axis=1) >= 10) & (zs.notna().sum(axis=1) >= 8)
+    pc, ps = _picks_buffer(zc, n, keep), _picks_buffer(zs, n, keep)
+    rows = {}
+    for t in zc.index:
+        w = {}
+        for p, lst in (("C_", pc.get(t, [])), ("S_", ps.get(t, []))):
+            for c in lst: w[p + c] = 0.5 / len(lst)
+        rows[t] = w
+    W = pd.DataFrame(rows).T.reindex(zc.index).fillna(0.0)[valid]
+    mkt = col(MK, "MSDEWIN Index")
+    on = (mkt > mkt.rolling(sma).mean()).reindex(W.index).fillna(True)
+    if timing:
+        W = W.mul(on.astype(float), axis=0)
+    R = pd.concat([rc.add_prefix("C_"), rs.add_prefix("S_")], axis=1)
+    return W, R, on, zc, zs
+
+
+def world_value():
+    """MSCI World Value net TR in EUR, if extracted (data/etf/World_Value.pkl). None until then."""
+    p = f"{D}/World_Value.pkl"
+    if not os.path.exists(p): return None
+    s = pd.read_pickle(p)
+    s = s.iloc[:, 0] if hasattr(s, "columns") else s
+    return s.pct_change().rename("MSCI World Value Net EUR")
