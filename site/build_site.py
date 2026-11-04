@@ -868,12 +868,110 @@ def clean_docs():
     """Remove generated pages and files that must not be published any more (note PDFs, old pages)."""
     for p in (DOCS / "assets/pitches").glob("*_note.pdf"):
         p.unlink()
-    for d in ["fr", "pitches", "research", "strategies", "database", "journal", "methodology", "about", "static"]:
+    for d in ["fr", "pitches", "research", "strategies", "tracker", "database", "journal", "methodology", "about", "static"]:
         if (DOCS / d).exists():
             shutil.rmtree(DOCS / d)
     for f in ["home_template.html"]:
         if (DOCS / f).exists():
             (DOCS / f).unlink()
+
+
+# ---------------------------------------------------------------- TRACKER
+def tracker_data():
+    """Monthly net returns of the three strategies and their benchmarks (aggregated results only, no raw data)."""
+    d = json.loads((DATA / "etf_strategies.json").read_text())
+    h = json.loads((DATA / "horus_smart_beta.json").read_text())
+
+    def rets(nav):
+        out, prev = [], 1.0
+        for x in nav:
+            out.append(round(x / prev - 1, 6)); prev = x
+        return out
+    y, m = map(int, h["start"].split("-"))
+    hd = []
+    for _ in h["r_p3"]:
+        hd.append(f"{y:04d}-{m:02d}"); m += 1
+        if m == 13: y, m = y + 1, 1
+    return {
+        "value": dict(dates=d["value"]["dates"], r=rets(d["value"]["nav"]), b=rets(d["value"]["bench"]), ccy="EUR",
+                      name=["Global Value Rotation", "Rotation Value mondiale"], bench="MSCI World Net EUR"),
+        "trend": dict(dates=d["trend"]["dates"], r=rets(d["trend"]["nav"]), b=rets(d["trend"]["bench"]), ccy="EUR",
+                      name=["Multi-Asset Trend", "Trend multi-actifs"], bench="MSCI World Net EUR"),
+        "horus": dict(dates=hd, r=[round(x, 6) for x in h["r_p3"]], b=[round(x, 6) for x in h["r_bench"]], ccy="USD",
+                      name=["Horus Smart Beta 60/40", "Horus Smart Beta 60/40"], bench="60/40 (MSCI ACWI / US Agg)"),
+    }
+
+
+def build_tracker(lang):
+    data = tracker_data()
+    opts = "".join(f'<option value="{k}">{esc(v["name"][0 if lang == "en" else 1])} · {v["ccy"]} · {L(lang, "from", "depuis")} {v["dates"][0]}</option>' for k, v in data.items())
+    body = phead(L(lang, "Simulation · net of costs", "Simulation · nette de frais"),
+                 L(lang, "Portfolio tracker", "Simulateur de portefeuille"),
+                 L(lang, "Pick a strategy, a start month and an amount: see what the position would be worth today, month by month, against its benchmark.",
+                   "Choisissez une stratégie, un mois de départ et un montant : voyez ce que vaudrait la position aujourd’hui, mois par mois, face à son indice de référence."))
+    body += f"""
+<section class="sec"><div class="wrap">
+ <div class="filters" id="trk-form">
+  <div class="fgroup"><span>{L(lang, "Strategy", "Stratégie")}</span><select id="trk-s" class="search" style="min-width:300px">{opts}</select></div>
+  <div class="fgroup"><span>{L(lang, "Start", "Départ")}</span><input id="trk-d" class="search" type="month" style="min-width:150px;flex:none"></div>
+  <div class="fgroup"><span>{L(lang, "Amount", "Montant")}</span><input id="trk-a" class="search" type="number" min="100" step="100" value="10000" style="min-width:130px;flex:none"></div>
+  <div class="fgroup"><span>{L(lang, "Monthly top-up", "Versement mensuel")}</span><input id="trk-m" class="search" type="number" min="0" step="50" value="0" style="min-width:110px;flex:none"></div>
+ </div>
+ <div class="stats" id="trk-stats"></div>
+ <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
+  <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
+ <h3>{L(lang, "Year by year", "Année par année")}</h3>
+ <div class="tbl-wrap"><table class="t" id="trk-tbl"></table></div>
+ <p class="cap">{L(lang, "Hypothetical backtests, net of trading costs and ETF fees, before taxes. Past performance does not guarantee future returns. The value and trend series follow the validated rules; Horus Smart Beta is in US dollars (Horus AM data). Not investment advice.",
+   "Backtests hypothétiques, nets de frais de transaction et de frais d’ETF, avant impôts. Les performances passées ne préjugent pas des performances futures. Les séries value et trend suivent les règles validées ; Horus Smart Beta est en dollars (données Horus AM). Ceci n’est pas un conseil en investissement.")}</p>
+</div></section>"""
+    T = json.dumps(data, separators=(",", ":"))
+    js = """<script>(function(){
+var D=__DATA__,LANG="__LANG__",FR=LANG==="fr";
+var $=function(i){return document.getElementById(i)};
+function money(v,c){return new Intl.NumberFormat(FR?"fr-FR":"en-GB",{style:"currency",currency:c,maximumFractionDigits:0}).format(v)}
+function pc(v,s){var x=(v*100).toFixed(1);if(FR)x=x.replace(".",",");return (s&&v>0?"+":"")+x+(FR?"\u00a0%":"%")}
+function stat(k,v,s){return '<div class="stat"><div class="k">'+k+'</div><div class="v">'+v+'</div><div class="s">'+(s||"")+'</div></div>'}
+function sim(r,i0,amt,top){var v=amt,inv=amt,out=[],pk=0,dd=0;for(var i=i0;i<r.length;i++){if(i>i0){v+=top;inv+=top}v*=1+r[i];out.push([v,inv]);}return out}
+function mdd(r,i0){var n=1,pk=1,dd=0;for(var i=i0;i<r.length;i++){n*=1+r[i];pk=Math.max(pk,n);dd=Math.min(dd,n/pk-1)}return dd}
+function draw(){
+ var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0],amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
+ var i0=S.dates.indexOf(d0);if(i0<0){i0=d0<S.dates[0]?0:S.dates.length-1}$("trk-d").value=S.dates[i0];
+ $("trk-d").min=S.dates[0];$("trk-d").max=S.dates[S.dates.length-1];
+ var P=sim(S.r,i0,amt,top),B=sim(S.b,i0,amt,top),n=P.length,yrs=n/12;
+ var fv=P[n-1][0],bv=B[n-1][0],inv=P[n-1][1];
+ var cP=1,cB=1;for(var i=i0;i<S.r.length;i++){cP*=1+S.r[i];cB*=1+S.b[i]}
+ var cagr=Math.pow(cP,1/yrs)-1,bc=Math.pow(cB,1/yrs)-1;
+ $("trk-stats").innerHTML=stat(FR?"Valeur finale":"Final value",money(fv,S.ccy),(FR?"investi ":"invested ")+money(inv,S.ccy))
+  +stat(FR?"Plus-value":"Gain",money(fv-inv,S.ccy),pc(fv/inv-1,1))
+  +stat(FR?"Rendement annualisé":"Annual return",pc(cagr),(FR?"indice ":"benchmark ")+pc(bc))
+  +stat(FR?"Pire baisse":"Max drawdown",pc(mdd(S.r,i0)),(FR?"indice ":"benchmark ")+pc(mdd(S.b,i0)))
+  +stat(FR?"Face à l’indice":"Vs benchmark",money(fv-bv,S.ccy),(FR?"valeur finale indice ":"benchmark ends at ")+money(bv,S.ccy));
+ $("trk-title").textContent=(FR?"Valeur de la position, ":"Position value, ")+S.ccy+" · "+S.dates[i0]+" → "+S.dates[S.dates.length-1];
+ $("trk-l1").textContent=S.name[FR?1:0];$("trk-l2").textContent=S.bench;
+ var W=900,H=340,l=70,r=16,t=14,b=30,mx=0,mn=1e18;P.forEach(function(p,i){mx=Math.max(mx,p[0],B[i][0],p[1]);mn=Math.min(mn,p[0],B[i][0],p[1])});
+ mn*=.95;mx*=1.03;var X=function(i){return l+(W-l-r)*(n<2?0:i/(n-1))},Y=function(v){return t+(H-t-b)*(1-(v-mn)/(mx-mn))};
+ var g="";for(var j=0;j<=4;j++){var v=mn+(mx-mn)*j/4;g+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(l-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+money(v,S.ccy)+'</text>'}
+ var yr=null;for(var i=0;i<n;i++){var y=S.dates[i0+i].slice(0,4);if(y!==yr&&(+y)%(n>120?5:n>36?2:1)===0&&S.dates[i0+i].slice(5)==="01"){g+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle">'+y+'</text>'}yr=y}
+ function path(A,c,w,dash){return '<path d="'+A.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)}).join("")+'" fill="none" stroke="'+c+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="4 4"':'')+'/>'}
+ g+=path(P.map(function(p){return p[1]}),"var(--gold)",1.5,1)+path(B.map(function(p){return p[0]}),"var(--bench)",1.8)+path(P.map(function(p){return p[0]}),"var(--navy)",2.4);
+ g+='<line id="trk-x" y1="'+t+'" y2="'+(H-b)+'" stroke="var(--line2)" style="display:none"/><rect x="'+l+'" y="'+t+'" width="'+(W-l-r)+'" height="'+(H-t-b)+'" fill="transparent" id="trk-hit"/>';
+ var svg=$("trk-svg");svg.innerHTML=g;var tip=$("trk-tip");
+ $("trk-hit").onmousemove=function(e){var bb=svg.getBoundingClientRect(),xx=(e.clientX-bb.left)*W/bb.width,i=Math.max(0,Math.min(n-1,Math.round((xx-l)/(W-l-r)*(n-1))));
+  var ln=$("trk-x");ln.style.display="";ln.setAttribute("x1",X(i));ln.setAttribute("x2",X(i));
+  tip.innerHTML="<b>"+S.dates[i0+i]+"</b><br>"+S.name[FR?1:0]+": "+money(P[i][0],S.ccy)+"<br>"+S.bench+": "+money(B[i][0],S.ccy)+"<br>"+(FR?"Investi":"Invested")+": "+money(P[i][1],S.ccy);
+  tip.style.opacity=1;tip.style.left=Math.min(bb.width-220,X(i)*bb.width/W+12)+"px";tip.style.top="20px"};
+ $("trk-hit").onmouseleave=function(){tip.style.opacity=0;$("trk-x").style.display="none"};
+ var rows='<tr><th>'+(FR?"Année":"Year")+'</th><th class="n">'+S.name[FR?1:0]+'</th><th class="n">'+S.bench+'</th><th class="n">'+(FR?"Écart":"Difference")+'</th><th class="n">'+(FR?"Valeur fin d’année":"Year-end value")+'</th></tr>';
+ var ys={};for(var i=i0;i<S.r.length;i++){var y=S.dates[i].slice(0,4);ys[y]=ys[y]||{p:1,b:1,last:0};ys[y].p*=1+S.r[i];ys[y].b*=1+S.b[i];ys[y].last=i-i0}
+ Object.keys(ys).sort().reverse().forEach(function(y){var o=ys[y],dp=o.p-1,db=o.b-1;rows+='<tr><td>'+y+'</td><td class="n '+(dp<0?"neg":"")+'">'+pc(dp,1)+'</td><td class="n">'+pc(db,1)+'</td><td class="n '+(dp-db<0?"neg":"pos")+'">'+pc(dp-db,1)+'</td><td class="n">'+money(P[o.last][0],S.ccy)+'</td></tr>'});
+ $("trk-tbl").innerHTML=rows;
+}
+["trk-s","trk-d","trk-a","trk-m"].forEach(function(i){$(i).addEventListener("input",draw);$(i).addEventListener("change",draw)});
+$("trk-s").addEventListener("change",function(){$("trk-d").value=""; draw()});
+draw();})();</script>""".replace("__DATA__", T).replace("__LANG__", lang)
+    page("tracker/index.html", lang, L(lang, "Portfolio tracker", "Simulateur de portefeuille"), body, "tracker",
+         L(lang, "Simulate an investment in one of the three strategies from any start month.", "Simulez un investissement dans l’une des trois stratégies à partir de n’importe quel mois."), js)
 
 
 def main():
@@ -895,6 +993,7 @@ def main():
             build_pitch(s, lang)
         build_research(lang)
         build_database(lang)
+        build_tracker(lang)
         simple_page("journal", lang, "", t(lang, "journal"), L(lang, "Decisions and milestones, dated.", "Décisions et étapes, datées."))
         simple_page("methodology", lang, "", t(lang, "methodology"), L(lang, "Where the data come from and the rules every result respects.", "D’où viennent les données et les règles que chaque résultat respecte."))
         simple_page("about", lang, "about", t(lang, "about"), L(lang, "Who is behind this ledger and why it exists.", "Qui tient ce carnet et pourquoi il existe."))

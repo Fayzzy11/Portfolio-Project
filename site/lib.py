@@ -25,7 +25,7 @@ esc = html.escape
 UI = {
     "en": {
         "home": "Home", "strategies": "Strategies", "pitches": "Stock pitches", "research": "Research", "database": "Database",
-        "journal": "Journal", "about": "About", "methodology": "Methodology", "skip": "Skip to content", "menu": "Menu",
+        "journal": "Journal", "tracker": "Tracker", "about": "About", "methodology": "Methodology", "skip": "Skip to content", "menu": "Menu",
         "theme": "Switch light or dark theme", "tagline": "Equity research & strategies", "on_page": "On this page",
         "sections": "Sections", "elsewhere": "Elsewhere", "code": "Code on GitHub", "horus": "Horus AM",
         "foot1": "Student research by Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), CFA Level II candidate.",
@@ -37,7 +37,7 @@ UI = {
     },
     "fr": {
         "home": "Accueil", "strategies": "Stratégies", "pitches": "Stock pitches", "research": "Recherche", "database": "Données",
-        "journal": "Journal", "about": "À propos", "methodology": "Méthodologie", "skip": "Aller au contenu", "menu": "Menu",
+        "journal": "Journal", "tracker": "Simulateur", "about": "À propos", "methodology": "Méthodologie", "skip": "Aller au contenu", "menu": "Menu",
         "theme": "Basculer en thème clair ou sombre", "tagline": "Recherche actions & stratégies", "on_page": "Sur cette page",
         "sections": "Rubriques", "elsewhere": "Ailleurs", "code": "Code sur GitHub", "horus": "Horus AM",
         "foot1": "Travail de recherche étudiant de Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), candidat au CFA niveau II.",
@@ -50,7 +50,7 @@ UI = {
 }
 
 NAV = [("index", "home", ""), ("strategies", "strategies", "strategies/"), ("pitches", "pitches", "pitches/"),
-       ("research", "research", "research/"), ("database", "database", "database/"), ("about", "about", "about/")]
+       ("research", "research", "research/"), ("tracker", "tracker", "tracker/"), ("database", "database", "database/"), ("about", "about", "about/")]
 
 FR_NAMES = {
     "France": "France", "United States": "États-Unis", "Japan": "Japon", "Hong Kong": "Hong Kong", "United Kingdom": "Royaume-Uni",
