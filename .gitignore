@@ -7,3 +7,6 @@ __pycache__/
 
 # Parsed Bloomberg extract for the ETF strategies (licensed)
 data/etf/
+
+# Stock-screen data from the Claude Code project (licensed Bloomberg data)
+data/screen/
