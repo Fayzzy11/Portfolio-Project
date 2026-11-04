@@ -271,3 +271,50 @@ def trend_class_budget(target_vol=0.10, lookbacks=(3, 6, 12), vol_win=12, cov_wi
             w = w * max_gross / w.sum()
         rows[t] = w
     return pd.DataFrame(rows).T.fillna(0.0), R
+
+
+# ---------------------------------------------------------------- extract #2 (4 Nov 2026): caps and sector net TR
+def _opt(name):
+    p = f"{D}/{name}.pkl"
+    return pd.read_pickle(p) if os.path.exists(p) else None
+
+
+CAPI, SECT_TR, TREND_PLUS = _opt("Capi"), _opt("Secteurs_TR"), _opt("Trend_Plus")
+
+
+def sector_returns_tr():
+    """MSCI World sector net TR in EUR (M1WO0xx); Real Estate spliced to the S&P 500 sector after the MSCI series freezes."""
+    out = {}
+    for c in SECTORS:
+        px = col(SECT_TR, f"M1WO0{c} Index")
+        r = px.pct_change()
+        if c == "RE":
+            stale = px.diff().ne(0)[::-1].idxmax()
+            sp = col(VS, "S5RLST Index").pct_change() + (col(VS, "S5RLST Index", "EQY_DVD_YLD_12M").ffill() / 100).shift(1) * (1 - WHT_SECTOR) / 12
+            r = r.where(px.index <= stale, sp)
+        out[c] = r
+    return pd.DataFrame(out)
+
+
+def caps():
+    cc = pd.DataFrame({c: col(CAPI, v[0], "CUR_MKT_CAP") for c, v in COUNTRIES.items()})
+    cs = pd.DataFrame({c: col(CAPI, t, "CUR_MKT_CAP") for c, t in SECTORS.items()})
+    return cc, cs
+
+
+def tilted_world(tilt=0.5, use_tilt=True):
+    """Two equal halves (countries, sectors); inside each, cap weight x (1 + tilt x clip(z, -1, 1))."""
+    rc, rs = country_returns(), sector_returns_tr()
+    zc = value_score(VP, {k: v[0] for k, v in COUNTRIES.items()})
+    zs = value_score(VS, SECTORS)
+    cc, cs = caps()
+    parts = []
+    for z, cap, p in ((zc, cc, "C_"), (zs, cs, "S_")):
+        m = (1 + tilt * z.clip(-1, 1)).where(z.notna(), 1.0) if use_tilt else cap * 0 + 1
+        w = (cap * m.reindex_like(cap)).where(cap.notna())
+        w = w.div(w.sum(axis=1), axis=0) * 0.5
+        parts.append(w.add_prefix(p))
+    W = pd.concat(parts, axis=1)
+    valid = (zc.notna().sum(axis=1) >= 10) & (zs.notna().sum(axis=1) >= 8)
+    rets = pd.concat([rc.add_prefix("C_"), rs.add_prefix("S_")], axis=1)
+    return W[valid.reindex(W.index).fillna(False)], rets
