@@ -930,7 +930,7 @@ def build_tracker(lang):
   <div class="fgroup"><span>{L(lang, "Monthly top-up", "Versement mensuel")}</span><input id="trk-m" class="search" type="number" min="0" step="50" value="0" style="min-width:110px;flex:none"></div>
   {mixrow}
  </div>
- <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros (Horus converted from US dollars at the month-end EUR/USD rate), brought back to the chosen weights every month. Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark.", "Mix : les deux stratégies en euros (Horus converti depuis le dollar au cours EUR/USD de fin de mois), ramenées aux poids choisis chaque mois. Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus.")}</p>
+ <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros, brought back to the chosen weights every month. Horus is converted from US dollars at the month-end EUR/USD rate, so its figures here differ from the dollar figures published by Horus AM (8.9% a year, worst loss −22.6%): the dollar gained about 14% against the euro over 2007-2026 and rose during the 2008 crash, which cushioned losses for a euro investor. Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark, also in euros.", "Mix : les deux stratégies en euros, ramenées aux poids choisis chaque mois. Horus est converti depuis le dollar au cours EUR/USD de fin de mois : ses chiffres ici diffèrent donc des chiffres en dollars publiés par Horus AM (8,9 % par an, perte maximale −22,6 %), car le dollar a pris environ 14 % face à l’euro sur 2007-2026 et a monté pendant le krach de 2008, ce qui a amorti les pertes d’un investisseur en euros. Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus, aussi en euros.")}</p>
  <div class="stats" id="trk-stats"></div>
  <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
@@ -952,7 +952,8 @@ function draw(){
  var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0];
  var mix=k==="mix";$("trk-mixg").style.display=mix?"":"none";$("trk-mixnote").style.display=mix?"":"none";
  if(mix){var w=(+$("trk-w").value)/100;$("trk-wl").textContent=Math.round(w*100)+" / "+Math.round(100-w*100);S.r=S.rv.map(function(x,i){return w*x+(1-w)*S.rh[i]});S.b=S.bv.map(function(x,i){return w*x+(1-w)*S.bh[i]});
-  S.name=FR?["","Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus"]:["Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus",""];S.bench=FR?"Mix des indices":"Benchmark mix"}
+  var lab=w===0?(FR?"Horus Smart Beta en euros":"Horus Smart Beta in euros"):w===1?(FR?"Rotation Value (cœur ETF)":"Global Value Rotation (ETF core)"):(FR?"Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus":"Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus");
+  S.name=[lab,lab];S.bench=FR?"Mix des indices (EUR)":"Benchmark mix (EUR)"}
  var _=0,amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
  var i0=S.dates.indexOf(d0);if(i0<0){i0=d0<S.dates[0]?0:S.dates.length-1}$("trk-d").value=S.dates[i0];
  $("trk-d").min=S.dates[0];$("trk-d").max=S.dates[S.dates.length-1];
