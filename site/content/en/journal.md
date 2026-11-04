@@ -19,3 +19,4 @@ title: Journal
 | 4 Nov 2026 | Value strategy: four new candidates pre-registered and run; V4c (holding buffer + 10-month market trend filter) adopted as the official version. Benchmark changed to MSCI World Value (style benchmark), MSCI World kept alongside. |
 | 4 Nov 2026 | Trend following dropped: a long/short, 40-theme, walk-forward version did worse than the simple rules, and the simple rules added little next to the value strategy's own trend filter. |
 | 4 Nov 2026 | Portfolio tracker and monthly factsheets (English and French) added. |
+| 4 Nov 2026 | Tracker: both strategies can be combined (value / Horus mix, in euros, rebalanced monthly). Factsheet archive page added. |

@@ -77,3 +77,12 @@ json.dump(res, open(os.path.join(HERE, "..", "..", "site", "data", "etf_strategi
 pd.to_pickle(dict(r=r, to=to, W=W, wn=wn, on=on, zc=zc, zs=zs, R=R, world=world, wv=wv), os.path.join(E.D, "v4c_full.pkl"))
 print("V4c", round(v["stats"]["cagr"], 4), round(v["stats"]["sharpe"], 3), round(v["stats"]["mdd"], 3), "| bench", bench.name,
       "| risk-off", v["risk_off_months"], "/", v["months"], "switches", v["switches"], "| line changes/yr", round(v["line_changes_per_year"], 1), "|", v["holdings"])
+
+# Horus Smart Beta converted to EUR (Horus AM publishes USD), for the mixed portfolio in the tracker
+h = json.load(open(os.path.join(HERE, "..", "..", "site", "data", "horus_smart_beta.json")))
+idx = pd.period_range(h["start"], periods=len(h["r_p3"]), freq="M").to_timestamp("M")
+fx = E.col(E.MK, "EURUSD Curncy").pct_change().reindex(idx)          # USD per EUR
+to_eur = lambda x: list(np.round(((1 + pd.Series(x, index=idx)) / (1 + fx) - 1).values, 6))
+res["horus_eur"] = {"dates": [d.strftime("%Y-%m") for d in idx], "r": to_eur(h["r_p3"]), "b": to_eur(h["r_bench"])}
+json.dump(res, open(os.path.join(HERE, "..", "..", "site", "data", "etf_strategies.json"), "w"))
+print("horus_eur", res["horus_eur"]["dates"][0], res["horus_eur"]["dates"][-1], len(res["horus_eur"]["r"]))

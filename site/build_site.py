@@ -258,7 +258,7 @@ def build_strategies(lang):
     body = phead(t(lang, "strategies"), L(lang, "Strategies you can hold with ETFs", "Des stratégies que l'on peut détenir avec des ETF"),
                  L(lang, "Two rules-based strategies, each implementable with UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the pitches.",
                    "Deux stratégies systématiques, chacune réplicable avec des ETF UCITS et rebalancée à date fixe, plus le moteur de recherche titre par titre qui alimente les pitches."))
-    body += f'<section class="sec"><div class="wrap">{strategy_cards(lang, "../")}</div></section>'
+    body += f'<section class="sec"><div class="wrap">{strategy_cards(lang, "../")}<p class="cap" style="margin-top:16px"><a href="../factsheets/">' + L(lang, "Monthly factsheets, all issues", "Factsheets mensuelles, tous les numéros") + ' →</a></p></div></section>'
     body += f"""<section class="sec alt"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
 <div class="grid">
  <article class="card"><div class="meta">{L(lang, "Stock level · 1,990 developed-market stocks · 2021-2026", "Titres · 1 990 actions de pays développés · 2021-2026")}</div>
@@ -407,6 +407,7 @@ def factsheet_section(kind, lang):
             f'<div class="btns">{btn(last, "en", "primary")}{btn(last, "fr", "")}</div></div>')
     if arch:
         body += f'<h3>{L(lang, "Archive", "Archives")}</h3><ul>{arch}</ul>'
+    body += '<p class="cap"><a href="../../factsheets/">' + L(lang, 'All factsheets, every month, both strategies', 'Toutes les factsheets, chaque mois, pour les deux stratégies') + ' →</a></p>'
     return section("factsheet", L(lang, "Monthly factsheet", "Factsheet mensuelle"), body)
 
 
@@ -856,7 +857,7 @@ def clean_docs():
     """Remove generated pages and files that must not be published any more (note PDFs, old pages)."""
     for p in (DOCS / "assets/pitches").glob("*_note.pdf"):
         p.unlink()
-    for d in ["fr", "pitches", "research", "strategies", "tracker", "trend-following", "downloads", "database", "journal", "methodology", "about", "static"]:
+    for d in ["fr", "pitches", "research", "strategies", "tracker", "factsheets", "trend-following", "downloads", "database", "journal", "methodology", "about", "static"]:
         if (DOCS / d).exists():
             shutil.rmtree(DOCS / d)
     for f in ["home_template.html"]:
@@ -885,12 +886,28 @@ def tracker_data():
                       name=["Global Value Rotation", "Rotation Value mondiale"], bench=d["value"]["bench_name"]),
         "horus": dict(dates=hd, r=[round(x, 6) for x in h["r_p3"]], b=[round(x, 6) for x in h["r_bench"]], ccy="USD",
                       name=["Horus Smart Beta 60/40", "Horus Smart Beta 60/40"], bench="60/40 (MSCI ACWI / US Agg)"),
+        "mix": mix_data(d),
     }
+
+
+def mix_data(d):
+    """Both strategies in EUR on their common months; the JS mixes them at the chosen weights, rebalanced monthly."""
+    v, he = d["value"], d["horus_eur"]
+    rv = dict(zip(v["dates"], [v["nav"][0] - 1] + [v["nav"][i] / v["nav"][i - 1] - 1 for i in range(1, len(v["nav"]))]))
+    bv = dict(zip(v["dates"], [v["bench"][0] - 1] + [v["bench"][i] / v["bench"][i - 1] - 1 for i in range(1, len(v["bench"]))]))
+    rh, bh = dict(zip(he["dates"], he["r"])), dict(zip(he["dates"], he["b"]))
+    ds = [x for x in v["dates"] if x in rh]
+    return dict(dates=ds, rv=[round(rv[x], 6) for x in ds], bv=[round(bv[x], 6) for x in ds], rh=[rh[x] for x in ds], bh=[bh[x] for x in ds],
+                r=[round(rv[x], 6) for x in ds], b=[round(bv[x], 6) for x in ds], ccy="EUR",
+                name=["Both strategies (mix)", "Les deux stratégies (mix)"], bench="Mix of benchmarks")
 
 
 def build_tracker(lang):
     data = tracker_data()
     opts = "".join(f'<option value="{k}">{esc(v["name"][0 if lang == "en" else 1])} · {v["ccy"]} · {L(lang, "from", "depuis")} {v["dates"][0]}</option>' for k, v in data.items())
+    mixrow = (f'<div class="fgroup" id="trk-mixg" style="display:none"><span>{L(lang, "Value / Horus", "Value / Horus")}</span>'
+              f'<input id="trk-w" type="range" min="0" max="100" step="10" value="50" style="accent-color:var(--gold);width:160px">'
+              f'<b id="trk-wl" style="font:600 14px var(--f);min-width:90px">50 / 50</b></div>')
     body = phead(L(lang, "Simulation · net of costs", "Simulation · nette de frais"),
                  L(lang, "Portfolio tracker", "Simulateur de portefeuille"),
                  L(lang, "Pick a strategy, a start month and an amount: see what the position would be worth today, month by month, against its benchmark.",
@@ -902,14 +919,16 @@ def build_tracker(lang):
   <div class="fgroup"><span>{L(lang, "Start", "Départ")}</span><input id="trk-d" class="search" type="month" style="min-width:150px;flex:none"></div>
   <div class="fgroup"><span>{L(lang, "Amount", "Montant")}</span><input id="trk-a" class="search" type="number" min="100" step="100" value="10000" style="min-width:130px;flex:none"></div>
   <div class="fgroup"><span>{L(lang, "Monthly top-up", "Versement mensuel")}</span><input id="trk-m" class="search" type="number" min="0" step="50" value="0" style="min-width:110px;flex:none"></div>
+  {mixrow}
  </div>
+ <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros (Horus converted from US dollars at the month-end EUR/USD rate), brought back to the chosen weights every month. Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark.", "Mix : les deux stratégies en euros (Horus converti depuis le dollar au cours EUR/USD de fin de mois), ramenées aux poids choisis chaque mois. Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus.")}</p>
  <div class="stats" id="trk-stats"></div>
  <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
  <h3>{L(lang, "Year by year", "Année par année")}</h3>
  <div class="tbl-wrap"><table class="t" id="trk-tbl"></table></div>
- <p class="cap">{L(lang, "Hypothetical backtests, net of trading costs and ETF fees, before taxes. Past performance does not guarantee future returns. The value series follows the official rules (V4c); Horus Smart Beta is in US dollars (Horus AM data). Not investment advice.",
-   "Backtests hypothétiques, nets de frais de transaction et de frais d’ETF, avant impôts. Les performances passées ne préjugent pas des performances futures. La série value suit les règles officielles (V4c) ; Horus Smart Beta est en dollars (données Horus AM). Ceci n’est pas un conseil en investissement.")}</p>
+ <p class="cap">{L(lang, "Hypothetical backtests, net of trading costs and ETF fees, before taxes. Past performance does not guarantee future returns. The value series follows the official rules (V4c), benchmark MSCI World Value; Horus Smart Beta is in US dollars (Horus AM data), converted to euros only in the mix. Not investment advice.",
+   "Backtests hypothétiques, nets de frais de transaction et de frais d’ETF, avant impôts. Les performances passées ne préjugent pas des performances futures. La série value suit les règles officielles (V4c), indice MSCI World Value ; Horus Smart Beta est en dollars (données Horus AM), converti en euros seulement dans le mix. Ceci n’est pas un conseil en investissement.")}</p>
 </div></section>"""
     T = json.dumps(data, separators=(",", ":"))
     js = """<script>(function(){
@@ -921,7 +940,11 @@ function stat(k,v,s){return '<div class="stat"><div class="k">'+k+'</div><div cl
 function sim(r,i0,amt,top){var v=amt,inv=amt,out=[],pk=0,dd=0;for(var i=i0;i<r.length;i++){if(i>i0){v+=top;inv+=top}v*=1+r[i];out.push([v,inv]);}return out}
 function mdd(r,i0){var n=1,pk=1,dd=0;for(var i=i0;i<r.length;i++){n*=1+r[i];pk=Math.max(pk,n);dd=Math.min(dd,n/pk-1)}return dd}
 function draw(){
- var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0],amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
+ var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0];
+ var mix=k==="mix";$("trk-mixg").style.display=mix?"":"none";$("trk-mixnote").style.display=mix?"":"none";
+ if(mix){var w=(+$("trk-w").value)/100;$("trk-wl").textContent=Math.round(w*100)+" / "+Math.round(100-w*100);S.r=S.rv.map(function(x,i){return w*x+(1-w)*S.rh[i]});S.b=S.bv.map(function(x,i){return w*x+(1-w)*S.bh[i]});
+  S.name=FR?["","Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus"]:["Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus",""];S.bench=FR?"Mix des indices":"Benchmark mix"}
+ var _=0,amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
  var i0=S.dates.indexOf(d0);if(i0<0){i0=d0<S.dates[0]?0:S.dates.length-1}$("trk-d").value=S.dates[i0];
  $("trk-d").min=S.dates[0];$("trk-d").max=S.dates[S.dates.length-1];
  var P=sim(S.r,i0,amt,top),B=sim(S.b,i0,amt,top),n=P.length,yrs=n/12;
@@ -953,11 +976,46 @@ function draw(){
  Object.keys(ys).sort().reverse().forEach(function(y){var o=ys[y],dp=o.p-1,db=o.b-1;rows+='<tr><td>'+y+'</td><td class="n '+(dp<0?"neg":"")+'">'+pc(dp,1)+'</td><td class="n">'+pc(db,1)+'</td><td class="n '+(dp-db<0?"neg":"pos")+'">'+pc(dp-db,1)+'</td><td class="n">'+money(P[o.last][0],S.ccy)+'</td></tr>'});
  $("trk-tbl").innerHTML=rows;
 }
-["trk-s","trk-d","trk-a","trk-m"].forEach(function(i){$(i).addEventListener("input",draw);$(i).addEventListener("change",draw)});
+["trk-s","trk-d","trk-a","trk-m","trk-w"].forEach(function(i){$(i).addEventListener("input",draw);$(i).addEventListener("change",draw)});
 $("trk-s").addEventListener("change",function(){$("trk-d").value=""; draw()});
 draw();})();</script>""".replace("__DATA__", T).replace("__LANG__", lang)
     page("tracker/index.html", lang, L(lang, "Portfolio tracker", "Simulateur de portefeuille"), body, "tracker",
          L(lang, "Simulate an investment in one of the three strategies from any start month.", "Simulez un investissement dans l’une des trois stratégies à partir de n’importe quel mois."), js)
+
+
+# ---------------------------------------------------------------- FACTSHEETS ARCHIVE
+def build_factsheets(lang):
+    idx = json.loads((HERE / "static/factsheets/index.json").read_text())
+    base = "../" if lang == "en" else "../../"
+    strat = [("value", L(lang, "Global Value Rotation", "Rotation Value mondiale"), "Thoth Ledger", "../strategies/value-rotation/"),
+             ("horus", "Horus Smart Beta 60/40", "Horus AM", "../strategies/horus-smart-beta/")]
+    months = sorted({e["month"] for k, _, _, _ in strat for e in idx.get(k, [])}, reverse=True)
+    link = lambda e, lg: f'<a class="btn sm" href="{base}assets/factsheets/{e[lg]}" download>{ICON_DL} {lg.upper()}</a>'
+    rows = []
+    for m in months:
+        for k, nm, who, href in strat:
+            e = next((x for x in idx.get(k, []) if x["month"] == m), None)
+            if e:
+                rows.append([f"<b>{month_name(m, lang)}</b>", f'<a href="{href}">{esc(nm)}</a> <small>· {who}</small>', f'<div class="btns">{link(e, "en")}{link(e, "fr")}</div>'])
+    cards = []
+    for k, nm, who, href in strat:
+        if not idx.get(k):
+            continue
+        e = idx[k][0]
+        cards.append(f'<article class="card"><div class="meta">{who} · {L(lang, "latest", "dernière")} : {month_name(e["month"], lang)}</div>'
+                     f'<h3><a href="{href}">{esc(nm)}</a></h3>'
+                     f'<p>{L(lang, "Two pages: performance against the benchmark, risk, calendar years, current portfolio and the comment of the month.", "Deux pages : performances face à l’indice, risque, années civiles, portefeuille actuel et commentaire du mois.")}</p>'
+                     f'<div class="foot links"><div class="btns">{link(e, "en")}{link(e, "fr")}</div></div></article>')
+    body = phead(L(lang, "Monthly reporting", "Reporting mensuel"), "Factsheets",
+                 L(lang, "Every monthly factsheet published for the two strategies, in English and French. A new issue is added at the start of each month once the month-end data are in; past issues are never rewritten.",
+                   "Toutes les factsheets mensuelles publiées pour les deux stratégies, en anglais et en français. Un nouveau numéro est ajouté au début de chaque mois, une fois les données de fin de mois disponibles ; les numéros passés ne sont jamais réécrits."))
+    body += '<section class="sec"><div class="wrap"><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">' + "".join(cards) + '</div></div></section>'
+    body += ('<section class="sec alt"><div class="wrap"><div class="shead"><h2>' + L(lang, "Archive", "Archives") + '</h2><p>'
+             + L(lang, "Newest first. The value factsheets start with September 2026; the live record of the strategy starts in November 2026.",
+                 "Les plus récentes d’abord. Les factsheets value commencent en septembre 2026 ; le suivi réel de la stratégie commence en novembre 2026.")
+             + '</p></div>' + tbl([L(lang, "Month", "Mois"), L(lang, "Strategy", "Stratégie"), L(lang, "Download", "Télécharger")], rows) + '</div></section>')
+    page("factsheets/index.html", lang, "Factsheets", body, "strategies",
+         L(lang, "Monthly factsheets of the Thoth Ledger strategies, English and French.", "Factsheets mensuelles des stratégies Thoth Ledger, en anglais et en français."))
 
 
 def main():
@@ -980,6 +1038,7 @@ def main():
         build_research(lang)
         build_database(lang)
         build_tracker(lang)
+        build_factsheets(lang)
         simple_page("journal", lang, "", t(lang, "journal"), L(lang, "Decisions and milestones, dated.", "Décisions et étapes, datées."))
         simple_page("methodology", lang, "", t(lang, "methodology"), L(lang, "Where the data come from and the rules every result respects.", "D’où viennent les données et les règles que chaque résultat respecte."))
         simple_page("about", lang, "about", t(lang, "about"), L(lang, "Who is behind this ledger and why it exists.", "Qui tient ce carnet et pourquoi il existe."))

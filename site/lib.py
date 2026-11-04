@@ -25,7 +25,7 @@ esc = html.escape
 UI = {
     "en": {
         "home": "Home", "strategies": "Strategies", "pitches": "Stock pitches", "research": "Research", "database": "Database",
-        "journal": "Journal", "tracker": "Tracker", "about": "About", "methodology": "Methodology", "skip": "Skip to content", "menu": "Menu",
+        "journal": "Journal", "tracker": "Tracker", "factsheets": "Factsheets", "about": "About", "methodology": "Methodology", "skip": "Skip to content", "menu": "Menu",
         "theme": "Switch light or dark theme", "tagline": "Equity research & strategies", "on_page": "On this page",
         "sections": "Sections", "elsewhere": "Elsewhere", "code": "Code on GitHub", "horus": "Horus AM",
         "foot1": "Student research by Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), CFA Level II candidate.",
@@ -37,7 +37,7 @@ UI = {
     },
     "fr": {
         "home": "Accueil", "strategies": "Stratégies", "pitches": "Stock pitches", "research": "Recherche", "database": "Données",
-        "journal": "Journal", "tracker": "Simulateur", "about": "À propos", "methodology": "Méthodologie", "skip": "Aller au contenu", "menu": "Menu",
+        "journal": "Journal", "tracker": "Simulateur", "factsheets": "Factsheets", "about": "À propos", "methodology": "Méthodologie", "skip": "Aller au contenu", "menu": "Menu",
         "theme": "Basculer en thème clair ou sombre", "tagline": "Recherche actions & stratégies", "on_page": "Sur cette page",
         "sections": "Rubriques", "elsewhere": "Ailleurs", "code": "Code sur GitHub", "horus": "Horus AM",
         "foot1": "Travail de recherche étudiant de Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), candidat au CFA niveau II.",
@@ -230,7 +230,7 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
 </main>
 <footer class="sitefoot"><div class="wrap">
  <div><img class="flogo" src="{r}assets/brand/logo_full_light.png" alt="Thoth Ledger"><b>{AUTHOR} · {SITE}</b><p>{t(lang, "foot1")}</p><p>{t(lang, "foot2")}</p></div>
- <div><b>{t(lang, "sections")}</b>{"".join(f'<a href="{lr}{href}">{t(lang, lab)}</a>' for key, lab, href in NAV[1:])}<a href="{lr}journal/">{t(lang, "journal")}</a><a href="{lr}methodology/">{t(lang, "methodology")}</a></div>
+ <div><b>{t(lang, "sections")}</b>{"".join(f'<a href="{lr}{href}">{t(lang, lab)}</a>' for key, lab, href in NAV[1:])}<a href="{lr}factsheets/">{t(lang, "factsheets")}</a><a href="{lr}journal/">{t(lang, "journal")}</a><a href="{lr}methodology/">{t(lang, "methodology")}</a></div>
  <div><b>{t(lang, "elsewhere")}</b><a href="{HORUS_URL}">Horus Asset Management ↗</a><a href="{REPO}">{t(lang, "code")} ↗</a><p style="margin-top:12px">{t(lang, "built")} {built(lang)}.</p></div>
 </div></footer>
 {scripts}
