@@ -196,7 +196,7 @@ def build_home(lang):
  <div class="panel"><header><span>{L(lang, "Key figures", "Chiffres clés")}</span><span>{L(lang, "backtests, net of costs", "backtests, nets de frais")}</span></header>
   <div class="kpis">
    <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">{pct(hp["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2007 vs", "par an depuis 2007 vs")} {pct(HS["b"]["cagr"], 1, lang=lang)}</div></div>
-   <div class="kpi"><div class="k">{L(lang, "Value signal (stock level)", "Signal value (titres)")}</div><div class="v">{num(IC_MEAN, 3, lang)}</div><div class="s">{L(lang, "rank IC, t ≈", "IC de rang, t ≈")} {num(IC_T, 1, lang)}</div></div>
+   <div class="kpi"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><div class="v">{pct(ETF["value"]["stats"]["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2006 vs", "par an depuis 2006 vs")} {pct(ETF["value"]["bench_stats"]["cagr"], 1, lang=lang)} (MSCI World Value)</div></div>
    <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies", "Surpondérer, 2 cas d'école")}</div></div>
    <div class="kpi"><div class="k">{L(lang, "Securities researched", "Titres étudiés")}</div><div class="v">1 990</div><div class="s">{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</div></div>
   </div>
@@ -206,14 +206,14 @@ def build_home(lang):
 
 <section class="sec"><div class="wrap">
  <div class="shead"><h2>{L(lang, "Two strategies, one discipline", "Deux stratégies, une même discipline")}</h2>
- <p>{L(lang, "Each strategy can be held with a handful of UCITS ETFs, is rebalanced on a fixed calendar and was specified before its backtest was run.", "Chaque stratégie se détient avec quelques ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.")}</p></div>
+ <p>{L(lang, "Each strategy is held mostly through UCITS ETFs, is rebalanced on a fixed calendar and was specified before its backtest was run.", "Chaque stratégie se détient surtout via des ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.")}</p></div>
  {cards}
 </div></section>
 
 <section class="sec alt"><div class="wrap">
  <div class="cols2" style="gap:48px;align-items:start">
   <div><div class="shead"><h2>{L(lang, "From top-down to bottom-up", "Du top-down au bottom-up")}</h2>
-   <p>{L(lang, "The value rotation chooses cheap countries and sectors. The stock screen finds the cheapest companies inside them. The pitches check, one company at a time, whether cheap means mispriced.", "La rotation value choisit les pays et secteurs bon marché. Le screen titres trouve les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.")}</p></div>
+   <p>{L(lang, "The value strategy holds cheap countries and sectors through ETFs, then the cheapest companies inside them. The pitches check, one company at a time, whether cheap means mispriced.", "La stratégie value détient les pays et secteurs bon marché via des ETF, puis les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.")}</p></div>
    <div class="btns"><a class="btn" href="pitches/">{L(lang, "All pitches", "Tous les pitches")} →</a></div></div>
   <div class="notes">{pitch_rows}</div>
  </div>
@@ -240,11 +240,11 @@ def strategy_cards(lang, lr):
     hp = HS["p"]
     v = ETF["value"]
     return f"""<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
- <article class="card"><div class="tags"><span class="tag green">{L(lang, "Equities · ETF", "Actions · ETF")}</span><span class="tag">{L(lang, "Monthly · 8 ETF", "Mensuel · 8 ETF")}</span></div>
+ <article class="card"><div class="tags"><span class="tag green">{L(lang, "Equities · ETF + stocks", "Actions · ETF + titres")}</span><span class="tag">{L(lang, "Monthly · 8 ETF + 8 stocks", "Mensuel · 8 ETF + 8 titres")}</span></div>
   <h3><a href="{lr}strategies/value-rotation/">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</a></h3>
-  <p>{L(lang, "Value decides what to hold: the cheapest developed countries and sectors against their own history. A risk rule decides how much: 100%, or 50% when the market turns. ETF core of a core-satellite value strategy.", "Le value décide quoi détenir : les pays et secteurs développés les moins chers par rapport à leur propre historique. Une règle de risque décide combien : 100 %, ou 50 % quand le marché se retourne. Cœur ETF d’une stratégie value cœur-satellite.")}</p>
+  <p>{L(lang, "70% in ETFs on the cheapest developed countries and sectors against their own history, 30% in the eight cheapest stocks inside them. A risk rule cuts equities to 50% when the market turns.", "70 % en ETF sur les pays et secteurs développés les moins chers par rapport à leur propre historique, 30 % sur les huit actions les moins chères à l’intérieur. Une règle de risque ramène les actions à 50 % quand le marché se retourne.")}</p>
   <div class="mini"><div><span>CAGR</span><b>{pct(v["stats"]["cagr"], 1, lang=lang)}</b></div><div><span>Sharpe</span><b>{num(v["stats"]["sharpe"], 2, lang)}</b></div><div><span>Max DD</span><b>{pct(v["stats"]["mdd"], 0, lang=lang)}</b></div></div>
-  <div class="foot"><span>{esc(v["bench_name"].replace(" Net EUR", ""))}{L(lang, ":", " :")} {pct(v["bench_stats"]["cagr"], 1, lang=lang)} · {num(v["bench_stats"]["sharpe"], 2, lang)} · {pct(v["bench_stats"]["mdd"], 0, lang=lang)} · 2006-2026</span><b>→</b></div></article>
+  <div class="foot"><span>{esc(v["bench_name"].replace(" Net EUR", ""))}{L(lang, ":", " :")} {pct(v["bench_stats"]["cagr"], 1, lang=lang)} · {num(v["bench_stats"]["sharpe"], 2, lang)} · {pct(v["bench_stats"]["mdd"], 0, lang=lang)} · 2006-2026 · EUR</span><b>→</b></div></article>
  <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">{L(lang, "Yearly · 4 ETF", "Annuel · 4 ETF")}</span></div>
   <h3><a href="{lr}strategies/horus-smart-beta/">Horus Smart Beta 60/40</a></h3>
   <p>{L(lang, "A permanent 60/40 whose equity half holds the two ETFs most exposed to size, growth and momentum, chosen each January.", "Un 60/40 permanent dont la poche actions détient les deux ETF les plus exposés à la taille, la croissance et le momentum, choisis chaque janvier.")}</p>
@@ -253,49 +253,67 @@ def strategy_cards(lang, lr):
 </div>"""
 
 
+def combination_block(lang):
+    c = ETF["combination"]; P = lambda x, n=1: pct(x, n, lang=lang)
+    rows = []
+    for m in c["mixes"]:
+        lab = L(lang, f"{int(round(m['value'] * 100))}% value / {int(round(100 - m['value'] * 100))}% Horus", f"{int(round(m['value'] * 100))} % value / {int(round(100 - m['value'] * 100))} % Horus")
+        rows.append([lab, P(m["cagr"]), P(m["vol"]), num(m["sharpe"], 2, lang), P(m["mdd"], 0)])
+    best = max(c["mixes"], key=lambda m: m["sharpe"])
+    per = f'{month_name(c["start"], lang)} – {month_name(c["end"], lang)}'
+    return (f'<div class="shead"><h2>{L(lang, "Why hold both", "Pourquoi détenir les deux")}</h2><p>{L(lang, f"Monthly returns in euros, {per}, rebalanced to the target weights every month.", f"Rendements mensuels en euros, {per}, ramenés aux poids cibles chaque mois.")}</p></div>'
+            + tbl([L(lang, "Mix", "Mélange"), "CAGR", L(lang, "Volatility", "Volatilité"), "Sharpe", "Max DD"], rows, num_cols=(1, 2, 3, 4))
+            + f'<div class="callout">{L(lang, f"The two strategies are correlated at {num(c["corr"], 2)} overall and only {num(c["corr_bear"], 2)} in the months when world equities fall, because Horus keeps 40% in bonds while the value strategy holds equities and cuts them to 50% on its own signals. Combining them lifts the Sharpe ratio from {num(c["mixes"][0]["sharpe"], 2)} (value alone) and {num(c["mixes"][-1]["sharpe"], 2)} (Horus alone) to about {num(best["sharpe"], 2)}. Two caveats: Horus in euros gained from the rise of the dollar over the period, and the two answer different needs — a 60/40 for a balanced investor, a 100%-equity value strategy for an equity allocation.", f"Les deux stratégies sont corrélées à {num(c["corr"], 2, "fr")} sur l’ensemble et à seulement {num(c["corr_bear"], 2, "fr")} les mois où les actions mondiales baissent : Horus garde 40 % d’obligations, tandis que la stratégie value détient des actions et les ramène à 50 % selon ses propres signaux. Les combiner fait passer le ratio de Sharpe de {num(c["mixes"][0]["sharpe"], 2, "fr")} (value seule) et {num(c["mixes"][-1]["sharpe"], 2, "fr")} (Horus seul) à environ {num(best["sharpe"], 2, "fr")}. Deux réserves : Horus en euros a profité de la hausse du dollar sur la période, et les deux répondent à des besoins différents — un 60/40 pour un investisseur équilibré, une stratégie value 100 % actions pour une poche actions.")}</div>'
+            + f'<p class="cap"><a href="../tracker/">{L(lang, "Simulate any mix in the tracker", "Simuler n’importe quel mélange dans le simulateur")} →</a></p>')
+
+
 # ---------------------------------------------------------------- STRATEGIES INDEX
 def build_strategies(lang):
-    body = phead(t(lang, "strategies"), L(lang, "Strategies you can hold with ETFs", "Des stratégies que l'on peut détenir avec des ETF"),
-                 L(lang, "Two rules-based strategies, each implementable with UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the pitches.",
-                   "Deux stratégies systématiques, chacune réplicable avec des ETF UCITS et rebalancée à date fixe, plus le moteur de recherche titre par titre qui alimente les pitches."))
+    body = phead(t(lang, "strategies"), L(lang, "Strategies anyone can replicate", "Des stratégies réplicables par tous"),
+                 L(lang, "Two rules-based strategies, built mainly from UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the value satellite and the pitches.",
+                   "Deux stratégies systématiques, construites surtout avec des ETF UCITS et rebalancées à date fixe, plus le moteur de recherche titre par titre qui alimente le satellite value et les pitches."))
     body += f'<section class="sec"><div class="wrap">{strategy_cards(lang, "../")}<p class="cap" style="margin-top:16px"><a href="../factsheets/">' + L(lang, "Monthly factsheets, all issues", "Factsheets mensuelles, tous les numéros") + ' →</a></p></div></section>'
-    body += f"""<section class="sec alt"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
+    body += f'<section class="sec alt"><div class="wrap">{combination_block(lang)}</div></section>'
+    body += f"""<section class="sec"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
 <div class="grid">
  <article class="card"><div class="meta">{L(lang, "Stock level · 1,990 developed-market stocks · 2021-2026", "Titres · 1 990 actions de pays développés · 2021-2026")}</div>
   <h3><a href="value-developed/">{L(lang, "Stock-level value screen", "Screen value titre par titre")}</a></h3>
-  <p>{L(lang, "The research engine behind the value rotation and the pitches: sector-neutral value composite, 50 names, three weighting schemes.", "Le moteur de recherche derrière la rotation value et les pitches : composite value neutre par secteur, 50 titres, trois pondérations.")}</p>
+  <p>{L(lang, "The research engine behind the satellite and the pitches: sector-relative value composite, three weighting schemes, attribution.", "Le moteur de recherche derrière le satellite et les pitches : composite value relatif au secteur, trois pondérations, attribution.")}</p>
   <div class="foot"><span>{L(lang, "Equal weight", "Équipondéré")} {pct(H["EW"]["ann_return"], 1, lang=lang)} · IC {num(IC_MEAN, 3, lang)}</span><b>→</b></div></article>
 </div></div></section>"""
     page("strategies/index.html", lang, t(lang, "strategies"), body, "strategies",
          L(lang, "ETF-replicable strategies by Noah Doose.", "Stratégies réplicables en ETF de Noah Doose."))
 
 
-
 VAR_FR = {
-    "V1 Rules (validated 30 Oct)": "V1 Règles (validées le 30/10)", "V6 Rules + market trend filter": "V6 Règles + filtre de tendance du marché",
-    "VB 50% MSCI World + 50% V6": "VB 50 % MSCI World + 50 % V6", "V3 Cap-weighted world, value tilt": "V3 Monde pondéré par les capi, incliné value",
-    "V4b Per-line trend filter": "V4b Filtre de tendance ligne par ligne", "V4c Buffer + market trend filter (official)": "V4c Tampon + filtre de tendance du marché (officielle)",
-    "V4d 12 tranches + market trend filter": "V4d 12 tranches + filtre de tendance", "V4e 12 tranches + filter, bonds risk-off": "V4e 12 tranches + filtre, refuge obligataire", "V4c Buffer + 100% cash trend filter": "V4c Tampon + filtre de tendance 100 % cash", "V5 3 sectors, 50% de-risking, fast re-entry": "V5 3 secteurs, réduction à 50 %, retour rapide", "V7 ETF core: V4c selection + 50% de-risking (official)": "V7 Cœur ETF : sélection V4c + réduction à 50 % (officielle)", "V7 with fast re-entry": "V7 avec retour rapide", "MSCI World Value Net EUR": "MSCI World Value Net EUR",
-    "MSCI World Net EUR": "MSCI World Net EUR", "MSCI World Value Net EUR": "MSCI World Value Net EUR"}
+    "V1 Rules of 30 Oct: 4 cheapest countries + 4 sectors": "V1 Règles du 30/10 : 4 pays + 4 secteurs les moins chers",
+    "V4c + holding buffer and 100% cash trend filter": "V4c + tampon de détention et filtre de tendance 100 % cash",
+    "V5 3 sectors only, 50% de-risking": "V5 3 secteurs seulement, réduction à 50 %",
+    "V7 ETF core: V4c selection, 50% de-risking": "V7 Cœur ETF : sélection V4c, réduction à 50 %",
+    "Satellite: 8 cheapest stocks in the core's countries and sectors": "Satellite : 8 actions les moins chères dans les pays et secteurs du cœur",
+    "Strategy: 70% core + 30% satellite (official)": "Stratégie : 70 % cœur + 30 % satellite (officielle)",
+    "MSCI World Value Net EUR": "MSCI World Value Net EUR", "MSCI World Net EUR": "MSCI World Net EUR"}
 LINE_NAMES = {**{"C_" + c: nm for c, nm, *_ in COUNTRIES}, **{"S_" + c: nm for c, nm, _ in SECTORS}}
+WHEN_FR = {"30 Oct": "30/10", "4 Nov": "4/11", "5 Nov": "5/11", "bench": "—"}
+
+
+def variants_table(lang, keys=()):
+    rows = []
+    for v in ETF["variants"]:
+        hl = "official" in v["name"]
+        nm = VAR_FR.get(v["name"], v["name"]) if lang == "fr" else v["name"]
+        when = v.get("when", "")
+        rows.append([(("<b>" + esc(nm) + "</b>") if hl else esc(nm)), ("—" if when == "bench" else (WHEN_FR.get(when, when) if lang == "fr" else when)),
+                     pct(v["cagr"], 1, lang=lang), num(v["sharpe"], 2, lang), pct(v["mdd"], 0, lang=lang),
+                     f'{pct(v["design_cagr"], 1, lang=lang)} · {num(v["design_sharpe"], 2, lang)}', f'{pct(v["valid_cagr"], 1, lang=lang)} · {num(v["valid_sharpe"], 2, lang)}'])
+    return tbl([L(lang, "Version", "Version"), L(lang, "Decided", "Décidée"), "CAGR", "Sharpe", "Max DD", L(lang, "2006-2015 (CAGR · Sharpe)", "2006-2015 (CAGR · Sharpe)"),
+                L(lang, "2016-2026 (CAGR · Sharpe)", "2016-2026 (CAGR · Sharpe)")], rows, num_cols=(2, 3, 4, 5, 6),
+               row_cls=lambda i, r: "hl" if "<b>" in r[0] else ("bench" if r[0].startswith("MSCI") else ""))
 TREND_NAMES = {"EQ_US": ("US equities", "Actions américaines"), "EQ_EMU": ("Euro area equities", "Actions zone euro"), "EQ_JP": ("Japanese equities", "Actions japonaises"),
                "EQ_EM": ("Emerging equities", "Actions émergentes"), "BD_UST": ("US Treasuries", "Trésor américain"), "BD_EGB": ("Euro government bonds", "Obligations d'État zone euro"),
                "BD_GAGG": ("Global aggregate bonds", "Obligations mondiales"), "BD_UCRP": ("US IG credit", "Crédit IG américain"), "CM_GOLD": ("Gold", "Or"),
                "CM_SILV": ("Silver", "Argent"), "CM_BCOM": ("Broad commodities", "Matières premières"), "CM_WTI": ("Crude oil", "Pétrole"),
                "CM_CU": ("Copper", "Cuivre"), "CM_AGRI": ("Agriculture", "Agriculture")}
-
-
-def variants_table(lang, keys):
-    rows = []
-    for v in ETF["variants"]:
-        hl = "official" in v["name"]
-        nm = VAR_FR.get(v["name"], v["name"]) if lang == "fr" else v["name"]
-        tag = "" if v.get("kind") != "post" else L(lang, " · tested after the data", " · testée après les données")
-        rows.append([(("<b>" + esc(nm) + "</b>") if hl else esc(nm)) + (f"<small>{tag}</small>" if tag else ""), pct(v["cagr"], 1, lang=lang), num(v["sharpe"], 2, lang), pct(v["mdd"], 0, lang=lang),
-                     f'{pct(v["design_cagr"], 1, lang=lang)} · {num(v["design_sharpe"], 2, lang)}', f'{pct(v["valid_cagr"], 1, lang=lang)} · {num(v["valid_sharpe"], 2, lang)}'])
-    return tbl([L(lang, "Version", "Version"), "CAGR", "Sharpe", "Max DD", L(lang, "2006-2015 (CAGR · Sharpe)", "2006-2015 (CAGR · Sharpe)"),
-                L(lang, "2016-2026 (CAGR · Sharpe)", "2016-2026 (CAGR · Sharpe)")], rows, num_cols=(1, 2, 3, 4, 5),
-               row_cls=lambda i, r: "hl" if "<b>" in r[0] else ("bench" if r[0].startswith("MSCI") else ""))
 
 
 def results_block(kind, lang):
@@ -341,7 +359,7 @@ def results_block(kind, lang):
                       series2=[d["bench_calendar"][y] * 100 for y in years], names=[main, bn])
     period = f'{month_name(d["dates"][0], lang)} – {month_name(d["dates"][-1], lang)}'
     html = (cards + chart + f'<h3>{L(lang, "Statistics", "Statistiques")}, {period}</h3>' + stats_tbl +
-            f'<p class="cap">{L(lang, "Backtest on index total returns in EUR (ETF proxies), unhedged, net of costs: 0.10% per unit of turnover and 0.25% a year of ETF fees, deducted monthly. Cash earns the euro money-market rate. Sharpe: (CAGR − average cash rate) / volatility. Hypothetical results.", "Backtest sur les rendements totaux des indices en EUR (proxys des ETF), non couvert, net de frais : 0,10 % par unité de rotation et 0,25 % par an de frais d’ETF, déduits chaque mois. Le cash rapporte le taux monétaire en euro. Sharpe : (CAGR − taux monétaire moyen) / volatilité. Résultats hypothétiques.")}</p>'
+            f'<p class="cap">{L(lang, "Backtest in EUR, unhedged, net of costs. ETF core: index total returns as ETF proxies, 0.10% per unit of turnover and 0.25% a year of ETF fees. Satellite: stock total returns with dividends, 0.15% per unit of turnover and 0.40% a year for withholding tax. Cash earns the euro money-market rate. Turnover counts buys and sells, including the monthly return to equal weights and the risk-rule switches. Sharpe: (CAGR − average cash rate) / volatility. Hypothetical results.", "Backtest en EUR, non couvert, net de frais. Cœur ETF : rendements totaux des indices comme proxys des ETF, 0,10 % par unité de rotation et 0,25 % par an de frais d’ETF. Satellite : rendements totaux des actions dividendes inclus, 0,15 % par unité de rotation et 0,40 % par an de retenue à la source. Le cash rapporte le taux monétaire en euro. La rotation compte achats et ventes, y compris le retour mensuel aux poids égaux et les bascules de la règle de risque. Sharpe : (CAGR − taux monétaire moyen) / volatilité. Résultats hypothétiques.")}</p>'
             f'<h3>{L(lang, "Year by year", "Année par année")}</h3><figure class="ch"><figcaption><span>{L(lang, "Calendar-year returns", "Rendements par année civile")} <small>· %</small></span></figcaption>{cal}</figure>')
     nav_json = json.dumps(nav).replace("</", "<\\/")
     return html, "<script>window.NAV=" + nav_json + ";</script>"
@@ -355,49 +373,52 @@ def status_block(lang):
 
 
 def current_value(lang):
-    h = ETF["value"]["holdings"]
-    lr = "../../"
-    rows = []
-    for ln in h["selection"]:
-        nm = LINE_NAMES.get(ln, ln)
-        kind = L(lang, "Country", "Pays") if ln.startswith("C_") else L(lang, "Sector", "Secteur")
-        ps = [p for p in PITCHES if (ln.startswith("C_") and COUNTRY_CODE.get(p["country"]) == ln[2:]) or (ln.startswith("S_") and SECTOR_CODE.get(p["sector"]) == ln[2:])]
-        rows.append([kind, f"<b>{esc(tr(lang, nm))}</b>", pct(0.125 * h.get("exposure", 1.0), 1, lang=lang), pitch_links(ps, lang, lr)])
-    ind = h.get("indicators", {}); nred = sum(ind.values())
+    h = ETF["value"]["holdings"]; lr = "../../"; P = lambda x, n=1: pct(x, n, lang=lang)
+    ind = h.get("indicators", {}); nred = sum(ind.values()); expo = h.get("exposure", 1.0)
     names = {"trend": L(lang, "trend", "tendance"), "credit": L(lang, "credit", "crédit"), "breadth": L(lang, "breadth", "largeur")}
     reds = ", ".join(names[k] for k, x in ind.items() if x) or L(lang, "none", "aucun")
-    expo = h.get("exposure", 1.0)
-    state = L(lang, f"Risk rule: <b>{pct(expo, 0, lang=lang)} invested</b>. Red indicators: {reds} ({nred} of 3). The portfolio is cut to 50% when at least two indicators are red, and goes back to 100% when fewer than two are.",
-                    f"Règle de risque : <b>investi à {pct(expo, 0, lang=lang)}</b>. Indicateurs rouges : {reds} ({nred} sur 3). Le portefeuille est réduit à 50 % quand au moins deux indicateurs sont rouges, et revient à 100 % quand moins de deux le sont.")
-    return (f'<div class="callout">{state}</div>' + tbl([L(lang, "Sleeve", "Poche"), L(lang, "Line", "Ligne"), L(lang, "Weight", "Poids"), L(lang, "Our pitches inside", "Nos pitches à l'intérieur")], rows, num_cols=(2,)) +
-            f'<p class="cap">{L(lang, "Signal at the end of", "Signal à fin")} {month_name(h["date"], lang)}, {L(lang, "held over the following month. Renault, BNP Paribas and Carrefour sit in the France sleeve, Carrefour also in Consumer Staples: the rotation and the pitches point to the same place.", "détenu le mois suivant. Renault, BNP Paribas et Carrefour sont dans la poche France, Carrefour aussi dans la Consommation de base : la rotation et les pitches pointent au même endroit.")}</p>')
+    state = L(lang, f"Decided at the end of {month_name(h['date'], 'en')}, the latest month of the backtest data. Risk rule: <b>{P(expo, 0)} invested</b> (red indicators: {reds}, {nred} of 3).",
+                    f"Décidé à fin {month_name(h['date'], 'fr')}, dernier mois des données du backtest. Règle de risque : <b>investi à {P(expo, 0)}</b> (indicateurs rouges : {reds}, {nred} sur 3).")
+    crow = []
+    for ln in h["selection"]:
+        nm = LINE_NAMES.get(ln, ln)
+        ps = [p for p in PITCHES if (ln.startswith("C_") and COUNTRY_CODE.get(p["country"]) == ln[2:]) or (ln.startswith("S_") and SECTOR_CODE.get(p["sector"]) == ln[2:])]
+        crow.append([L(lang, "Country", "Pays") if ln.startswith("C_") else L(lang, "Sector", "Secteur"), f"<b>{esc(tr(lang, nm))}</b>", P(0.7 * 0.125 * expo, 2), pitch_links(ps, lang, lr)])
+    srow = []
+    for s in h["satellite"]:
+        ps = [p for p in PITCHES if p["name"] == s.get("pitch")]
+        srow.append([f"<b>{esc(s['name'])}</b>", esc(tr(lang, s["sector"])), s["country"], P(s["score_pct"], 0), P(0.3 / 8 * expo, 2), pitch_links(ps, lang, lr) if ps else "—"])
+    return (f'<div class="callout">{state}</div><h3>{L(lang, "ETF core (70%)", "Cœur ETF (70 %)")}</h3>'
+            + tbl([L(lang, "Sleeve", "Poche"), L(lang, "Line", "Ligne"), L(lang, "Weight", "Poids"), L(lang, "Our pitches inside", "Nos pitches à l'intérieur")], crow, num_cols=(2,))
+            + f'<h3>{L(lang, "Stock satellite (30%)", "Satellite actions (30 %)")}</h3>'
+            + tbl([L(lang, "Company", "Société"), L(lang, "Sector", "Secteur"), L(lang, "Country", "Pays"), L(lang, "Value percentile in its sector", "Percentile value dans son secteur"), L(lang, "Weight", "Poids"), L(lang, "Our pitch", "Notre pitch")], srow, num_cols=(3, 4))
+            + f'<p class="cap">{L(lang, "Weights at full exposure: 8.75% per ETF and 3.75% per stock. A stock can stay in the satellite after its country and sector have left the core: it is kept while it remains in the cheapest 40% of its sector.", "Poids à pleine exposition : 8,75 % par ETF et 3,75 % par action. Une action peut rester dans le satellite après que son pays et son secteur ont quitté le cœur : elle est gardée tant qu’elle reste parmi les 40 % les moins chères de son secteur.")}</p>')
+
+
+def parts_table(lang):
+    v = ETF["value"]; P = lambda x, n=1: pct(x, n, lang=lang)
+    rows = []
+    for nm, d in ((L(lang, "Strategy 70/30", "Stratégie 70/30"), dict(stats=v["stats"], halves=v["halves"], t=v["t_vs_bench"])),
+                  (L(lang, "ETF core (70%)", "Cœur ETF (70 %)"), v["parts"]["core"]), (L(lang, "Stock satellite (30%)", "Satellite actions (30 %)"), v["parts"]["satellite"])):
+        st, hv = d["stats"], d["halves"]
+        rows.append([f"<b>{nm}</b>" if "70/30" in nm else nm, P(st["cagr"]), P(st["vol"]), num(st["sharpe"], 2, lang), P(st["mdd"], 0), P(hv["design"]["cagr"]), P(hv["valid"]["cagr"]), num(d["t"], 2, lang)])
+    hv = v["halves"]
+    rows.append([v["bench_name"], P(v["bench_stats"]["cagr"]), P(v["bench_stats"]["vol"]), num(v["bench_stats"]["sharpe"], 2, lang), P(v["bench_stats"]["mdd"], 0), P(hv["bench_design"]["cagr"]), P(hv["bench_valid"]["cagr"]), "—"])
+    b2 = v["bench2_stats"]
+    rows.append([v["bench2_name"], P(b2["cagr"]), P(b2["vol"]), num(b2["sharpe"], 2, lang), P(b2["mdd"], 0), "", "", ""])
+    return (f'<h3>{L(lang, "Core, satellite and benchmarks", "Cœur, satellite et indices")}, {month_name(v["dates"][0], lang)} – {month_name(v["dates"][-1], lang)}</h3>'
+            + tbl([L(lang, "Portfolio", "Portefeuille"), "CAGR", L(lang, "Volatility", "Volatilité"), "Sharpe", "Max DD", "2006-2015", "2016-2026", L(lang, "t vs benchmark", "t vs indice")], rows, num_cols=(1, 2, 3, 4, 5, 6, 7),
+                  row_cls=lambda i, r: "hl" if "<b>" in r[0] else ("bench" if r[0].startswith("MSCI") else "")))
 
 
 def value_reading(lang):
-    v = ETF["value"]; st, bs = v["stats"], v["bench_stats"]; d, va = v["halves"]["design"], v["halves"]["valid"]
-    bd, bv = v["halves"]["bench_design"], v["halves"]["bench_valid"]; bn = v["bench_name"].replace(" Net EUR", "")
+    v = ETF["value"]; st, bs, b2 = v["stats"], v["bench_stats"], v["bench2_stats"]; d, va = v["halves"]["design"], v["halves"]["valid"]
+    bd, bv = v["halves"]["bench_design"], v["halves"]["bench_valid"]; sat, core = v["parts"]["satellite"], v["parts"]["core"]
     P = lambda x, n=1: pct(x, n, lang=lang)
-    cal, bcal = v["calendar"], v["bench_calendar"]
-    ahead = sum(cal[y] > bcal[y] for y in cal); ny = len(cal)
-    ex08 = [y for y in cal if y != "2008"]
-    def geo(c): 
-        g = 1.0
-        for y in ex08: g *= 1 + c[y]
-        return g ** (1 / len(ex08)) - 1
-    w2 = v.get("bench2_stats")
-    pending = "" if "Value" in v["bench_name"] else f"""<div class="status" style="margin:18px 0"><span class="dot"></span><div><b>{L(lang, "Benchmark update pending", "Mise à jour de l’indice en attente")}</b><p>{L(lang, "The official benchmark is now MSCI World Value Net EUR. Its monthly series is being extracted from the Bloomberg terminal; until then, results are shown against MSCI World Net EUR.", "L’indice officiel est désormais le MSCI World Value Net EUR. Sa série mensuelle est en cours d’extraction sur le terminal Bloomberg ; en attendant, les résultats sont présentés face au MSCI World Net EUR.")}</p></div></div>"""
-    world = "" if not w2 else L(lang, f" MSCI World, the investor's alternative, earned {P(w2['cagr'])} with a {P(w2['mdd'], 0)} worst loss.",
-                                 f" Le MSCI World, l’alternative de l’investisseur, a rapporté {P(w2['cagr'])} avec une perte maximale de {P(w2['mdd'], 0)}.")
-    xs, xb = geo(cal), geo(bcal)
-    lead_en = (f"The lead does not rest on 2008 alone: excluding that year, the core earned {P(xs)} a year against {P(xb)}." if xs > xb else
-               f"The lead is concentrated: excluding 2008, the core earned {P(xs)} a year against {P(xb)}.")
-    lead_fr = (f"L’avance ne repose pas sur la seule année 2008 : hors 2008, le cœur a rapporté {P(xs)} par an contre {P(xb)}." if xs > xb else
-               f"L’avance est concentrée : hors 2008, le cœur a rapporté {P(xs)} par an contre {P(xb)}.")
-    return pending + f"""<div class="callout amber"><b>{L(lang, "What the backtest says.", "Ce que dit le backtest.")}</b> {L(lang,
-        f"Over 2006-2026 the ETF core earned {P(st['cagr'])} a year against {P(bs['cagr'])} for {bn}, with a volatility of {P(st['vol'])} against {P(bs['vol'])} and a worst loss of {P(st['mdd'], 0)} against {P(bs['mdd'], 0)}.{world} It led {bn} in both halves: {P(d['cagr'])} against {P(bd['cagr'])} over 2006-2015, {P(va['cagr'])} against {P(bv['cagr'])} over 2016-2026, and in {ahead} calendar years out of {ny}. {lead_en} The risk rule cut the portfolio to 50% in {v['risk_off_months']} months out of {v['months']}, in {v['switches']} switches; in 2008 it lost {P(abs(cal['2008']))} against {P(abs(bcal['2008']))}. None of these gaps is statistically significant on twenty years of data: the core is best read as diversified value exposure with a brake, and the clean test is the live record.",
-        f"Sur 2006-2026, le cœur ETF a rapporté {P(st['cagr'])} par an contre {P(bs['cagr'])} pour le {bn}, avec une volatilité de {P(st['vol'])} contre {P(bs['vol'])} et une perte maximale de {P(st['mdd'], 0)} contre {P(bs['mdd'], 0)}.{world} Il a devancé le {bn} sur les deux moitiés : {P(d['cagr'])} contre {P(bd['cagr'])} sur 2006-2015, {P(va['cagr'])} contre {P(bv['cagr'])} sur 2016-2026, et {ahead} années civiles sur {ny}. {lead_fr} La règle de risque a ramené le portefeuille à 50 % pendant {v['risk_off_months']} mois sur {v['months']}, en {v['switches']} bascules ; en 2008, il a perdu {P(abs(cal['2008']))} contre {P(abs(bcal['2008']))}. Aucun de ces écarts n’est statistiquement significatif sur vingt ans de données : le cœur se lit comme une exposition value diversifiée avec un frein, et le test propre est le suivi réel.")}</div>"""
-
-
+    cal, bcal = v["calendar"], v["bench_calendar"]; ahead = sum(cal[y] > bcal[y] for y in cal); ny = len(cal)
+    return f"""<div class="callout amber"><b>{L(lang, "What the backtest says.", "Ce que dit le backtest.")}</b> {L(lang,
+        f"From {month_name(v['dates'][0], 'en')} to {month_name(v['dates'][-1], 'en')}, the strategy earned {P(st['cagr'])} a year against {P(bs['cagr'])} for MSCI World Value and {P(b2['cagr'])} for MSCI World, with a worst loss of {P(st['mdd'], 0)} against {P(bs['mdd'], 0)} and {P(b2['mdd'], 0)}. It led its benchmark in both halves ({P(d['cagr'])} against {P(bd['cagr'])} over 2006-2015, {P(va['cagr'])} against {P(bv['cagr'])} over 2016-2026) and in {ahead} calendar years out of {ny}. Most of the excess return comes from the stock satellite ({P(sat['stats']['cagr'])} a year, t = {num(sat['t'], 2)}): the value signal works within sectors, at stock level, much better than between countries and sectors. The ETF core mainly brings risk control: the risk rule held 50% in cash for {v['risk_off_months']} of {v['months']} months, and the strategy lost {P(abs(cal['2008']))} in 2008 against {P(abs(bcal['2008']))}. No gap is significant at the 5% level (t = {num(v['t_vs_bench'], 2)}); the versions were chosen after seeing the whole period, so the clean test is the live record from November 2026.",
+        f"De {month_name(v['dates'][0], 'fr')} à {month_name(v['dates'][-1], 'fr')}, la stratégie a rapporté {P(st['cagr'])} par an contre {P(bs['cagr'])} pour le MSCI World Value et {P(b2['cagr'])} pour le MSCI World, avec une perte maximale de {P(st['mdd'], 0)} contre {P(bs['mdd'], 0)} et {P(b2['mdd'], 0)}. Elle a devancé son indice sur les deux moitiés ({P(d['cagr'])} contre {P(bd['cagr'])} sur 2006-2015, {P(va['cagr'])} contre {P(bv['cagr'])} sur 2016-2026) et {ahead} années civiles sur {ny}. L’essentiel de la surperformance vient du satellite actions ({P(sat['stats']['cagr'])} par an, t = {num(sat['t'], 2, 'fr')}) : le signal value fonctionne bien mieux à l’intérieur des secteurs, au niveau des titres, qu’entre pays et secteurs. Le cœur ETF apporte surtout la maîtrise du risque : la règle de risque a gardé 50 % en cash pendant {v['risk_off_months']} mois sur {v['months']}, et la stratégie a perdu {P(abs(cal['2008']))} en 2008 contre {P(abs(bcal['2008']))}. Aucun écart n’est significatif au seuil de 5 % (t = {num(v['t_vs_bench'], 2, 'fr')}) ; les versions ont été choisies après avoir vu toute la période : le test propre est le suivi réel à partir de novembre 2026.")}</div>"""
 def factsheet_section(kind, lang):
     idx = json.loads((HERE / "static/factsheets/index.json").read_text()).get(kind, [])
     if not idx:
@@ -412,14 +433,22 @@ def factsheet_section(kind, lang):
             f'<h4 style="margin-top:6px">{L(lang, "Two-page monthly factsheet", "Factsheet mensuelle de deux pages")}</h4>'
             f'<p>{L(lang, "Performance, risk, calendar years, current portfolio and a short comment, updated each month with the new data.", "Performances, risque, années civiles, portefeuille actuel et un court commentaire, mis à jour chaque mois avec les nouvelles données.")}</p></div>'
             f'<div class="btns">{btn(last, "en", "primary")}{btn(last, "fr", "")}</div></div>')
+    if kind == "value" and (HERE / "static/notes").exists():
+        nb = lambda lg, cls: f'<a class="btn {cls}" href="{base}assets/notes/Thoth_GlobalValueRotation_StrategyNote_{lg.upper()}.pdf" download>{ICON_DL} {"English" if lg == "en" else "Français"} · PDF</a>'
+        body += (f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-top:14px">'
+                 f'<div><div class="k">{L(lang, "Strategy note · 5 Nov 2026", "Note de stratégie · 5 nov. 2026")}</div>'
+                 f'<h4 style="margin-top:6px">{L(lang, "Cheap markets, cheaper stocks", "Des marchés bon marché, des actions encore moins chères")}</h4>'
+                 f'<p>{L(lang, "Three pages in a financial-newspaper format: how the strategy works, where the return comes from, where it fails.", "Trois pages au format presse financière : comment la stratégie fonctionne, d’où vient le rendement, où elle échoue.")}</p></div>'
+                 f'<div class="btns">{nb("en", "primary")}{nb("fr", "")}</div></div>')
     if arch:
         body += f'<h3>{L(lang, "Archive", "Archives")}</h3><ul>{arch}</ul>'
     body += '<p class="cap"><a href="../../factsheets/">' + L(lang, 'All factsheets, every month, both strategies', 'Toutes les factsheets, chaque mois, pour les deux stratégies') + ' →</a></p>'
-    return section("factsheet", L(lang, "Monthly factsheet", "Factsheet mensuelle"), body)
+    return section("factsheet", L(lang, "Factsheet and note", "Factsheet et note") if kind == "value" else L(lang, "Monthly factsheet", "Factsheet mensuelle"), body)
 
 
 def build_value_rotation(lang):
     lr = "../../"
+    v = ETF["value"]; P = lambda x, n=1: pct(x, n, lang=lang)
     by_country = {}
     by_sector = {}
     for s in PITCHES:
@@ -428,72 +457,74 @@ def build_value_rotation(lang):
     crow = [[f"<b>{esc(tr(lang, nm))}</b>", f'<span class="mono">{mx} Index</span>', f'<span class="mono">{loc} Index</span>', pitch_links(by_country.get(code, []), lang, lr)]
             for code, nm, mx, loc in COUNTRIES]
     srow = [[f"<b>{esc(tr(lang, nm))}</b>", f'<span class="mono">{mx} Index</span>', pitch_links(by_sector.get(code, []), lang, lr)] for code, nm, mx in SECTORS]
+    C, S = L(lang, "Core · ", "Cœur · "), L(lang, "Satellite · ", "Satellite · ")
     rules = tbl([L(lang, "Step", "Étape"), L(lang, "Rule", "Règle")], [
-        [L(lang, "Universe", "Univers"), L(lang, "14 developed-country indices and the 11 GICS sectors of MSCI World: 25 lines, each held through one UCITS ETF.", "14 indices de pays développés et les 11 secteurs GICS du MSCI World : 25 lignes, chacune détenue via un ETF UCITS.")],
-        [L(lang, "Value signal (what)", "Signal value (quoi)"), L(lang, "Average of three z-scores: earnings yield (E/P), book yield (B/P) and dividend yield, each measured against the line's own trailing 10-year history (at least 5 years). A market is cheap when it is cheap versus its own past.", "Moyenne de trois z-scores : rendement bénéficiaire (E/P), rendement comptable (B/P) et rendement du dividende, chacun mesuré par rapport à l'historique propre de la ligne sur 10 ans glissants (5 ans minimum). Un marché est bon marché quand il l'est par rapport à son propre passé.")],
-        [L(lang, "Selection", "Sélection"), L(lang, "Two sleeves of equal size: the 4 cheapest countries and the 4 cheapest sectors.", "Deux poches de même taille : les 4 pays et les 4 secteurs les moins chers.")],
-        [L(lang, "Holding buffer", "Tampon de détention"), L(lang, "A line already held is kept until it leaves the 6 cheapest of its sleeve. Value pays over years, not months: the buffer stops the strategy from selling a cheap market just because another became marginally cheaper.", "Une ligne déjà détenue est conservée tant qu'elle reste parmi les 6 moins chères de sa poche. Le value paie sur des années, pas des mois : le tampon évite de vendre un marché bon marché simplement parce qu'un autre l'est devenu un peu plus.")],
-        [L(lang, "Risk rule (how much)", "Règle de risque (combien)"), L(lang, "Three indicators are checked at each month end: trend (MSCI World Net EUR below its 10-month average), credit (euro high yield behind short euro government bonds over 3 months) and breadth (fewer than half of the 25 lines above their own 10-month average). When at least two are red, the portfolio is cut to 50% equities and 50% euro money market, never to zero.", "Trois indicateurs sont vérifiés à chaque fin de mois : tendance (MSCI World Net EUR sous sa moyenne de 10 mois), crédit (high yield euro en retard sur les obligations d’État euro courtes sur 3 mois) et largeur (moins de la moitié des 25 lignes au-dessus de leur propre moyenne de 10 mois). Quand au moins deux sont rouges, le portefeuille est ramené à 50 % d’actions et 50 % de monétaire euro, jamais à zéro.")],
-        [L(lang, "Re-entry", "Retour à 100 %"), L(lang, "Back to 100% only when fewer than two indicators are red. A faster re-entry rule (on a 3-month rebound) was tested in the same round and rejected: it re-bought in mid-2008, in the middle of the bear market.", "Retour à 100 % seulement quand moins de deux indicateurs sont rouges. Une règle de retour plus rapide (sur un rebond de 3 mois) a été testée dans la même série et écartée : elle a racheté mi-2008, en plein marché baissier.")],
-        [L(lang, "Weighting", "Pondération"), L(lang, "Equal weight, 12.5% per ETF at full exposure (6.25% when cut to 50%); long only, no leverage.", "Équipondération, 12,5 % par ETF à pleine exposition (6,25 % quand le portefeuille est réduit à 50 %) ; long uniquement, sans levier.")],
-        [L(lang, "Rebalancing", "Rebalancement"), L(lang, "Monthly: signals at the last trading day of the month, trades on the first trading day of the next month.", "Mensuel : signaux au dernier jour de bourse du mois, ordres le premier jour de bourse du mois suivant.")],
-        [L(lang, "Costs", "Frais"), L(lang, "0.10% per unit of turnover and 0.25% a year of ETF fees.", "0,10 % par unité de rotation et 0,25 % par an de frais d'ETF.")],
-        [L(lang, "Benchmark", "Indice de référence"), L(lang, "MSCI World Value Net EUR (style benchmark, chosen 4 Nov 2026 because the strategy is a value strategy); MSCI World Net EUR is also shown as the investor's alternative.", "MSCI World Value Net EUR (indice de style, retenu le 4/11/2026 parce que la stratégie est une stratégie value) ; le MSCI World Net EUR est aussi affiché comme alternative de l'investisseur.")],
-        [L(lang, "Structure", "Structure"), L(lang, "This ETF core is 70% of the value strategy. The other 30% will be a satellite of single stocks from the stock-level value screen (in construction).", "Ce cœur ETF représente 70 % de la stratégie value. Les 30 % restants seront un satellite d’actions issues du screen value titre par titre (en construction).")],
-        [L(lang, "History", "Historique"), L(lang, "Rules V1 fixed on 30 Oct 2026 before the data; five further rounds, each pre-registered before it was run. The current core (V7, 4 Nov 2026) keeps the V4c selection and replaces its all-or-nothing cash switch with the 50% risk rule. 2006-2015 is the design half, 2016-2026 the validation half; the live record starts in November 2026.", "Règles V1 fixées le 30/10/2026 avant les données ; cinq séries de tests ensuite, chacune pré-enregistrée avant d’être lancée. Le cœur actuel (V7, 4/11/2026) garde la sélection de V4c et remplace sa sortie tout-ou-rien en cash par la règle de risque à 50 %. 2006-2015 est la période de conception, 2016-2026 la période de validation ; le suivi réel commence en novembre 2026.")],
+        [L(lang, "Structure", "Structure"), L(lang, "70% ETF core (countries and sectors) + 30% stock satellite (single stocks). Both sleeves follow the same risk rule.", "70 % de cœur ETF (pays et secteurs) + 30 % de satellite actions (titres en direct). Les deux poches suivent la même règle de risque.")],
+        [C + L(lang, "universe", "univers"), L(lang, "14 developed-country indices and the 11 GICS sectors of MSCI World: 25 lines, each held through one UCITS ETF.", "14 indices de pays développés et les 11 secteurs GICS du MSCI World : 25 lignes, chacune détenue via un ETF UCITS.")],
+        [C + L(lang, "value signal", "signal value"), L(lang, "Average of three z-scores: earnings yield (E/P), book yield (B/P) and dividend yield, each measured against the line's own trailing 10-year history (at least 5 years). A market is cheap when it is cheap versus its own past.", "Moyenne de trois z-scores : rendement bénéficiaire (E/P), rendement comptable (B/P) et rendement du dividende, chacun mesuré par rapport à l'historique propre de la ligne sur 10 ans glissants (5 ans minimum). Un marché est bon marché quand il l'est par rapport à son propre passé.")],
+        [C + L(lang, "selection", "sélection"), L(lang, "The 4 cheapest countries and the 4 cheapest sectors, equal weight (8.75% each at full exposure). A line already held is kept until it leaves the 6 cheapest of its sleeve.", "Les 4 pays et les 4 secteurs les moins chers, équipondérés (8,75 % chacun à pleine exposition). Une ligne déjà détenue est gardée tant qu'elle reste parmi les 6 moins chères de sa poche.")],
+        [S + L(lang, "universe", "univers"), L(lang, "The 300 largest stocks of MSCI World at each half-year (point-in-time composition, delisted names included), one line per issuer.", "Les 300 plus grandes actions du MSCI World à chaque semestre (composition à date, sociétés radiées incluses), une ligne par émetteur.")],
+        [S + L(lang, "value signal", "signal value"), L(lang, "Composite of EV/EBIT, book-to-price, free-cash-flow yield and sales-to-EV (book-to-price and earnings yield for financials), ranked within each sector. Accounts are used only six months after the fiscal year end and never before their publication.", "Composite EV/EBIT, book-to-price, rendement du free cash flow et ventes / EV (book-to-price et rendement bénéficiaire pour les financières), classé à l'intérieur de chaque secteur. Les comptes ne sont utilisés que six mois après la clôture et jamais avant leur publication.")],
+        [S + L(lang, "selection", "sélection"), L(lang, "8 stocks, equal weight (3.75% each at full exposure), taken from the countries or sectors the core holds; at most 2 per sector and 3 per country. A stock is kept while it stays in the cheapest 40% of its sector.", "8 actions équipondérées (3,75 % chacune à pleine exposition), prises dans les pays ou secteurs détenus par le cœur ; 2 au plus par secteur et 3 par pays. Une action est gardée tant qu'elle reste parmi les 40 % les moins chères de son secteur.")],
+        [L(lang, "Risk rule", "Règle de risque"), L(lang, "Three indicators at each month end: trend (MSCI World Net EUR below its 10-month average), credit (euro high yield behind short euro government bonds over 3 months) and breadth (fewer than half of the 25 lines above their 10-month average). With at least two red, the whole strategy is cut to 50% equities and 50% euro money market, never to zero; back to 100% when fewer than two are red.", "Trois indicateurs à chaque fin de mois : tendance (MSCI World Net EUR sous sa moyenne de 10 mois), crédit (high yield euro en retard sur les obligations d’État euro courtes sur 3 mois) et largeur (moins de la moitié des 25 lignes au-dessus de leur moyenne de 10 mois). Avec au moins deux rouges, toute la stratégie est ramenée à 50 % d’actions et 50 % de monétaire euro, jamais à zéro ; retour à 100 % quand moins de deux sont rouges.")],
+        [L(lang, "Rebalancing", "Rebalancement"), L(lang, "Monthly: signals at the last trading day of the month, trades on the first trading day of the next month. Long only, no leverage.", "Mensuel : signaux au dernier jour de bourse du mois, ordres le premier jour de bourse du mois suivant. Long uniquement, sans levier.")],
+        [L(lang, "Costs", "Frais"), L(lang, "ETFs: 0.10% per unit of turnover and 0.25% a year of fees. Stocks: 0.15% per unit of turnover and 0.40% a year for withholding tax on dividends.", "ETF : 0,10 % par unité de rotation et 0,25 % par an de frais. Actions : 0,15 % par unité de rotation et 0,40 % par an de retenue à la source sur les dividendes.")],
+        [L(lang, "Benchmark", "Indice de référence"), L(lang, "MSCI World Value Net EUR (style benchmark); MSCI World Net EUR is also shown as the investor's alternative.", "MSCI World Value Net EUR (indice de style) ; le MSCI World Net EUR est aussi affiché comme alternative de l'investisseur.")],
+        [L(lang, "Periods", "Périodes"), L(lang, "2006-2015 is the design half, 2016-2026 the validation half. The live record starts in November 2026.", "2006-2015 est la période de conception, 2016-2026 la période de validation. Le suivi réel commence en novembre 2026.")],
     ])
     toc = [("idea", L(lang, "The idea", "L'idée")), ("rules", L(lang, "Rules", "Règles")), ("results", L(lang, "Results", "Résultats")),
-           ("variants", L(lang, "Variants", "Variantes")), ("now", L(lang, "Current portfolio", "Portefeuille actuel")),
+           ("variants", L(lang, "How it was built", "Comment elle a été construite")), ("now", L(lang, "Current portfolio", "Portefeuille actuel")),
            ("universe", L(lang, "Universe", "Univers")), ("pitches", L(lang, "Link with the pitches", "Lien avec les pitches")),
            ("risks", L(lang, "Risks", "Risques"))]
     vres, vscript = results_block("value", lang)
+    sat = v["parts"]["satellite"]["stats"]
     secs = [
         section("idea", L(lang, "The idea", "L'idée"), f"""<div class="prose"><p>{L(lang,
-            "Value works across markets, not only across stocks: countries and sectors that are cheap relative to their own history have tended to outperform over the following years (Asness, Moskowitz and Pedersen, 2013, <i>Value and Momentum Everywhere</i>). Countries and sectors are also easy to hold: one ETF each, cheap, liquid, available to any European investor.",
-            "Le value fonctionne entre marchés, pas seulement entre actions : les pays et secteurs bon marché par rapport à leur propre historique ont eu tendance à surperformer les années suivantes (Asness, Moskowitz et Pedersen, 2013, <i>Value and Momentum Everywhere</i>). Pays et secteurs sont aussi faciles à détenir : un ETF chacun, peu coûteux, liquide, accessible à tout investisseur européen.")}</p>
-<p>{L(lang, "Value alone has a weakness: cheap markets are often cheap because they are falling, and they can keep falling with the rest of the market (2008). So the strategy splits the two questions. <b>Value decides what to hold; a risk rule decides how much of it to hold.</b> The value signal is slow and is given time to work; the risk rule is checked every month and never takes the portfolio below 50% equities, as a real fund would not either.", "Le value seul a une faiblesse : les marchés bon marché le sont souvent parce qu'ils baissent, et ils peuvent continuer à baisser avec le reste du marché (2008). La stratégie sépare donc les deux questions. <b>Le value décide quoi détenir ; une règle de risque décide quelle part en détenir.</b> Le signal value est lent et on lui laisse le temps d'agir ; la règle de risque est vérifiée chaque mois et ne descend jamais sous 50 % d’actions, comme un vrai fonds.")}</p>
-<p>{L(lang, "This ETF rotation is the top-down core (70%) of my value strategy. The stock-level screen and the pitches are its bottom-up satellite (30%), where the value signal is strongest: at stock level, within sectors.", "Cette rotation en ETF est le cœur top-down (70 %) de ma stratégie value. Le screen titres et les pitches en sont le satellite bottom-up (30 %), là où le signal value est le plus fort : au niveau des titres, à l’intérieur des secteurs.")}</p></div>
+            "Value works across markets and across stocks (Asness, Moskowitz and Pedersen, 2013, <i>Value and Momentum Everywhere</i>). The strategy uses both. Its core holds the countries and sectors that are cheap against their own history, through one ETF each. Its satellite holds the cheapest stocks inside them.",
+            "Le value fonctionne entre marchés et entre actions (Asness, Moskowitz et Pedersen, 2013, <i>Value and Momentum Everywhere</i>). La stratégie utilise les deux. Son cœur détient les pays et secteurs bon marché par rapport à leur propre historique, via un ETF chacun. Son satellite détient les actions les moins chères à l’intérieur.")}</p>
+<p>{L(lang, "Why both? A sector ETF holds hundreds of companies: even when the sector is cheap, not all of them are. The satellite goes one level down and keeps only the names that are cheap within their sector — the signal is more precise there, and that is where most of the excess return came from. The ETF core keeps the portfolio diversified and cheap to run.", "Pourquoi les deux ? Un ETF sectoriel détient des centaines de sociétés : même quand le secteur est bon marché, toutes ne le sont pas. Le satellite descend d’un niveau et ne garde que les titres bon marché à l’intérieur de leur secteur — le signal y est plus précis, et c’est de là qu’est venue l’essentiel de la surperformance. Le cœur ETF garde le portefeuille diversifié et peu coûteux à gérer.")}</p>
+<p>{L(lang, "Value alone has a weakness: cheap markets are often cheap because they are falling, and they can keep falling with the rest of the market (2008). So the strategy splits the two questions. <b>Value decides what to hold; a risk rule decides how much of it to hold</b> — 100%, or 50% when the market turns, never zero, as a real fund would not either.", "Le value seul a une faiblesse : les marchés bon marché le sont souvent parce qu'ils baissent, et ils peuvent continuer à baisser avec le reste du marché (2008). La stratégie sépare donc les deux questions. <b>Le value décide quoi détenir ; une règle de risque décide quelle part en détenir</b> — 100 %, ou 50 % quand le marché se retourne, jamais zéro, comme un vrai fonds.")}</p></div>
 <div class="steps" style="margin-top:22px">
- <div class="box"><h4>{L(lang, "Measure", "Mesurer")}</h4><p>{L(lang, "E/P, B/P and dividend yield of 25 indices at each month end.", "E/P, B/P et rendement du dividende de 25 indices à chaque fin de mois.")}</p></div>
- <div class="box"><h4>{L(lang, "Score", "Noter")}</h4><p>{L(lang, "Each ratio versus the line's own 10-year history, averaged.", "Chaque ratio rapporté à l'historique propre de la ligne sur 10 ans, puis moyenné.")}</p></div>
- <div class="box"><h4>{L(lang, "Select and keep", "Choisir et garder")}</h4><p>{L(lang, "Buy the 4 cheapest countries and sectors; keep a line while it stays in the 6 cheapest.", "Acheter les 4 pays et secteurs les moins chers ; garder une ligne tant qu'elle reste parmi les 6 moins chères.")}</p></div>
+ <div class="box"><h4>{L(lang, "Rank markets", "Classer les marchés")}</h4><p>{L(lang, "E/P, B/P and dividend yield of 25 country and sector indices against their own 10-year history.", "E/P, B/P et rendement du dividende de 25 indices pays et secteurs face à leur propre historique sur 10 ans.")}</p></div>
+ <div class="box"><h4>{L(lang, "Hold the core", "Détenir le cœur")}</h4><p>{L(lang, "8 ETFs: the 4 cheapest countries and 4 cheapest sectors, 70% of the portfolio.", "8 ETF : les 4 pays et 4 secteurs les moins chers, 70 % du portefeuille.")}</p></div>
+ <div class="box"><h4>{L(lang, "Pick the stocks", "Choisir les titres")}</h4><p>{L(lang, "8 stocks, the cheapest within their sector, inside the core's countries and sectors: 30%.", "8 actions, les moins chères de leur secteur, dans les pays et secteurs du cœur : 30 %.")}</p></div>
  <div class="box"><h4>{L(lang, "Dose the risk", "Doser le risque")}</h4><p>{L(lang, "100% invested, or 50% while at least two of three risk indicators are red.", "Investi à 100 %, ou à 50 % tant qu’au moins deux indicateurs de risque sur trois sont rouges.")}</p></div>
 </div>"""),
-        section("rules", L(lang, "Rules", "Règles"), rules, L(lang, "Each version was written down before it was run; every version tried is published under Variants.", "Chaque version a été écrite avant d'être lancée ; toutes les versions essayées sont publiées dans Variantes.")),
-        section("universe", L(lang, "Universe", "Univers"),
-                f'<h3 style="margin-top:0">{L(lang, "Countries", "Pays")}</h3>' +
-                tbl([L(lang, "Country", "Pays"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Fallback index", "Indice de secours"), L(lang, "Our pitches", "Nos pitches")], crow) +
-                f'<h3>{L(lang, "Sectors (MSCI World)", "Secteurs (MSCI World)")}</h3>' +
-                tbl([L(lang, "Sector", "Secteur"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Our pitches", "Nos pitches")], srow) +
-                f'<p class="cap">{L(lang, "Each line is implemented with a UCITS ETF listed in euros; the index history is used before the ETF existed. Fallback indices are used only if MSCI valuation data are not licensed on the terminal.", "Chaque ligne est implémentée avec un ETF UCITS coté en euros ; l’historique de l’indice est utilisé avant la création de l’ETF. Les indices de secours ne servent que si les données de valorisation MSCI ne sont pas licenciées sur le terminal.")}</p>'),
-        section("pitches", L(lang, "Link with the pitches", "Lien avec les pitches"), f"""<div class="cols3">
- <div class="box accent"><div class="k">{L(lang, "1 · Top-down", "1 · Top-down")}</div><h4 style="margin-top:6px">{L(lang, "Value rotation", "Rotation value")}</h4><p>{L(lang, "Which countries and sectors are cheap this month.", "Quels pays et secteurs sont bon marché ce mois-ci.")}</p></div>
- <div class="box accent"><div class="k">{L(lang, "2 · Screen", "2 · Screen")}</div><h4 style="margin-top:6px"><a href="../value-developed/">{L(lang, "Stock-level value screen", "Screen value titres")}</a></h4><p>{L(lang, "The cheapest companies within each sector, 1,990 stocks.", "Les sociétés les moins chères de chaque secteur, sur 1 990 actions.")}</p></div>
- <div class="box accent"><div class="k">{L(lang, "3 · Bottom-up", "3 · Bottom-up")}</div><h4 style="margin-top:6px"><a href="{lr}pitches/">{t(lang, "pitches")}</a></h4><p>{L(lang, "Is cheap mispriced, or cheap for a reason? Each pitch answers for one name.", "Bon marché veut-il dire mal valorisé, ou bon marché pour une raison ? Chaque pitch répond pour un titre.")}</p></div>
-</div><div class="callout">{L(lang, "When the rotation holds a country or a sector, the pitches in that country or sector are the names I would add to express the view through single stocks. The universe tables above list them.", "Quand la rotation détient un pays ou un secteur, les pitches de ce pays ou de ce secteur sont les titres que j’ajouterais pour exprimer la vue en actions individuelles. Les tableaux d’univers ci-dessus les listent.")}</div>""", alt=False),
-        section("results", L(lang, "Results", "Résultats"), vres + value_reading(lang)),
-        section("variants", L(lang, "Variants", "Variantes"), variants_table(lang, ()) +
-                f'<p class="cap">{L(lang, "Every version was written down before it was run, except V6, found while studying V1 and marked as such. Six rounds and about twenty value versions in all; the main ones are shown. V7 was chosen after seeing both halves, so 2016-2026 is not a clean out-of-sample test of that choice. The same risk rule was checked on the 11 S&P 500 sectors, a universe never used before, where it also cut the drawdown from −45% to −26% without losing return. The clean test is the live record from November 2026.", "Chaque version a été écrite avant d’être lancée, sauf V6, trouvée en étudiant V1 et signalée comme telle. Six séries et une vingtaine de versions value au total ; les principales sont montrées. V7 a été choisie après avoir vu les deux moitiés : 2016-2026 n’est donc pas un test hors échantillon propre de ce choix. La même règle de risque a été vérifiée sur les 11 secteurs du S&P 500, un univers jamais utilisé auparavant, où elle a aussi ramené la perte maximale de −45 % à −26 % sans perdre de rendement. Le test propre est le suivi réel à partir de novembre 2026.")}</p>',
-                L(lang, "Every version tested, including the ones that did worse.", "Toutes les versions testées, y compris celles qui ont fait moins bien.")),
+        section("rules", L(lang, "Rules", "Règles"), rules, L(lang, "Each rule was written down and committed before the test that used it was run.", "Chaque règle a été écrite et enregistrée avant que le test qui l’utilise soit lancé.")),
+        section("results", L(lang, "Results", "Résultats"), vres + parts_table(lang) + value_reading(lang)),
+        section("variants", L(lang, "How it was built", "Comment elle a été construite"), variants_table(lang) +
+                f'<p class="cap">{L(lang, "The main stages, in the order they were decided, all over the same period (Feb 2006 – Jun 2026, EUR, net of costs). V1 was fixed on 30 October before any data were seen. Each later step was pre-registered before it was run, but chosen after seeing earlier results over the whole period: 2016-2026 is therefore not a clean out-of-sample test of these choices. The trend-following strategy built in parallel was dropped on 4 November. The clean test is the live record from November 2026.", "Les principales étapes, dans l’ordre où elles ont été décidées, toutes sur la même période (fév. 2006 – juin 2026, EUR, net de frais). V1 a été fixée le 30 octobre avant de voir la moindre donnée. Chaque étape suivante a été pré-enregistrée avant d’être lancée, mais choisie après avoir vu les résultats précédents sur toute la période : 2016-2026 n’est donc pas un test hors échantillon propre de ces choix. La stratégie de suivi de tendance construite en parallèle a été abandonnée le 4 novembre. Le test propre est le suivi réel à partir de novembre 2026.")}</p>',
+                L(lang, "The major changes of strategy, not every test.", "Les grands changements de stratégie, pas chaque test.")),
         section("now", L(lang, "Current portfolio", "Portefeuille actuel"), current_value(lang)),
+        section("universe", L(lang, "Universe", "Univers"),
+                f'<h3 style="margin-top:0">{L(lang, "Core · countries", "Cœur · pays")}</h3>' +
+                tbl([L(lang, "Country", "Pays"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Fallback index", "Indice de secours"), L(lang, "Our pitches", "Nos pitches")], crow) +
+                f'<h3>{L(lang, "Core · sectors (MSCI World)", "Cœur · secteurs (MSCI World)")}</h3>' +
+                tbl([L(lang, "Sector", "Secteur"), L(lang, "MSCI index", "Indice MSCI"), L(lang, "Our pitches", "Nos pitches")], srow) +
+                f'<p class="cap">{L(lang, "Each core line is implemented with a UCITS ETF listed in euros; the index history is used before the ETF existed. The satellite universe is the 300 largest MSCI World stocks at each date, including companies later delisted or taken over (HBOS, Lehman Brothers…), so the backtest carries no survivorship bias.", "Chaque ligne du cœur est implémentée avec un ETF UCITS coté en euros ; l’historique de l’indice est utilisé avant la création de l’ETF. L’univers du satellite est celui des 300 plus grandes actions du MSCI World à chaque date, y compris les sociétés radiées ou rachetées depuis (HBOS, Lehman Brothers…) : le backtest n’a pas de biais du survivant.")}</p>'),
+        section("pitches", L(lang, "Link with the pitches", "Lien avec les pitches"), f"""<div class="cols3">
+ <div class="box accent"><div class="k">{L(lang, "1 · Top-down", "1 · Top-down")}</div><h4 style="margin-top:6px">{L(lang, "ETF core", "Cœur ETF")}</h4><p>{L(lang, "Which countries and sectors are cheap this month.", "Quels pays et secteurs sont bon marché ce mois-ci.")}</p></div>
+ <div class="box accent"><div class="k">{L(lang, "2 · Screen", "2 · Screen")}</div><h4 style="margin-top:6px">{L(lang, "Stock satellite", "Satellite actions")}</h4><p>{L(lang, "The cheapest stocks within their sector, inside those countries and sectors. Same signal as the", "Les actions les moins chères de leur secteur, dans ces pays et secteurs. Même signal que le")} <a href="../value-developed/">{L(lang, "stock-level screen", "screen titres")}</a>.</p></div>
+ <div class="box accent"><div class="k">{L(lang, "3 · Bottom-up", "3 · Bottom-up")}</div><h4 style="margin-top:6px"><a href="{lr}pitches/">{t(lang, "pitches")}</a></h4><p>{L(lang, "Is cheap mispriced, or cheap for a reason? Each pitch answers for one name.", "Bon marché veut-il dire mal valorisé, ou bon marché pour une raison ? Chaque pitch répond pour un titre.")}</p></div>
+</div><div class="callout">{L(lang, "The satellite is mechanical; the pitches are where judgement comes in. BNP Paribas is both in the satellite in June 2026 and one of my pitches: the screen found it, the pitch checks that the discount is a mispricing and not a trap.", "Le satellite est mécanique ; les pitches sont là où intervient le jugement. BNP Paribas est à la fois dans le satellite en juin 2026 et dans mes pitches : le screen l’a trouvée, le pitch vérifie que la décote est une erreur de prix et non un piège.")}</div>""", alt=False),
         section("risks", L(lang, "Risks", "Risques"), f"""<div class="cols2">
- <div class="box"><h4>{L(lang, "Value traps at market level", "Pièges à valeur à l’échelle d’un marché")}</h4><p>{L(lang, "A country can stay cheap for years (Italy, Hong Kong). Measuring cheapness against its own history limits this, but does not remove it.", "Un pays peut rester bon marché des années (Italie, Hong Kong). Mesurer la décote par rapport à son propre historique limite ce risque sans le supprimer.")}</p></div>
- <div class="box"><h4>{L(lang, "Concentration", "Concentration")}</h4><p>{L(lang, "Eight lines can overlap: a cheap Financials sector and a cheap Italy are partly the same bet.", "Huit lignes peuvent se recouper : un secteur Finance bon marché et une Italie bon marché sont en partie le même pari.")}</p></div>
- <div class="box"><h4>{L(lang, "False signals", "Faux signaux")}</h4><p>{L(lang, "The risk rule cuts after a fall and adds back on a rebound. It halves the damage of long bear markets (2008: −24% against −38%) but costs money in short corrections that reverse quickly.", "La règle de risque réduit après une baisse et remet du risque au rebond. Elle divise par deux les dégâts des longs marchés baissiers (2008 : −24 % contre −38 %) mais coûte dans les corrections courtes qui se retournent vite.")}</p></div>
- <div class="box"><h4>{L(lang, "Growth markets", "Marchés de croissance")}</h4><p>{L(lang, "When expensive growth leads, as in 2023-24, a value rotation lags the benchmark.", "Quand la croissance chère mène, comme en 2023-24, une rotation value fait moins bien que le benchmark.")}</p></div>
+ <div class="box"><h4>{L(lang, "Value traps", "Pièges à valeur")}</h4><p>{L(lang, "A country can stay cheap for years (Italy, Hong Kong), and a stock can be cheap because its business is shrinking (tobacco). Ranking within sectors and against own history limits this, but does not remove it.", "Un pays peut rester bon marché des années (Italie, Hong Kong), et une action peut l’être parce que son activité décline (tabac). Classer à l’intérieur des secteurs et face à son propre historique limite ce risque sans le supprimer.")}</p></div>
+ <div class="box"><h4>{L(lang, "Stock-specific risk", "Risque spécifique")}</h4><p>{L(lang, f"Eight stocks at 3.75% each: one bad name moves the portfolio. The satellite alone earned {P(sat['cagr'])} a year but lost {P(sat['mdd'], 0)} at worst; HBOS fell 60% in September 2008.", f"Huit actions à 3,75 % chacune : un mauvais titre fait bouger le portefeuille. Le satellite seul a rapporté {P(sat['cagr'])} par an mais a perdu jusqu’à {P(sat['mdd'], 0)} ; HBOS a chuté de 60 % en septembre 2008.")}</p></div>
+ <div class="box"><h4>{L(lang, "False signals", "Faux signaux")}</h4><p>{L(lang, f"The risk rule cuts after a fall and adds back on a rebound. In 2008 the strategy lost {P(abs(v['calendar']['2008']), 0)} against {P(abs(v['bench_calendar']['2008']), 0)} for its benchmark, but the rule costs money in short corrections that reverse quickly.", f"La règle de risque réduit après une baisse et remet du risque au rebond. En 2008, la stratégie a perdu {P(abs(v['calendar']['2008']), 0)} contre {P(abs(v['bench_calendar']['2008']), 0)} pour son indice, mais la règle coûte dans les corrections courtes qui se retournent vite.")}</p></div>
+ <div class="box"><h4>{L(lang, "Growth markets", "Marchés de croissance")}</h4><p>{L(lang, "When expensive growth leads, as in 2023-24, a value strategy lags MSCI World even when it beats MSCI World Value.", "Quand la croissance chère mène, comme en 2023-24, une stratégie value fait moins bien que le MSCI World, même quand elle bat le MSCI World Value.")}</p></div>
 </div>"""),
     ]
     _fs = factsheet_section("value", lang)
     if _fs:
         toc.insert(1, ("factsheet", L(lang, "Monthly factsheet", "Factsheet mensuelle")))
         secs.insert(1, _fs)
-    body = phead(L(lang, "Strategy · Equities · ETF", "Stratégie · Actions · ETF"), L(lang, "Global Value Rotation", "Rotation Value mondiale"),
-                 L(lang, "The ETF core (70%) of the value strategy. Value decides what to hold: the four cheapest developed countries and sectors against their own history. A risk rule decides how much: 100%, or 50% when the market turns. Eight UCITS ETFs, monthly.",
-                   "Le cœur ETF (70 %) de la stratégie value. Le value décide quoi détenir : les quatre pays et les quatre secteurs développés les moins chers par rapport à leur propre historique. Une règle de risque décide combien : 100 %, ou 50 % quand le marché se retourne. Huit ETF UCITS, mensuel."),
+    body = phead(L(lang, "Strategy · Equities · ETF + stocks", "Stratégie · Actions · ETF + titres"), L(lang, "Global Value Rotation", "Rotation Value mondiale"),
+                 L(lang, "70% in ETFs on the four cheapest developed countries and four cheapest sectors against their own history; 30% in the eight cheapest stocks inside them. A risk rule decides how much to hold: 100%, or 50% when the market turns. Monthly.",
+                   "70 % en ETF sur les quatre pays et les quatre secteurs développés les moins chers par rapport à leur propre historique ; 30 % sur les huit actions les moins chères à l’intérieur. Une règle de risque décide combien détenir : 100 %, ou 50 % quand le marché se retourne. Mensuel."),
                  f'<a href="../">{t(lang, "strategies")}</a> / value-rotation')
     body += doc_layout(lang, toc, secs)
     page("strategies/value-rotation/index.html", lang, L(lang, "Global Value Rotation", "Rotation Value mondiale"), body, "strategies",
-         L(lang, "Monthly value rotation across developed countries and sectors with UCITS ETFs.", "Rotation value mensuelle entre pays et secteurs développés avec des ETF UCITS."),
+         L(lang, "Value strategy: 70% ETFs on cheap developed countries and sectors, 30% cheapest stocks inside them.", "Stratégie value : 70 % d’ETF sur les pays et secteurs développés bon marché, 30 % sur les actions les moins chères à l’intérieur."),
          scripts=vscript)
 
 
@@ -735,8 +766,8 @@ def build_pitch(s, lang):
     fct = s["facts"]
     cc, scode = COUNTRY_CODE.get(s["country"]), SECTOR_CODE.get(s["sector"])
     strat = f"""<div class="cols2">
-<div class="box accent"><div class="k">{L(lang, "Value rotation (ETF)", "Rotation value (ETF)")}</div><h4 style="margin-top:6px">{esc(tr(lang, s["country"]))} · {esc(tr(lang, s["sector"]))}</h4>
-<p>{L(lang, "This name belongs to the country sleeve and to the sector sleeve of the same names in the rotation universe. When the rotation holds either, this pitch is a way to express the view in a single stock.", "Ce titre appartient à la poche pays et à la poche secteur correspondantes de l’univers de la rotation. Quand la rotation détient l’une ou l’autre, ce pitch permet d’exprimer la vue en action individuelle.")}</p>
+<div class="box accent"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><h4 style="margin-top:6px">{esc(tr(lang, s["country"]))} · {esc(tr(lang, s["sector"]))}</h4>
+<p>{L(lang, "This name sits in a country line and a sector line of the ETF core. The stock satellite picks the cheapest stocks within their sector in the countries and sectors the core holds.", "Ce titre appartient à une ligne pays et à une ligne secteur du cœur ETF. Le satellite actions retient les actions les moins chères de leur secteur dans les pays et secteurs détenus par le cœur.")} {(L(lang, "<b>In the satellite at the end of June 2026.</b>", "<b>Dans le satellite à fin juin 2026.</b>") if any(x.get("pitch") == s["name"] for x in ETF["value"]["holdings"]["satellite"]) else "")}</p>
 <p style="margin-top:10px"><a href="{lr if lang == 'en' else '../../'}strategies/value-rotation/#universe">{L(lang, "See the universe", "Voir l’univers")} →</a></p></div>
 <div class="box accent"><div class="k">{L(lang, "Stock-level screen", "Screen titres")}</div><h4 style="margin-top:6px">{L(lang, "Rank", "Rang")} {fct["sector_rank"]} {t(lang, "of")} {fct["sector_n"]} · score {num(fct["score"], 2, lang)}</h4>
 <p>{L(lang, f"Value score at the December 2025 rebalance, within {fct['sector']}, on accounts for the fiscal year to {fct['fy_used'][:7]}.", f"Score value au rebalancement de décembre 2025, au sein du secteur {tr('fr', fct['sector'])}, sur les comptes de l’exercice clos en {fct['fy_used'][:7]}.")}</p>
@@ -876,7 +907,7 @@ def clean_docs():
 
 # ---------------------------------------------------------------- TRACKER
 def tracker_data():
-    """Monthly net returns of the three strategies and their benchmarks (aggregated results only, no raw data)."""
+    """Monthly net returns of the two strategies and their benchmarks (aggregated results only, no raw data)."""
     d = json.loads((DATA / "etf_strategies.json").read_text())
     h = json.loads((DATA / "horus_smart_beta.json").read_text())
 
@@ -936,8 +967,8 @@ def build_tracker(lang):
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
  <h3>{L(lang, "Year by year", "Année par année")}</h3>
  <div class="tbl-wrap"><table class="t" id="trk-tbl"></table></div>
- <p class="cap">{L(lang, "Hypothetical backtests, net of trading costs and ETF fees, before taxes. Past performance does not guarantee future returns. The value series is the official ETF core (V7), benchmark MSCI World Value; Horus Smart Beta is in US dollars (Horus AM data), converted to euros only in the mix. Not investment advice.",
-   "Backtests hypothétiques, nets de frais de transaction et de frais d’ETF, avant impôts. Les performances passées ne préjugent pas des performances futures. La série value est le cœur ETF officiel (V7), indice MSCI World Value ; Horus Smart Beta est en dollars (données Horus AM), converti en euros seulement dans le mix. Ceci n’est pas un conseil en investissement.")}</p>
+ <p class="cap">{L(lang, "Hypothetical backtests, net of trading costs and ETF fees, before taxes. Past performance does not guarantee future returns. The value series is the official strategy (70% ETF core + 30% stock satellite), benchmark MSCI World Value; Horus Smart Beta is in US dollars (Horus AM data), converted to euros only in the mix. Not investment advice.",
+   "Backtests hypothétiques, nets de frais de transaction et de frais d’ETF, avant impôts. Les performances passées ne préjugent pas des performances futures. La série value est la stratégie officielle (70 % cœur ETF + 30 % satellite actions), indice MSCI World Value ; Horus Smart Beta est en dollars (données Horus AM), converti en euros seulement dans le mix. Ceci n’est pas un conseil en investissement.")}</p>
 </div></section>"""
     T = json.dumps(data, separators=(",", ":"))
     js = """<script>(function(){
@@ -952,7 +983,7 @@ function draw(){
  var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0];
  var mix=k==="mix";$("trk-mixg").style.display=mix?"":"none";$("trk-mixnote").style.display=mix?"":"none";
  if(mix){var w=(+$("trk-w").value)/100;$("trk-wl").textContent=Math.round(w*100)+" / "+Math.round(100-w*100);S.r=S.rv.map(function(x,i){return w*x+(1-w)*S.rh[i]});S.b=S.bv.map(function(x,i){return w*x+(1-w)*S.bh[i]});
-  var lab=w===0?(FR?"Horus Smart Beta en euros":"Horus Smart Beta in euros"):w===1?(FR?"Rotation Value (cœur ETF)":"Global Value Rotation (ETF core)"):(FR?"Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus":"Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus");
+  var lab=w===0?(FR?"Horus Smart Beta en euros":"Horus Smart Beta in euros"):w===1?(FR?"Rotation Value mondiale":"Global Value Rotation"):(FR?"Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus":"Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus");
   S.name=[lab,lab];S.bench=FR?"Mix des indices (EUR)":"Benchmark mix (EUR)"}
  var _=0,amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
  var i0=S.dates.indexOf(d0);if(i0<0){i0=d0<S.dates[0]?0:S.dates.length-1}$("trk-d").value=S.dates[i0];
@@ -990,7 +1021,7 @@ function draw(){
 $("trk-s").addEventListener("change",function(){$("trk-d").value=""; draw()});
 draw();})();</script>""".replace("__DATA__", T).replace("__LANG__", lang)
     page("tracker/index.html", lang, L(lang, "Portfolio tracker", "Simulateur de portefeuille"), body, "tracker",
-         L(lang, "Simulate an investment in one of the three strategies from any start month.", "Simulez un investissement dans l’une des trois stratégies à partir de n’importe quel mois."), js)
+         L(lang, "Simulate an investment in either strategy, or a mix of both, from any start month.", "Simulez un investissement dans l’une des deux stratégies, ou un mélange des deux, à partir de n’importe quel mois."), js)
 
 
 # ---------------------------------------------------------------- FACTSHEETS ARCHIVE
@@ -1035,6 +1066,7 @@ def main():
         shutil.copy(HERE / "static" / f, DOCS / "assets" / f)
     shutil.copytree(HERE / "static" / "brand", DOCS / "assets" / "brand", dirs_exist_ok=True)
     shutil.copytree(HERE / "static" / "factsheets", DOCS / "assets" / "factsheets", dirs_exist_ok=True)
+    shutil.copytree(HERE / "static" / "notes", DOCS / "assets" / "notes", dirs_exist_ok=True)
     (DOCS / ".nojekyll").touch()
     for lang in LANGS:
         build_home(lang)

@@ -69,7 +69,7 @@ def run(S="2006-01-31", END="2026-06-30"):
     Wcore = E.value_v4c(timing=False)[0]; expo = E.value_core()[2]
     months = TR.loc[S:END].index
     held, rows, logs, cov = [], {}, {}, {}
-    for m in months[:-1]:
+    for m in months:
         ud = max(d for d in udates if d <= m)
         u_m = U[U.date == ud][["ticker", "sector", "cty", "name"]]
         u_m = u_m[u_m.ticker.map(lambda t: pd.notna(TR.at[m, t]) if t in TR.columns else False)]

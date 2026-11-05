@@ -21,3 +21,5 @@ title: Journal
 | 4 Nov 2026 | Portfolio tracker and monthly factsheets (English and French) added. |
 | 4 Nov 2026 | Tracker: both strategies can be combined (value / Horus mix, in euros, rebalanced monthly). Factsheet archive page added. |
 | 4 Nov 2026 | Value strategy restructured as core-satellite: ETF core V7 (V4c selection, cut to 50% instead of 100% cash when at least two of three risk indicators are red) as 70%; stock satellite (30%) in construction. |
+| 5 Nov 2026 | Stock satellite completed and adopted: 8 cheapest stocks (within their sector) inside the core's countries and sectors, from the 300 largest MSCI World stocks at each date, delisted names included, Feb 2006 – Jun 2026. Official strategy: 70% ETF core + 30% satellite, same 50% risk rule. |
+| 5 Nov 2026 | Strategy model workbook (all data, Solver sheet, Horus combination), FT-style note and June 2026 factsheet updated. |

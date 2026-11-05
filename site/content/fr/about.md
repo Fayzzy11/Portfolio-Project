@@ -8,7 +8,7 @@ title: À propos
 Je cherche un poste en gestion de portefeuille et en recherche buy-side à Paris et à Genève. Ce site montre ma façon de travailler : une politique d'investissement écrite, des règles fixées avant les résultats, chaque décision consignée, et des résultats publiés tels qu'ils sont.
 
 ## Projets
-- **Thoth Ledger** (ce site) : deux stratégies réplicables en ETF, un screen value titre par titre, des stock pitches et les données derrière.
+- **Thoth Ledger** (ce site) : deux stratégies systématiques (ETF et actions), un screen value titre par titre, des stock pitches et les données derrière.
 - **[Horus Asset Management](https://fayzzy11.github.io/HORUS_AM/)** : une boutique de gestion étudiante créée avec quatre camarades pour le cours de Portfolio Management de SKEMA. Stratégie phare : Horus Smart Beta 60/40.
 
 Contact : via LinkedIn (lien à ajouter).

@@ -34,7 +34,7 @@
  <div class="panel"><header><span>Chiffres clés</span><span>backtests, nets de frais</span></header>
   <div class="kpis">
    <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">8,9 %</div><div class="s">par an depuis 2007 vs 6,1 %</div></div>
-   <div class="kpi"><div class="k">Signal value (titres)</div><div class="v">0,086</div><div class="s">IC de rang, t ≈ 2,1</div></div>
+   <div class="kpi"><div class="k">Rotation Value mondiale</div><div class="v">8,9 %</div><div class="s">par an depuis 2006 vs 7,0 % (MSCI World Value)</div></div>
    <div class="kpi"><div class="k">Stock pitches</div><div class="v">8</div><div class="s">5 Surpondérer, 2 cas d'école</div></div>
    <div class="kpi"><div class="k">Titres étudiés</div><div class="v">1 990</div><div class="s">marchés développés, 10 dates</div></div>
   </div>
@@ -44,13 +44,13 @@
 
 <section class="sec"><div class="wrap">
  <div class="shead"><h2>Deux stratégies, une même discipline</h2>
- <p>Chaque stratégie se détient avec quelques ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.</p></div>
+ <p>Chaque stratégie se détient surtout via des ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.</p></div>
  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
- <article class="card"><div class="tags"><span class="tag green">Actions · ETF</span><span class="tag">Mensuel · 8 ETF</span></div>
+ <article class="card"><div class="tags"><span class="tag green">Actions · ETF + titres</span><span class="tag">Mensuel · 8 ETF + 8 titres</span></div>
   <h3><a href="strategies/value-rotation/">Rotation Value mondiale</a></h3>
-  <p>Le value décide quoi détenir : les pays et secteurs développés les moins chers par rapport à leur propre historique. Une règle de risque décide combien : 100 %, ou 50 % quand le marché se retourne. Cœur ETF d’une stratégie value cœur-satellite.</p>
-  <div class="mini"><div><span>CAGR</span><b>8,5 %</b></div><div><span>Sharpe</span><b>0,70</b></div><div><span>Max DD</span><b>−31 %</b></div></div>
-  <div class="foot"><span>MSCI World Value : 7,2 % · 0,44 · −54 % · 2006-2026</span><b>→</b></div></article>
+  <p>70 % en ETF sur les pays et secteurs développés les moins chers par rapport à leur propre historique, 30 % sur les huit actions les moins chères à l’intérieur. Une règle de risque ramène les actions à 50 % quand le marché se retourne.</p>
+  <div class="mini"><div><span>CAGR</span><b>8,9 %</b></div><div><span>Sharpe</span><b>0,72</b></div><div><span>Max DD</span><b>−31 %</b></div></div>
+  <div class="foot"><span>MSCI World Value : 7,0 % · 0,43 · −54 % · 2006-2026 · EUR</span><b>→</b></div></article>
  <article class="card"><div class="tags"><span class="tag gold">Horus AM</span><span class="tag">Annuel · 4 ETF</span></div>
   <h3><a href="strategies/horus-smart-beta/">Horus Smart Beta 60/40</a></h3>
   <p>Un 60/40 permanent dont la poche actions détient les deux ETF les plus exposés à la taille, la croissance et le momentum, choisis chaque janvier.</p>
@@ -62,9 +62,9 @@
 <section class="sec alt"><div class="wrap">
  <div class="cols2" style="gap:48px;align-items:start">
   <div><div class="shead"><h2>Du top-down au bottom-up</h2>
-   <p>La rotation value choisit les pays et secteurs bon marché. Le screen titres trouve les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.</p></div>
+   <p>La stratégie value détient les pays et secteurs bon marché via des ETF, puis les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.</p></div>
    <div class="btns"><a class="btn" href="pitches/">Tous les pitches →</a></div></div>
-  <div class="notes"><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/rno-renault/"><div><h3>Renault</h3><p>La trésorerie et la banque captive couvrent la capitalisation : l&#x27;activité automobile est presque gratuite</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/bnp-bnp-paribas/"><div><h3>BNP Paribas</h3><p>13 % de rentabilité des fonds propres tangibles pour 0,9x l&#x27;actif net tangible : la décote française va trop loin</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/ca-carrefour/"><div><h3>Carrefour</h3><p>Un distributeur à plus de 10 % de rendement de free cash flow, dont l&#x27;immobilier vaut plus que les fonds propres</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/hpq-hp-inc/"><div><h3>HP Inc</h3><p>Une machine à cash valorisée comme en déclin : environ 10x les bénéfices et 10 % de rendement de free cash flow</p></div><span><span class="rating r-ow">Surpondérer</span></span></a></div>
+  <div class="notes"><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/rno-renault/"><div><h3>Renault</h3><p>La trésorerie et la banque captive couvrent la capitalisation : l&#x27;activité automobile est presque gratuite</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/bnp-bnp-paribas/"><div><h3>BNP Paribas</h3><p>13 % de rentabilité des fonds propres tangibles pour 0,9x l&#x27;actif net tangible : la décote française va trop loin</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/ca-carrefour/"><div><h3>Carrefour</h3><p>Un distributeur à plus de 10 % de rendement de free cash flow, dont l&#x27;immobilier vaut plus que les fonds propres</p></div><span><span class="rating r-ow">Surpondérer</span></span></a><a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/hpq-hp-inc/"><div><h3>HP Inc</h3><p>Une machine à cash valorisée comme en déclin : environ 10x les bénéfices et 10 % de rendement de free cash flow</p></div><span><span class="rating r-ow">Surpondérer</span></span></a></div>
  </div>
 </div></section>
 
@@ -78,13 +78,13 @@
 
 <section class="sec alt"><div class="wrap">
  <div class="shead"><h2>Dernières notes de recherche</h2></div>
- <div class="notes"><a class="noteitem" href="research/2026-10-30-optimiser-vs-equal-weight/"><span class="d">30 oct. 2026</span><div><h3>Pourquoi l&#x27;optimiseur a perdu contre le 1/N dans un portefeuille value</h3><p>Mêmes 50 titres, trois pondérations. La variance minimale et la moyenne-variance font environ 2,3 points par an de moins que l&#x27;équipondération, et la raison tient au style, pas seulement à l&#x27;erreur d&#x27;estimation.</p></div><span class="go">Lire →</span></a><a class="noteitem" href="research/2026-10-29-dividends-counted-twice/"><span class="d">29 oct. 2026</span><div><h3>Le bug à 2 % par an — des prix qui incluent déjà les dividendes</h3><p>En reconstruisant le benchmark à partir de mes propres rendements, j&#x27;ai découvert un double comptage des dividendes. Une étude d&#x27;événement sur 38 000 détachements l&#x27;a prouvé.</p></div><span class="go">Lire →</span></a></div>
+ <div class="notes"><a class="noteitem" href="research/2026-10-30-optimiser-vs-equal-weight/"><span class="d">30 oct. 2026</span><div><h3>Pourquoi l&#x27;optimiseur a perdu contre le 1/N dans un portefeuille value</h3><p>Mêmes 50 titres, trois pondérations. La variance minimale et la moyenne-variance font environ 2,3 points par an de moins que l&#x27;équipondération, et la raison tient au style, pas seulement à l&#x27;erreur d&#x27;estimation.</p></div><span class="go">Lire →</span></a><a class="noteitem" href="research/2026-10-29-dividends-counted-twice/"><span class="d">29 oct. 2026</span><div><h3>Le bug à 2 % par an — des prix qui incluent déjà les dividendes</h3><p>En reconstruisant le benchmark à partir de mes propres rendements, j&#x27;ai découvert un double comptage des dividendes. Une étude d&#x27;événement sur 38 000 détachements l&#x27;a prouvé.</p></div><span class="go">Lire →</span></a></div>
 </div></section>
 </main>
 <footer class="sitefoot"><div class="wrap">
  <div><img class="flogo" src="../assets/brand/logo_full_light.png" alt="Thoth Ledger"><b>Noah Doose · Thoth Ledger</b><p>Travail de recherche étudiant de Noah Doose, MSc Financial Markets & Investments (SKEMA Business School, Paris), candidat au CFA niveau II.</p><p>Contenu pédagogique et de préparation aux entretiens. Rien ici n'est un conseil en investissement ni une offre de titres. Les données de marché sous licence ne sont pas redistribuées : les pages montrent la méthode et des résultats agrégés.</p></div>
  <div><b>Rubriques</b><a href="../fr/strategies/">Stratégies</a><a href="../fr/pitches/">Stock pitches</a><a href="../fr/research/">Recherche</a><a href="../fr/tracker/">Simulateur</a><a href="../fr/database/">Données</a><a href="../fr/about/">À propos</a><a href="../fr/factsheets/">Factsheets</a><a href="../fr/journal/">Journal</a><a href="../fr/methodology/">Méthodologie</a></div>
- <div><b>Ailleurs</b><a href="https://fayzzy11.github.io/HORUS_AM/">Horus Asset Management ↗</a><a href="https://github.com/Fayzzy11/Portfolio-Project">Code sur GitHub ↗</a><p style="margin-top:12px">Mis à jour le 4 nov. 2026.</p></div>
+ <div><b>Ailleurs</b><a href="https://fayzzy11.github.io/HORUS_AM/">Horus Asset Management ↗</a><a href="https://github.com/Fayzzy11/Portfolio-Project">Code sur GitHub ↗</a><p style="margin-top:12px">Mis à jour le 5 nov. 2026.</p></div>
 </div></footer>
 
 </body>
