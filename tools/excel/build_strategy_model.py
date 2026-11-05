@@ -15,6 +15,7 @@ J = json.load(open("/home/claude/portfolio-project/site/data/etf_strategies.json
 core, sat = O["core"], O["sat"]; IDX = O["combo"].index
 wv = E.world_value().reindex(IDX); mw = E.BENCH.reindex(IDX); cash = E.CASH.reindex(IDX).fillna(0)
 he = pd.Series(J["horus_eur"]["r"], index=pd.to_datetime(J["horus_eur"]["dates"]) + pd.offsets.MonthEnd(0)).reindex(IDX)
+hh = pd.Series(J["horus_eur_hedged"]["r"], index=pd.to_datetime(J["horus_eur_hedged"]["dates"]) + pd.offsets.MonthEnd(0)).reindex(IDX)
 expo = O["expo"]; rs = O["rs"].copy(); rs.index = pd.to_datetime(rs.index); rs = rs[~rs.index.duplicated()].sort_index(); expo.index = pd.to_datetime(expo.index); nred = rs[["trend", "credit", "breadth"]].astype(int).sum(axis=1)
 W, R, on, zc, zs = E.value_v4c(timing=False)
 N = len(IDX); LAST = N + 1; FIRST_H = 2 + list(IDX).index(pd.Timestamp("2007-01-31")); MIDROW = 1 + list(IDX).index(pd.Timestamp("2015-12-31")) + 1
@@ -56,7 +57,7 @@ txt = [("Thoth Ledger — Global Value Rotation: strategy model", title), ("", N
  ("Core_Scores, Core_Holdings, Risk, Sat_Holdings, Sat_Scores (73,757 rows: every stock, every month) — the underlying data.", None), ("", None),
  ("Colour code: blue = input from the backtest engine (Python, strategies/etf/); black = formula; green = link to another sheet; yellow = cell you may change. Each monthly return is earned over that month by the portfolio decided at the end of the previous month.", None),
  ("Honesty notes: the versions were chosen after seeing the full period, so 2016-2026 is not a clean out-of-sample test of the choices; the clean test is the live record from November 2026. 162 delisted companies had no Bloomberg GICS and were classified by hand. No result is statistically significant at 5% against MSCI World Value (see Summary).", None),
- ("Sources: Bloomberg (MSCI country and sector indices, valuation ratios, WORLD Index compositions, total returns, market caps, original fundamentals, euro money-market rates); Horus Smart Beta 60/40 from Horus AM (USD, converted at month-end EUR/USD). Hypothetical backtest, not investment advice.", None)]
+ ("Sources: Bloomberg (MSCI country and sector indices, valuation ratios, WORLD Index compositions, total returns, market caps, original fundamentals, euro money-market rates); Horus Smart Beta 60/40 from Horus AM (USD; hedged into EUR with the cash-rate differential, or converted at month-end EUR/USD). Hypothetical backtest, not investment advice.", None)]
 for i, (t, f) in enumerate(txt, 1):
     c = ws.cell(i, 1, t); c.font = f or base; c.alignment = Alignment(wrap_text=True, vertical="top")
 ws.column_dimensions["A"].width = 125
@@ -66,38 +67,39 @@ wi = wb.create_sheet("Inputs"); wi.sheet_view.showGridLines = False
 wi.cell(1, 1, "Inputs — change the yellow cells; everything else recalculates").font = title
 head(wi, 3, ["Lever", "Value", "Note"], [40, 12, 80])
 inp = [("CORE_W", "Core weight in the strategy", 0.70, "Official 70% core / 30% satellite (decided 4 Nov 2026)"),
-       ("PORT_W", "Value strategy weight when combined with Horus", 0.50, "Used in Monthly!U (value + Horus portfolio); 1 = value only, 0 = Horus only")]
+       ("PORT_W", "Value strategy weight when combined with Horus", 0.50, "Used in Monthly!U (value + Horus portfolio); 1 = value only, 0 = Horus only"),
+       ("HORUS_HEDGED", "Horus currency-hedged into euros (1 = yes, 0 = no)", 1, "1 = strategy performance only (dollar return − dollar cash + euro cash); 0 = converted at month-end EUR/USD, includes the dollar move")]
 for i, (n, lab, val, nt) in enumerate(inp, 4):
-    wi.cell(i, 1, lab).font = base; c = wi.cell(i, 2, val); c.font = blue; c.fill = FY; c.number_format = "0%"; wi.cell(i, 3, nt).font = base
+    wi.cell(i, 1, lab).font = base; c = wi.cell(i, 2, val); c.font = blue; c.fill = FY; c.number_format = "0" if n == "HORUS_HEDGED" else "0%"; wi.cell(i, 3, nt).font = base
     name(n, f"Inputs!$B${i}")
-wi.cell(7, 1, "Fixed in the backtest (shown for reference)").font = bold
+wi.cell(8, 1, "Fixed in the backtest (shown for reference)").font = bold
 for i, (a, b) in enumerate([("Core trading cost", "0.10% per unit of turnover"), ("Core ETF fees", "0.25% a year"), ("Satellite trading cost", "0.15% per unit of turnover"),
-                            ("Satellite withholding-tax haircut", "0.40% a year"), ("Risk rule cut", "50% of equities to cash"), ("Rebalancing", "Monthly, month-end signal, trades next day")], 8):
+                            ("Satellite withholding-tax haircut", "0.40% a year"), ("Risk rule cut", "50% of equities to cash"), ("Rebalancing", "Monthly, month-end signal, trades next day")], 9):
     wi.cell(i, 1, a).font = base; wi.cell(i, 2, b).font = base
 
 # ---------------- Monthly
 wm = wb.create_sheet("Monthly")
-cols = ["Month", "Period", "Core return", "Satellite return", "Strategy return", "MSCI World Value", "MSCI World", "Horus Smart Beta (EUR)", "Cash rate (month)",
+cols = ["Month", "Period", "Core return", "Satellite return", "Strategy return", "MSCI World Value", "MSCI World", "Horus Smart Beta (EUR, per Inputs)", "Cash rate (month)",
         "Equity exposure", "Red indicators (prior month end)", "Strategy NAV", "MSCI World Value NAV", "MSCI World NAV", "Strategy drawdown", "MSCI World Value drawdown",
-        "MSCI World drawdown", "Core NAV", "Satellite NAV", "Excess vs MSCI World Value", "Value + Horus portfolio"]
-head(wm, 1, cols, [9, 10, 10, 10, 10, 11, 10, 11, 9, 9, 10, 10, 11, 10, 10, 11, 10, 10, 10, 11, 11])
+        "MSCI World drawdown", "Core NAV", "Satellite NAV", "Excess vs MSCI World Value", "Value + Horus portfolio", "Horus unhedged (EUR/USD)", "Horus hedged into EUR"]
+head(wm, 1, cols, [9, 10, 10, 10, 10, 11, 10, 11, 9, 9, 10, 10, 11, 10, 10, 11, 10, 10, 10, 11, 11, 11, 11])
 for k, t in enumerate(IDX):
     r = k + 2; prev = expo.shift(1).reindex([t]).iloc[0]; nr_prev = nred.shift(1).reindex([t]).iloc[0]
     vals = [t.strftime("%Y-%m"), "Design" if t.year <= 2015 else "Validation", float(core[t]), float(sat[t]), f"=CORE_W*C{r}+(1-CORE_W)*D{r}",
-            float(wv[t]), float(mw[t]), (float(he[t]) if pd.notna(he[t]) else None), float(cash[t]), float(prev if pd.notna(prev) else 1.0),
+            float(wv[t]), float(mw[t]), (f'=IF(HORUS_HEDGED=1,W{r},V{r})' if pd.notna(he[t]) else None), float(cash[t]), float(prev if pd.notna(prev) else 1.0),
             int(nr_prev) if pd.notna(nr_prev) else None,
             f"=1+E{r}" if k == 0 else f"=L{r-1}*(1+E{r})", f"=1+F{r}" if k == 0 else f"=M{r-1}*(1+F{r})", f"=1+G{r}" if k == 0 else f"=N{r-1}*(1+G{r})",
             f"=L{r}/MAX(L$2:L{r})-1", f"=M{r}/MAX(M$2:M{r})-1", f"=N{r}/MAX(N$2:N{r})-1",
             f"=1+C{r}" if k == 0 else f"=R{r-1}*(1+C{r})", f"=1+D{r}" if k == 0 else f"=S{r-1}*(1+D{r})", f"=E{r}-F{r}",
-            f'=IF(H{r}="","",PORT_W*E{r}+(1-PORT_W)*H{r})']
+            f'=IF(H{r}="","",PORT_W*E{r}+(1-PORT_W)*H{r})', (float(he[t]) if pd.notna(he[t]) else None), (float(hh[t]) if pd.notna(hh[t]) else None)]
     for j, x in enumerate(vals, 1):
-        c = wm.cell(r, j, x); c.font = blue if j in (3, 4, 6, 7, 8, 9, 10, 11) else base; c.border = thin
-        if j in (3, 4, 5, 6, 7, 8, 15, 16, 17, 20, 21): c.number_format = PCT2
+        c = wm.cell(r, j, x); c.font = blue if j in (3, 4, 6, 7, 9, 10, 11, 22, 23) else base; c.border = thin
+        if j in (3, 4, 5, 6, 7, 8, 15, 16, 17, 20, 21, 22, 23): c.number_format = PCT2
         elif j == 9: c.number_format = "0.000%"
         elif j == 10: c.number_format = "0%"
         elif j in (12, 13, 14, 18, 19): c.number_format = "0.000"
         if t.year > 2015: c.fill = FV
-wm.freeze_panes = "C2"; wm.auto_filter.ref = f"A1:U{LAST}"
+wm.freeze_panes = "C2"; wm.auto_filter.ref = f"A1:W{LAST}"
 wm.conditional_formatting.add(f"J2:J{LAST}", CellIsRule(operator="lessThan", formula=["1"], font=Font(name=F_, size=10, bold=True, color="A33A2B")))
 
 # ---------------- Summary
@@ -168,8 +170,8 @@ wy.freeze_panes = "A2"
 
 # ---------------- Horus_Mix (helper columns + table)
 hm = wb.create_sheet("Horus_Mix")
-hm.cell(1, 1, "Value strategy combined with Horus Smart Beta 60/40 (in EUR), rebalanced monthly — January 2007 to June 2026").font = title
-note(hm, 2, "Horus converted from USD at month-end EUR/USD. Weights = share of the value strategy; the rest is Horus. Helper columns from column M.")
+hm.cell(1, 1, "Value strategy combined with Horus Smart Beta 60/40 (in EUR), rebalanced monthly — January 2007 to June 2026 — currency treatment per Inputs!HORUS_HEDGED").font = title
+note(hm, 2, "HORUS_HEDGED = 1 (default): Horus hedged into euros, strategy performance only. 0: converted at month-end EUR/USD, includes the dollar move. Weights = share of the value strategy; the rest is Horus. Helper columns from column M.")
 head(hm, 4, ["Value weight", "CAGR", "Volatility", "Sharpe", "Max drawdown", "Correlation value/Horus"], [13, 10, 10, 10, 12, 14])
 WS = [round(x / 10, 1) for x in range(11)]
 start_col = 13; nrows = LAST - FIRST_H + 1
@@ -318,7 +320,7 @@ src = [("Item", "Source", "Detail"),
        ("Stock data", "Bloomberg", "TOT_RETURN_INDEX_GROSS_DVDS and CUR_MKT_CAP monthly EUR; fundamentals FILING_STATUS = OR, EQY_FUND_CRNCY EUR"),
        ("GICS of delisted names", "Manual", "162 companies, current GICS definitions (strategies/etf/satellite_lists/manual_gics.csv)"),
        ("Benchmarks", "Bloomberg", "MSCI World Value Net EUR (M1WO000V), MSCI World Net EUR (MSDEWIN)"), ("Cash", "Bloomberg", "3-month Euribor before Oct 2019, €STR after"),
-       ("Horus Smart Beta 60/40", "Horus AM", "Monthly USD returns, converted at month-end EUR/USD (Bloomberg)"),
+       ("Horus Smart Beta 60/40", "Horus AM", "Monthly USD returns and USD cash rate (Horus AM); hedged into EUR with the euro cash rate, or converted at month-end EUR/USD (Bloomberg)"),
        ("Code", "GitHub", "Fayzzy11/Portfolio-Project, strategies/etf/ (engine.py, satellite_v2.py, export.py) and pre-registrations PREREG_*.md")]
 for i, row in enumerate(src, 1):
     for j, x in enumerate(row, 1):

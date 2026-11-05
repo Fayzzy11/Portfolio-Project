@@ -254,16 +254,22 @@ def strategy_cards(lang, lr):
 
 
 def combination_block(lang):
-    c = ETF["combination"]; P = lambda x, n=1: pct(x, n, lang=lang)
-    rows = []
-    for m in c["mixes"]:
-        lab = L(lang, f"{int(round(m['value'] * 100))}% value / {int(round(100 - m['value'] * 100))}% Horus", f"{int(round(m['value'] * 100))} % value / {int(round(100 - m['value'] * 100))} % Horus")
-        rows.append([lab, P(m["cagr"]), P(m["vol"]), num(m["sharpe"], 2, lang), P(m["mdd"], 0)])
-    best = max(c["mixes"], key=lambda m: m["sharpe"])
+    c, u = ETF["combination"], ETF["combination_unhedged"]; P = lambda x, n=1: pct(x, n, lang=lang)
+    def mtab(cc):
+        rows = []
+        for m in cc["mixes"]:
+            w = int(round(m["value"] * 100))
+            rows.append([L(lang, f"{w}% value / {100 - w}% Horus", f"{w} % value / {100 - w} % Horus"), P(m["cagr"]), P(m["vol"]), num(m["sharpe"], 2, lang), P(m["mdd"], 0)])
+        return tbl([L(lang, "Mix", "Mélange"), "CAGR", L(lang, "Volatility", "Volatilité"), "Sharpe", "Max DD"], rows, num_cols=(1, 2, 3, 4))
+    best = max(c["mixes"], key=lambda m: m["sharpe"]); v0, h0, hu = c["mixes"][0], c["mixes"][-1], u["mixes"][-1]
     per = f'{month_name(c["start"], lang)} – {month_name(c["end"], lang)}'
-    return (f'<div class="shead"><h2>{L(lang, "Why hold both", "Pourquoi détenir les deux")}</h2><p>{L(lang, f"Monthly returns in euros, {per}, rebalanced to the target weights every month.", f"Rendements mensuels en euros, {per}, ramenés aux poids cibles chaque mois.")}</p></div>'
-            + tbl([L(lang, "Mix", "Mélange"), "CAGR", L(lang, "Volatility", "Volatilité"), "Sharpe", "Max DD"], rows, num_cols=(1, 2, 3, 4))
-            + f'<div class="callout">{L(lang, f"The two strategies are correlated at {num(c["corr"], 2)} overall and only {num(c["corr_bear"], 2)} in the months when world equities fall, because Horus keeps 40% in bonds while the value strategy holds equities and cuts them to 50% on its own signals. Combining them lifts the Sharpe ratio from {num(c["mixes"][0]["sharpe"], 2)} (value alone) and {num(c["mixes"][-1]["sharpe"], 2)} (Horus alone) to about {num(best["sharpe"], 2)}. Two caveats: Horus in euros gained from the rise of the dollar over the period, and the two answer different needs — a 60/40 for a balanced investor, a 100%-equity value strategy for an equity allocation.", f"Les deux stratégies sont corrélées à {num(c["corr"], 2, "fr")} sur l’ensemble et à seulement {num(c["corr_bear"], 2, "fr")} les mois où les actions mondiales baissent : Horus garde 40 % d’obligations, tandis que la stratégie value détient des actions et les ramène à 50 % selon ses propres signaux. Les combiner fait passer le ratio de Sharpe de {num(c["mixes"][0]["sharpe"], 2, "fr")} (value seule) et {num(c["mixes"][-1]["sharpe"], 2, "fr")} (Horus seul) à environ {num(best["sharpe"], 2, "fr")}. Deux réserves : Horus en euros a profité de la hausse du dollar sur la période, et les deux répondent à des besoins différents — un 60/40 pour un investisseur équilibré, une stratégie value 100 % actions pour une poche actions.")}</div>'
+    fx = hu["cagr"] - h0["cagr"]
+    return (f'<div class="shead"><h2>{L(lang, "Why hold both", "Pourquoi détenir les deux")}</h2><p>{L(lang, f"Strategy performance only: Horus hedged into euros, so the dollar plays no part. Monthly returns, {per}, rebalanced to the target weights every month.", f"Performance des stratégies seule : Horus couvert en euros, le dollar ne joue aucun rôle. Rendements mensuels, {per}, ramenés aux poids cibles chaque mois.")}</p></div>'
+            + mtab(c)
+            + f'<div class="callout">{L(lang, f"The two strategies are correlated at {num(c["corr"], 2)} overall and {num(c["corr_bear"], 2)} in the months when world equities fall, because Horus keeps 40% in bonds while the value strategy holds equities and cuts them to 50% on its own signals. Once the dollar is taken out, they earn about the same ({P(v0["cagr"])} and {P(h0["cagr"])} a year), so mixing them does not raise the return; it lowers the risk. The Sharpe ratio rises from {num(v0["sharpe"], 2)} (value alone) and {num(h0["sharpe"], 2)} (Horus alone) to about {num(best["sharpe"], 2)}. The two answer different needs: a 60/40 for a balanced investor, a 100%-equity value strategy for an equity allocation.", f"Les deux stratégies sont corrélées à {num(c["corr"], 2, "fr")} sur l’ensemble et à {num(c["corr_bear"], 2, "fr")} les mois où les actions mondiales baissent : Horus garde 40 % d’obligations, tandis que la stratégie value détient des actions et les ramène à 50 % selon ses propres signaux. Une fois le dollar retiré, elles rapportent à peu près autant ({P(v0["cagr"])} et {P(h0["cagr"])} par an) : les mélanger n’augmente pas le rendement, cela réduit le risque. Le ratio de Sharpe passe de {num(v0["sharpe"], 2, "fr")} (value seule) et {num(h0["sharpe"], 2, "fr")} (Horus seul) à environ {num(best["sharpe"], 2, "fr")}. Les deux répondent à des besoins différents : un 60/40 pour un investisseur équilibré, une stratégie value 100 % actions pour une poche actions.")}</div>'
+            + f'<h3>{L(lang, "With the currency effect (Horus not hedged)", "Avec l’effet de change (Horus non couvert)")}, {per}</h3>'
+            + mtab(u)
+            + f'<p class="cap">{L(lang, f"What a euro investor who did not hedge actually got: Horus converted from dollars at the month-end EUR/USD rate. The dollar added about {P(fx)} a year to Horus over the period and rose in the 2008 crash, which cut its worst loss from {P(h0["mdd"], 0)} to {P(hu["mdd"], 0)}. That gain came from the currency, not from the strategy. Hedging: dollar return − dollar cash rate + euro cash rate each month.", f"Ce qu’a réellement obtenu un investisseur en euros non couvert : Horus converti depuis le dollar au cours EUR/USD de fin de mois. Le dollar a ajouté environ {P(fx)} par an à Horus sur la période et a monté pendant le krach de 2008, ce qui a ramené sa perte maximale de {P(h0["mdd"], 0)} à {P(hu["mdd"], 0)}. Ce gain vient de la devise, pas de la stratégie. Couverture : rendement en dollars − taux monétaire dollar + taux monétaire euro, chaque mois.")}</p>'
             + f'<p class="cap"><a href="../tracker/">{L(lang, "Simulate any mix in the tracker", "Simuler n’importe quel mélange dans le simulateur")} →</a></p>')
 
 
@@ -936,8 +942,10 @@ def mix_data(d):
     rv = dict(zip(v["dates"], [v["nav"][0] - 1] + [v["nav"][i] / v["nav"][i - 1] - 1 for i in range(1, len(v["nav"]))]))
     bv = dict(zip(v["dates"], [v["bench"][0] - 1] + [v["bench"][i] / v["bench"][i - 1] - 1 for i in range(1, len(v["bench"]))]))
     rh, bh = dict(zip(he["dates"], he["r"])), dict(zip(he["dates"], he["b"]))
+    hh = d["horus_eur_hedged"]; rhh, bhh = dict(zip(hh["dates"], hh["r"])), dict(zip(hh["dates"], hh["b"]))
     ds = [x for x in v["dates"] if x in rh]
     return dict(dates=ds, rv=[round(rv[x], 6) for x in ds], bv=[round(bv[x], 6) for x in ds], rh=[rh[x] for x in ds], bh=[bh[x] for x in ds],
+                rhh=[rhh[x] for x in ds], bhh=[bhh[x] for x in ds],
                 r=[round(rv[x], 6) for x in ds], b=[round(bv[x], 6) for x in ds], ccy="EUR",
                 name=["Both strategies (mix)", "Les deux stratégies (mix)"], bench="Mix of benchmarks")
 
@@ -947,7 +955,8 @@ def build_tracker(lang):
     opts = "".join(f'<option value="{k}">{esc(v["name"][0 if lang == "en" else 1])} · {v["ccy"]} · {L(lang, "from", "depuis")} {v["dates"][0]}</option>' for k, v in data.items())
     mixrow = (f'<div class="fgroup" id="trk-mixg" style="display:none"><span>{L(lang, "Value / Horus", "Value / Horus")}</span>'
               f'<input id="trk-w" type="range" min="0" max="100" step="10" value="50" style="accent-color:var(--gold);width:160px">'
-              f'<b id="trk-wl" style="font:600 14px var(--f);min-width:90px">50 / 50</b></div>')
+              f'<b id="trk-wl" style="font:600 14px var(--f);min-width:90px">50 / 50</b>'
+              f'<label style="display:flex;align-items:center;gap:6px;font-size:14px;margin-left:12px"><input id="trk-fx" type="checkbox"> {L(lang, "include the currency effect", "inclure l’effet de change")}</label></div>')
     body = phead(L(lang, "Simulation · net of costs", "Simulation · nette de frais"),
                  L(lang, "Portfolio tracker", "Simulateur de portefeuille"),
                  L(lang, "Pick a strategy, a start month and an amount: see what the position would be worth today, month by month, against its benchmark.",
@@ -961,7 +970,7 @@ def build_tracker(lang):
   <div class="fgroup"><span>{L(lang, "Monthly top-up", "Versement mensuel")}</span><input id="trk-m" class="search" type="number" min="0" step="50" value="0" style="min-width:110px;flex:none"></div>
   {mixrow}
  </div>
- <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros, brought back to the chosen weights every month. Horus is converted from US dollars at the month-end EUR/USD rate, so its figures here differ from the dollar figures published by Horus AM (8.9% a year, worst loss −22.6%): the dollar gained about 14% against the euro over 2007-2026 and rose during the 2008 crash, which cushioned losses for a euro investor. Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark, also in euros.", "Mix : les deux stratégies en euros, ramenées aux poids choisis chaque mois. Horus est converti depuis le dollar au cours EUR/USD de fin de mois : ses chiffres ici diffèrent donc des chiffres en dollars publiés par Horus AM (8,9 % par an, perte maximale −22,6 %), car le dollar a pris environ 14 % face à l’euro sur 2007-2026 et a monté pendant le krach de 2008, ce qui a amorti les pertes d’un investisseur en euros. Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus, aussi en euros.")}</p>
+ <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros, brought back to the chosen weights every month. By default Horus is hedged into euros (dollar return − dollar cash rate + euro cash rate), so only the strategies are compared. Tick “include the currency effect” to see what an unhedged euro investor got: Horus converted at the month-end EUR/USD rate, helped by a stronger dollar over 2007-2026 and in the 2008 crash. Horus AM publishes its figures in dollars (8.9% a year, worst loss −22.6%). Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark, treated the same way.", "Mix : les deux stratégies en euros, ramenées aux poids choisis chaque mois. Par défaut, Horus est couvert en euros (rendement en dollars − taux monétaire dollar + taux monétaire euro) : seules les stratégies sont comparées. Cochez « inclure l’effet de change » pour voir ce qu’a obtenu un investisseur en euros non couvert : Horus converti au cours EUR/USD de fin de mois, aidé par la hausse du dollar sur 2007-2026 et pendant le krach de 2008. Horus AM publie ses chiffres en dollars (8,9 % par an, perte maximale −22,6 %). Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus, traité de la même façon.")}</p>
  <div class="stats" id="trk-stats"></div>
  <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
@@ -982,8 +991,8 @@ function mdd(r,i0){var n=1,pk=1,dd=0;for(var i=i0;i<r.length;i++){n*=1+r[i];pk=M
 function draw(){
  var k=$("trk-s").value,S=D[k],d0=$("trk-d").value||S.dates[0];
  var mix=k==="mix";$("trk-mixg").style.display=mix?"":"none";$("trk-mixnote").style.display=mix?"":"none";
- if(mix){var w=(+$("trk-w").value)/100;$("trk-wl").textContent=Math.round(w*100)+" / "+Math.round(100-w*100);S.r=S.rv.map(function(x,i){return w*x+(1-w)*S.rh[i]});S.b=S.bv.map(function(x,i){return w*x+(1-w)*S.bh[i]});
-  var lab=w===0?(FR?"Horus Smart Beta en euros":"Horus Smart Beta in euros"):w===1?(FR?"Rotation Value mondiale":"Global Value Rotation"):(FR?"Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus":"Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus");
+ if(mix){var w=(+$("trk-w").value)/100;$("trk-wl").textContent=Math.round(w*100)+" / "+Math.round(100-w*100);var fx=$("trk-fx").checked,RH=fx?S.rh:S.rhh,BH=fx?S.bh:S.bhh;S.r=S.rv.map(function(x,i){return w*x+(1-w)*RH[i]});S.b=S.bv.map(function(x,i){return w*x+(1-w)*BH[i]});
+  var lab=w===0?(fx?(FR?"Horus Smart Beta en euros, non couvert":"Horus Smart Beta in euros, unhedged"):(FR?"Horus Smart Beta couvert en euros":"Horus Smart Beta hedged into euros")):w===1?(FR?"Rotation Value mondiale":"Global Value Rotation"):(FR?"Mix "+Math.round(w*100)+" % value / "+Math.round(100-w*100)+" % Horus":"Mix "+Math.round(w*100)+"% value / "+Math.round(100-w*100)+"% Horus");
   S.name=[lab,lab];S.bench=FR?"Mix des indices (EUR)":"Benchmark mix (EUR)"}
  var _=0,amt=+$("trk-a").value||0,top=+$("trk-m").value||0;
  var i0=S.dates.indexOf(d0);if(i0<0){i0=d0<S.dates[0]?0:S.dates.length-1}$("trk-d").value=S.dates[i0];
@@ -1017,7 +1026,7 @@ function draw(){
  Object.keys(ys).sort().reverse().forEach(function(y){var o=ys[y],dp=o.p-1,db=o.b-1;rows+='<tr><td>'+y+'</td><td class="n '+(dp<0?"neg":"")+'">'+pc(dp,1)+'</td><td class="n">'+pc(db,1)+'</td><td class="n '+(dp-db<0?"neg":"pos")+'">'+pc(dp-db,1)+'</td><td class="n">'+money(P[o.last][0],S.ccy)+'</td></tr>'});
  $("trk-tbl").innerHTML=rows;
 }
-["trk-s","trk-d","trk-a","trk-m","trk-w"].forEach(function(i){$(i).addEventListener("input",draw);$(i).addEventListener("change",draw)});
+["trk-s","trk-d","trk-a","trk-m","trk-w","trk-fx"].forEach(function(i){$(i).addEventListener("input",draw);$(i).addEventListener("change",draw)});
 $("trk-s").addEventListener("change",function(){$("trk-d").value=""; draw()});
 draw();})();</script>""".replace("__DATA__", T).replace("__LANG__", lang)
     page("tracker/index.html", lang, L(lang, "Portfolio tracker", "Simulateur de portefeuille"), body, "tracker",

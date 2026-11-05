@@ -70,16 +70,30 @@ hidx = pd.period_range(h["start"], periods=len(h["r_p3"]), freq="M").to_timestam
 fx = E.col(E.MK, "EURUSD Curncy").pct_change().reindex(hidx)
 heur = (1 + pd.Series(h["r_p3"], index=hidx)) / (1 + fx) - 1; beur = (1 + pd.Series(h["r_bench"], index=hidx)) / (1 + fx) - 1
 res["horus_eur"] = {"dates": [d.strftime("%Y-%m") for d in hidx], "r": list(np.round(heur.values, 6)), "b": list(np.round(beur.values, 6))}
+# Currency-hedged Horus: dollar return minus the dollar cash rate plus the euro cash rate (1-month forward hedge, covered interest parity)
+ceur = E.cash_monthly().reindex(hidx)
+hhed = pd.Series(h["r_p3"], index=hidx) - pd.Series(h["rf"], index=hidx) + ceur
+bhed = pd.Series(h["r_bench"], index=hidx) - pd.Series(h["rf"], index=hidx) + ceur
+res["horus_eur_hedged"] = {"dates": [d.strftime("%Y-%m") for d in hidx], "r": list(np.round(hhed.values, 6)), "b": list(np.round(bhed.values, 6))}
 ci = IDX.intersection(hidx)
-mix = []
-for w in (1.0, 0.7, 0.5, 0.3, 0.0):
-    r = w * combo.loc[ci] + (1 - w) * heur.loc[ci]; a = E.stats(r)
-    mix.append(dict(value=w, cagr=f(a["cagr"]), vol=f(a["vol"]), sharpe=f(a["sharpe"]), mdd=f(a["mdd"])))
-res["combination"] = {"start": ci[0].strftime("%Y-%m"), "end": ci[-1].strftime("%Y-%m"), "corr": f(combo.loc[ci].corr(heur.loc[ci])),
-                      "corr_bear": f(combo.loc[ci][mw.reindex(ci) < 0].corr(heur.loc[ci][mw.reindex(ci) < 0])), "mixes": mix,
-                      "corr_rolling_36_min": f(combo.loc[ci].rolling(36).corr(heur.loc[ci]).min()), "corr_rolling_36_max": f(combo.loc[ci].rolling(36).corr(heur.loc[ci]).max())}
+
+
+def combine(hr):
+    mix = []
+    for w in (1.0, 0.7, 0.5, 0.3, 0.0):
+        r = w * combo.loc[ci] + (1 - w) * hr.loc[ci]; a = E.stats(r)
+        mix.append(dict(value=w, cagr=f(a["cagr"]), vol=f(a["vol"]), sharpe=f(a["sharpe"]), mdd=f(a["mdd"])))
+    down = mw.reindex(ci) < 0
+    return {"start": ci[0].strftime("%Y-%m"), "end": ci[-1].strftime("%Y-%m"), "corr": f(combo.loc[ci].corr(hr.loc[ci])),
+            "corr_bear": f(combo.loc[ci][down].corr(hr.loc[ci][down])), "mixes": mix,
+            "corr_rolling_36_min": f(combo.loc[ci].rolling(36).corr(hr.loc[ci]).min()), "corr_rolling_36_max": f(combo.loc[ci].rolling(36).corr(hr.loc[ci]).max())}
+
+
+res["combination"] = combine(hhed)            # headline: strategy performance only (Horus hedged into euros)
+res["combination_unhedged"] = combine(heur)   # what an unhedged euro investor actually got (includes the dollar)
 res["signal"] = {"ic12_countries": -0.046, "ic12_sectors": -0.026}
 json.dump(res, open(os.path.join(HERE, "..", "..", "site", "data", "etf_strategies.json"), "w"))
 print("official", v["dates"][0], v["dates"][-1], round(v["stats"]["cagr"], 4), round(v["stats"]["sharpe"], 3), round(v["stats"]["mdd"], 3), "t", round(v["t_vs_bench"], 2))
-print("combination", res["combination"]["corr"], res["combination"]["corr_bear"], [(m["value"], round(m["cagr"], 4), round(m["sharpe"], 2), round(m["mdd"], 3)) for m in mix])
+for k in ("combination", "combination_unhedged"):
+    c = res[k]; print(k, round(c["corr"], 3), round(c["corr_bear"], 3), [(m["value"], round(m["cagr"], 4), round(m["vol"], 4), round(m["sharpe"], 2), round(m["mdd"], 3)) for m in c["mixes"]])
 print("holdings", v["holdings"]["exposure"], v["holdings"]["selection"], [(x["name"], x["country"], x["pitch"]) for x in v["holdings"]["satellite"]])
