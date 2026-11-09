@@ -18,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT / "docs/assets/pitches/316_HK_Orient_Overseas_International_pitch.pptx"
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
 
-INK, GREEN, MINT, ROW, SLATE, RED = "141A17", "0E6B4F", "D7EBE2", "F2F4F1", "5B6660", "B23A2E"
-CARD, CARDLN, MUTED, MUTED2, REDSOFT, MINT2, WHITE = "2A322E", "3A4540", "B9C4BE", "8E9A94", "F6E3E0", "EAF4EF", "FFFFFF"
+# Thoth Ledger charter (the template deck is restyled by tools/decks_style/restyle_thoth.py)
+INK, GREEN, MINT, ROW, SLATE, RED = "0A1A30", "1B3358", "EFE3CC", "F7F3EC", "616A78", "A33A2B"
+CARD, CARDLN, MUTED, MUTED2, REDSOFT, MINT2, WHITE = "142846", "2A4066", "B8C0CC", "8C97A8", "F6E3E0", "F6F2EA", "FFFFFF"
 RGB = lambda h: RGBColor.from_string(h)
 
 
@@ -98,7 +99,7 @@ def table(sl, x, y, w, rows, widths, sz=12, rh=0.4, hl=(), first_bold=True, alig
                 e.set("w", "6350" if ln == "a:lnB" else "0")
                 for ch in list(e): e.remove(ch)
                 if ln == "a:lnB":
-                    sf = e.makeelement(qn("a:solidFill"), {}); clr = sf.makeelement(qn("a:srgbClr"), {"val": "DCE2DD"}); sf.append(clr); e.append(sf)
+                    sf = e.makeelement(qn("a:solidFill"), {}); clr = sf.makeelement(qn("a:srgbClr"), {"val": "E5DCCB"}); sf.append(clr); e.append(sf)
                 else: e.append(e.makeelement(qn("a:noFill"), {}))
     return gs
 
@@ -107,7 +108,7 @@ def style_chart(ch, legend=True, sz=11):
     ch.font.size = Pt(sz); ch.font.name = "Arial"; ch.font.color.rgb = RGB(INK)
     ch.has_legend = legend
     if legend: ch.legend.position = XL_LEGEND_POSITION.BOTTOM; ch.legend.include_in_layout = False; ch.legend.font.size = Pt(sz)
-    va = ch.value_axis; va.has_major_gridlines = True; va.major_gridlines.format.line.color.rgb = RGB("E3E8E4")
+    va = ch.value_axis; va.has_major_gridlines = True; va.major_gridlines.format.line.color.rgb = RGB("ECE6DA")
     va.format.line.fill.background(); va.tick_labels.font.size = Pt(sz - 1); va.tick_labels.font.color.rgb = RGB(SLATE)
     ca = ch.category_axis; ca.format.line.color.rgb = RGB("888888"); ca.tick_labels.font.size = Pt(sz - 1); ca.has_major_gridlines = False
 
@@ -161,7 +162,7 @@ def build(lang):
     # 2 ---------------------------------------------------------------- executive summary
     sl = content(prs, T("01  EXECUTIVE SUMMARY", "01  SYNTHÈSE"), T("2026 margins were a shortage windfall: our 2027 EPS is 25% below the Street",
                                                                      "Les marges de 2026 étaient une aubaine de pénurie : notre BPA 2027 est 25 % sous le consensus"))
-    box(sl, 0.6, 1.85, 4.0, 4.6, MINT2, "C9DED3")
+    box(sl, 0.6, 1.85, 4.0, 4.6, MINT2, "E5DCCB")
     pill(sl, 0.9, 2.1, 1.9, 0.4, SELL)
     tb(sl, 0.9, 2.6, 3.4, 0.6, usd(32, 0), 30, INK, True, anchor=MSO_ANCHOR.MIDDLE)
     tb(sl, 0.9, 3.2, 3.4, 0.4, T("price target, −43% vs $56.28", "objectif de cours, −43 % vs 56,28 $"), 13, SLATE)
@@ -212,7 +213,7 @@ def build(lang):
              (pc(">90%"), T("TSMC's share of Apple", "Part de TSMC chez Apple"), T("Chip designers want a second source beside TSMC and 18A yields are improving, but the reported Apple deal is unconfirmed and covers low-end chips from mid-2027.", "Les concepteurs de puces veulent une seconde source à côté de TSMC et les rendements 18A progressent, mais l’accord rapporté avec Apple n’est pas confirmé et ne couvre que des puces d’entrée de gamme à partir de mi-2027."))]
     for i, (v, h, b) in enumerate(cards):
         x, y = 0.6 + 6.27 * (i % 2), 1.85 + 2.4 * (i // 2)
-        box(sl, x, y, 5.87, 2.15, ROW, "DCE2DD")
+        box(sl, x, y, 5.87, 2.15, ROW, "E5DCCB")
         tb(sl, x + 0.3, y + 0.2, 2.6, 0.8, v, 30, GREEN, True, anchor=MSO_ANCHOR.MIDDLE)
         tb(sl, x + 3.0, y + 0.25, 2.57, 0.7, h, 14, INK, True, anchor=MSO_ANCHOR.MIDDLE)
         tb(sl, x + 0.3, y + 1.05, 5.27, 1.0, b, 11, INK)
@@ -227,7 +228,7 @@ def build(lang):
             [T("Adjusted EPS", "BPA ajusté"), usd(1.78), usd(1.33), pc("−25.2%")],
             [T("Free cash flow", "Free cash flow"), T("−$2.7bn", "−2,7 Md$"), T("−$5.7bn", "−5,7 Md$"), T("−$3.0bn", "−3,0 Md$")]]
     table(sl, 0.6, 1.85, 7.2, rows, [2.7, 1.7, 1.5, 1.3], sz=13, rh=0.5, hl=(4,))
-    box(sl, 8.2, 1.85, 4.53, 3.0, MINT2, "C9DED3")
+    box(sl, 8.2, 1.85, 4.53, 3.0, MINT2, "E5DCCB")
     tb(sl, 8.5, 2.05, 3.95, 0.35, T("THE NUMBER THAT MATTERS", "LE CHIFFRE QUI COMPTE"), 11, GREEN, True, spc=120)
     tb(sl, 8.5, 2.45, 3.95, 2.3, T("Four quarters at Intel's Q4 guide of 25 cents is one dollar. The Street needs $1.78 — 44 cents a quarter, back to the Q3 peak. We have $1.33.",
                                    "Quatre trimestres à la guidance du T4 (25 cents) font un dollar. Le consensus a besoin de 1,78 $ — 44 cents par trimestre, retour au pic du T3. Nous avons 1,33 $."), 15, INK, True)
@@ -243,7 +244,7 @@ def build(lang):
     gf = sl.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(0.6), Inches(1.8), Inches(6.6), Inches(4.7), cd); ch = gf.chart
     style_chart(ch, legend=False); ch.has_title = True; ch.chart_title.text_frame.text = T("Non-GAAP EPS per quarter ($)", "BPA non-GAAP par trimestre ($)")
     ch.chart_title.text_frame.paragraphs[0].runs[0].font.size = Pt(12); ch.chart_title.text_frame.paragraphs[0].runs[0].font.bold = True
-    se = ch.plots[0].series[0]; se.format.fill.solid(); se.format.fill.fore_color.rgb = RGB("9DB8AC")
+    se = ch.plots[0].series[0]; se.format.fill.solid(); se.format.fill.fore_color.rgb = RGB("A9B4C4")
     for k, col in ((3, GREEN), (4, "888888"), (5, RED)):
         pt = se.points[k]; pt.format.fill.solid(); pt.format.fill.fore_color.rgb = RGB(col)
     ch.plots[0].has_data_labels = True; dl = ch.plots[0].data_labels; dl.number_format = '"$"0.00' if E else '0,00" $"'; dl.number_format_is_linked = False; dl.font.size = Pt(11); dl.position = XL_LABEL_POSITION.OUTSIDE_END
@@ -292,8 +293,8 @@ def build(lang):
            T("Unconfirmed by both companies, low-end chips from mid-2027, TSMC keeps >90% of Apple's volume: ~$1.2bn of external foundry revenue in 2027E. Intel Foundry still loses ~$1.9bn a quarter.", "Non confirmé par les deux sociétés, puces d’entrée de gamme à partir de mi-2027, TSMC garde plus de 90 % des volumes d’Apple : ~1,2 Md$ de CA fonderie externe en 2027E. Intel Foundry perd encore ~1,9 Md$ par trimestre."))]
     for i, (a, b) in enumerate(vp):
         y = 2.2 + 1.08 * i
-        box(sl, 0.6, y, 5.9, 0.98, ROW, "DCE2DD"); tb(sl, 0.85, y + 0.08, 5.4, 0.82, a, 12, SLATE, italic=True, anchor=MSO_ANCHOR.MIDDLE)
-        box(sl, 6.8, y, 5.93, 0.98, MINT2, "C9DED3"); tb(sl, 7.05, y + 0.08, 5.45, 0.82, b, 11, INK, anchor=MSO_ANCHOR.MIDDLE)
+        box(sl, 0.6, y, 5.9, 0.98, ROW, "E5DCCB"); tb(sl, 0.85, y + 0.08, 5.4, 0.82, a, 12, SLATE, italic=True, anchor=MSO_ANCHOR.MIDDLE)
+        box(sl, 6.8, y, 5.93, 0.98, MINT2, "E5DCCB"); tb(sl, 7.05, y + 0.08, 5.45, 0.82, b, 11, INK, anchor=MSO_ANCHOR.MIDDLE)
     source(sl, T("Source: Bloomberg consensus and NTM multiples (6 Nov 2026); Intel prepared remarks Q3 2026; WSJ (May 2026) via Tech Times; own model.", "Source : consensus et multiples 12 mois Bloomberg (6 nov. 2026) ; présentation d’Intel T3 2026 ; WSJ (mai 2026) via Tech Times ; notre modèle."))
 
     # 9 ---------------------------------------------------------------- valuation
@@ -330,13 +331,13 @@ def build(lang):
           (T("Jan 2027", "Janv. 2027"), T("IDC/Gartner Q4 PC data and CES (Nova Lake). The Street pencils in an H2 2027 PC recovery; Intel plans units ~−10%.", "Données PC du T4 (IDC/Gartner) et CES (Nova Lake). Le consensus prévoit une reprise des PC au S2 2027 ; Intel prévoit ~−10 %.")),
           (T("H1 2027", "S1 2027"), T("Data-centre policy after the midterms: each −10% on data center revenue ≈ −$0.19 of EPS. Bear-case risk.", "Politique des data centers après les élections : chaque −10 % de CA data center ≈ −0,19 $ de BPA. Risque du scénario pessimiste.")),
           (T("Q2-Q3 2027", "T2-T3 2027"), T("First Apple chips on 18A-P (Ming-Chi Kuo timing): ~$1.2bn of external foundry revenue, too small to change group margins.", "Premières puces Apple sur 18A-P (calendrier Ming-Chi Kuo) : ~1,2 Md$ de CA fonderie externe, trop peu pour changer les marges du groupe."))]
-    ln = sl.shapes.add_connector(1, Inches(0.85), Inches(2.45), Inches(12.4), Inches(2.45)); ln.line.color.rgb = RGB("9DB8AC"); ln.line.width = Pt(2)
+    ln = sl.shapes.add_connector(1, Inches(0.85), Inches(2.45), Inches(12.4), Inches(2.45)); ln.line.color.rgb = RGB("A9B4C4"); ln.line.width = Pt(2)
     for i, (d, t) in enumerate(ev):
         x = 0.6 + 3.05 * i
         tb(sl, x, 1.85, 2.8, 0.35, d, 14, GREEN, True)
         dot = sl.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x + 0.1), Inches(2.33), Inches(0.24), Inches(0.24)); dot.fill.solid(); dot.fill.fore_color.rgb = RGB(GREEN); dot.line.fill.background()
         tb(sl, x, 2.8, 2.8, 2.4, t, 12, INK)
-    box(sl, 0.6, 5.35, 12.13, 0.95, MINT2, "C9DED3")
+    box(sl, 0.6, 5.35, 12.13, 0.95, MINT2, "E5DCCB")
     tb(sl, 0.9, 5.35, 11.6, 0.95, [[(T("The number to watch: ", "Le chiffre à surveiller : "), True), (T("the 2027 gross-margin guide in late January. Below 40% non-GAAP, consensus has to move toward our numbers; above 42% with data center over $9bn a quarter, we are wrong.", "la guidance de marge brute 2027 fin janvier. Sous 40 % non-GAAP, le consensus doit se rapprocher de nos chiffres ; au-dessus de 42 % avec un data center à plus de 9 Md$ par trimestre, nous avons tort."), False)]], 13, INK, anchor=MSO_ANCHOR.MIDDLE)
     source(sl, T("Source: Intel prepared remarks Q3 2026; Bloomberg consensus (6 Nov 2026); course Session 3 (midterms); own model.", "Source : présentation d’Intel T3 2026 ; consensus Bloomberg (6 nov. 2026) ; cours, séance 3 (élections) ; notre modèle."))
 
