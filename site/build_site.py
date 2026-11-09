@@ -197,7 +197,7 @@ def build_home(lang):
   <div class="kpis">
    <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">{pct(hp["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2007 vs", "par an depuis 2007 vs")} {pct(HS["b"]["cagr"], 1, lang=lang)}</div></div>
    <div class="kpi"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><div class="v">{pct(ETF["value"]["stats"]["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2006 vs", "par an depuis 2006 vs")} {pct(ETF["value"]["bench_stats"]["cagr"], 1, lang=lang)} (MSCI World Value)</div></div>
-   <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies", "Surpondérer, 2 cas d'école")}</div></div>
+   <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies, 1 Sell", "Surpondérer, 2 cas d'école, 1 Vendre")}</div></div>
    <div class="kpi"><div class="k">{L(lang, "Securities researched", "Titres étudiés")}</div><div class="v">1 990</div><div class="s">{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</div></div>
   </div>
   <footer>{L(lang, "Hypothetical backtests. Past performance does not guarantee future returns.", "Backtests hypothétiques. Les performances passées ne préjugent pas des performances futures.")}</footer>
@@ -709,7 +709,7 @@ def build_pitch_index(lang):
         f = s["files"]
         root = "../" if lang == "en" else "../../"
         dl = deck_links(f, root, small=True)
-        cards.append(f"""<article class="card" data-item data-rating="{s['rating'].lower()}" data-region="{REGION.get(s['country'], 'other')}">
+        cards.append(f"""<article class="card" data-item data-rating="{'underweight' if s['rating'] == 'Sell' else s['rating'].lower()}" data-region="{REGION.get(s['country'], 'other')}">
 <div class="meta">{esc(s['ticker'])} · {esc(tr(lang, s['exchange']))} · {esc(tr(lang, s['country']))} · {esc(tr(lang, s['sector']))}</div>
 <h3><a href="{s['slug']}/">{esc(s['name'])}</a></h3>
 <div class="tags">{rating(s['rating'], lang)}<span class="tag">{esc(pf(s, lang, 'role'))}</span></div>
@@ -723,13 +723,13 @@ def build_pitch_index(lang):
     filt = (group("rating", L(lang, "Call", "Avis"), [("overweight", t(lang, "Overweight")), ("neutral", t(lang, "Neutral")), ("underweight", t(lang, "Underweight"))]) +
             group("region", L(lang, "Region", "Région"), [("europe", "Europe"), ("americas", L(lang, "Americas", "Amériques")), ("asia", L(lang, "Asia", "Asie"))]))
     body = phead(t(lang, "pitches"), L(lang, "What the screen bought, examined one by one", "Ce que le screen a acheté, examiné titre par titre"),
-                 L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026. Each pitch has a twelve-slide deck in a buy-side format, in English and French.",
-                   "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026. Chaque pitch a un deck de douze slides au format buy-side, en anglais et en français."))
+                 L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026, plus one short idea from the Equity Research course (Intel). Each pitch has a twelve-slide deck in a buy-side format, in English and French.",
+                   "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026, plus une idée de vente issue du cours d’Equity Research (Intel). Chaque pitch a un deck de douze slides au format buy-side, en anglais et en français."))
     body += f"""<section class="sec"><div class="wrap" data-filter-scope>
 <div class="filters">{filt}<input class="search" type="search" placeholder="{L(lang, 'Search a company, a sector…', 'Chercher une société, un secteur…')}" data-search aria-label="Search"><span class="count"></span></div>
 <div class="grid">{"".join(cards)}</div><div class="empty">{L(lang, "No pitch matches these filters.", "Aucun pitch ne correspond à ces filtres.")}</div>
-<p class="cap" style="margin-top:20px">{L(lang, "Prices as of 29 October 2026. Calls: Overweight above +15% upside to the base case, Neutral between −10% and +15%, Underweight below −10%. Student research, not investment advice.",
-   "Cours au 29 octobre 2026. Avis : Surpondérer au-delà de +15 % de potentiel vers le scénario central, Neutre entre −10 % et +15 %, Sous-pondérer en dessous de −10 %. Travail étudiant, pas un conseil en investissement.")}</p>
+<p class="cap" style="margin-top:20px">{L(lang, "Prices as of 29 October 2026 (Intel: 6 November 2026). Calls: Overweight above +15% upside to the base case, Neutral between −10% and +15%, Underweight below −10%. Intel uses the course scale (Buy / Hold / Sell, Sell below −10%). Student research, not investment advice.",
+   "Cours au 29 octobre 2026 (Intel : 6 novembre 2026). Avis : Surpondérer au-delà de +15 % de potentiel vers le scénario central, Neutre entre −10 % et +15 %, Sous-pondérer en dessous de −10 %. Intel suit l’échelle du cours (Acheter / Conserver / Vendre, Vendre sous −10 %). Travail étudiant, pas un conseil en investissement.")}</p>
 </div></section>"""
     page("pitches/index.html", lang, t(lang, "pitches"), body, "pitches", L(lang, "Stock pitches with downloadable decks.", "Stock pitches avec decks téléchargeables."))
 
@@ -771,7 +771,15 @@ def build_pitch(s, lang):
             "".join(f"<li>{esc(x)}</li>" for x in pf(s, lang, "triggers")) + "</ul></div>")
     fct = s["facts"]
     cc, scode = COUNTRY_CODE.get(s["country"]), SECTOR_CODE.get(s["sector"])
-    strat = f"""<div class="cols2">
+    au = s.get("authors", "")
+    if fct is None:   # pitch outside the value screen (course project)
+        drows = [[esc(a), esc(b), f"<b>{esc(c)}</b>"] for a, b, c in s.get("differ", [])]
+        strat = (f'<div class="callout">{L(lang, f"Not a holding of the value strategy: Intel was assigned in the SKEMA Equity Research course, where {au} initiated coverage with a Sell. It is the mirror image of the value pitches: a stock that has fallen 60% and looks cheap on price, but is still expensive on earnings.", f"Pas une ligne de la stratégie value : Intel a été attribué dans le cours d’Equity Research de SKEMA, où {au} ont initié la couverture avec un avis Vendre. C’est l’image inverse des pitches value : un titre qui a chuté de 60 % et paraît bon marché sur le prix, mais reste cher sur les bénéfices.")}</div>'
+                 + f'<h3>{L(lang, "Where we differ from consensus", "Où nous différons du consensus")}</h3>'
+                 + tbl([L(lang, "Line", "Ligne"), L(lang, "Street (Bloomberg, 6 Nov 2026)", "Consensus (Bloomberg, 6 nov. 2026)"), L(lang, "Our model", "Notre modèle")],
+                       [[r[0] if lang == "en" else {"Gross margin 2027E (non-GAAP)": "Marge brute 2027E (non-GAAP)", "Revenue 2027E": "CA 2027E", "Adjusted EPS 2027E": "BPA ajusté 2027E", "Free cash flow 2027E": "Free cash flow 2027E", "Adjusted EPS 2028E": "BPA ajusté 2028E"}.get(r[0], r[0]), r[1], r[2]] for r in s.get("differ", [])], num_cols=(1, 2)))
+    else:
+        strat = f"""<div class="cols2">
 <div class="box accent"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><h4 style="margin-top:6px">{esc(tr(lang, s["country"]))} · {esc(tr(lang, s["sector"]))}</h4>
 <p>{L(lang, "This name sits in a country line and a sector line of the ETF core. The stock satellite picks the cheapest stocks within their sector in the countries and sectors the core holds.", "Ce titre appartient à une ligne pays et à une ligne secteur du cœur ETF. Le satellite actions retient les actions les moins chères de leur secteur dans les pays et secteurs détenus par le cœur.")} {(L(lang, "<b>In the satellite at the end of June 2026.</b>", "<b>Dans le satellite à fin juin 2026.</b>") if any(x.get("pitch") == s["name"] for x in ETF["value"]["holdings"]["satellite"]) else "")}</p>
 <p style="margin-top:10px"><a href="{lr if lang == 'en' else '../../'}strategies/value-rotation/#universe">{L(lang, "See the universe", "Voir l’univers")} →</a></p></div>
@@ -786,8 +794,8 @@ def build_pitch(s, lang):
         section("thesis", L(lang, "Investment thesis", "Thèse d’investissement"), thesis),
         section("valuation", L(lang, "Valuation", "Valorisation"), val),
         section("catalysts", L(lang, "Catalysts and risks", "Catalyseurs et risques"), f'<div class="cols2" style="align-items:start"><div>{cat}</div>{trig}</div>'),
-        section("strategies", L(lang, "In our strategies", "Dans nos stratégies"), strat),
-        section("deck", "Deck", f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap"><div><h4>{L(lang, "The full pitch", "Le pitch complet")}</h4><p>{L(lang, "Twelve slides: summary, company, macro, why the screen picked it, track record, financials, variant perception, valuation, catalysts, risks and sources. Available in English and French.", "Douze slides : synthèse, société, macro, pourquoi le screen l’a choisi, historique, financiers, variant perception, valorisation, catalyseurs, risques et sources. Disponible en anglais et en français.")}</p></div><div class="btns">{dl}</div></div>'),
+        section("strategies", L(lang, "In our strategies", "Dans nos stratégies") if fct else L(lang, "Where it fits", "Sa place dans le site"), strat),
+        section("deck", "Deck", f'<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap"><div><h4>{L(lang, "The full pitch", "Le pitch complet")}</h4><p>{(L(lang, "Twelve slides: summary, company, macro, why the screen picked it, track record, financials, variant perception, valuation, catalysts, risks and sources. Available in English and French.", "Douze slides : synthèse, société, macro, pourquoi le screen l’a choisi, historique, financiers, variant perception, valorisation, catalyseurs, risques et sources. Disponible en anglais et en français.") if fct else L(lang, "Twelve slides: summary, company, macro, where we differ from consensus, the Q4 guide, forecast, variant perception, valuation, catalysts, risks and sources. Available in English and French.", "Douze slides : synthèse, société, macro, écarts avec le consensus, guidance du T4, prévisions, variant perception, valorisation, catalyseurs, risques et sources. Disponible en anglais et en français."))}</p></div><div class="btns">{dl}</div></div>'),
     ]
     body = head + doc_layout(lang, toc, secs) + f'<div class="wrap"><p class="cap" style="margin:8px 0 48px">{L(lang, "Student research for educational and interview purposes. Not investment advice.", "Travail de recherche étudiant à visée pédagogique et de préparation aux entretiens. Pas un conseil en investissement.")}</p></div>'
     page(f"pitches/{s['slug']}/index.html", lang, s["name"], body, "pitches", pf(s, lang, "headline"))

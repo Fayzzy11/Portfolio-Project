@@ -23,3 +23,4 @@ title: Journal
 | 4 nov. 2026 | Stratégie value restructurée en cœur-satellite : cœur ETF V7 (sélection V4c, réduction à 50 % au lieu de 100 % cash quand au moins deux indicateurs de risque sur trois sont rouges) pour 70 % ; satellite actions (30 %) en construction. |
 | 5 nov. 2026 | Satellite actions terminé et adopté : les 8 actions les moins chères (à l’intérieur de leur secteur) dans les pays et secteurs du cœur, parmi les 300 plus grandes actions du MSCI World à chaque date, sociétés radiées incluses, fév. 2006 – juin 2026. Stratégie officielle : 70 % cœur ETF + 30 % satellite, même règle de risque à 50 %. |
 | 5 nov. 2026 | Classeur du modèle (toutes les données, feuille Solver, combinaison avec Horus), note format FT et factsheet de juin 2026 mis à jour. |
+| 9 nov. 2026 | Intel (Vendre, objectif 32 $) ajouté aux stock pitches : idée de vente issue du cours d’Equity Research de SKEMA avec Victor Endrizzi, adaptée au format pitch de douze slides (EN/FR). |
