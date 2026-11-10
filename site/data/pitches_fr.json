@@ -5,11 +5,11 @@
   "industry": "Automobile",
   "horizon": "12-18 mois",
   "headline": "La trésorerie et la banque captive couvrent la capitalisation : l'activité automobile est presque gratuite",
-  "one_liner": "Renault vaut environ 7,7 Md€ en bourse alors que sa branche automobile détient 6,6 Md€ de trésorerie nette et que sa banque captive dégage environ 1,5 Md€ de résultat opérationnel par an. Le marché traite le creux de marge de 2026 comme définitif ; nous pensons que la remise à zéro est faite et qu'un cycle produit commence.",
+  "one_liner": "Renault vaut environ 8,1 Md€ en bourse alors que sa branche automobile détient 6,6 Md€ de trésorerie nette et que sa banque captive dégage environ 1,5 Md€ de résultat opérationnel par an. Le marché traite le creux de marge de 2026 comme définitif ; nous pensons que la remise à zéro est faite et qu'un cycle produit commence.",
   "key_stats": [
    [
     "Capitalisation",
-    "7,7 Md€"
+    "8,1 Md€"
    ],
    [
     "Trésorerie nette auto",
@@ -27,7 +27,7 @@
   "thesis": [
    [
     "Le bilan sert de plancher",
-    "La trésorerie nette automobile de 6,6 Md€ à fin juin 2026 représente environ 86 % de la capitalisation. Mobilize Financial Services (ex-RCI Banque) ajoute environ 1,5 Md€ de marge opérationnelle annuelle et verse des dividendes à la branche auto."
+    "La trésorerie nette automobile de 6,6 Md€ à fin juin 2026 représente environ 80 % de la capitalisation. Mobilize Financial Services (ex-RCI Banque) ajoute environ 1,5 Md€ de marge opérationnelle annuelle et verse des dividendes à la branche auto."
    ],
    [
     "La remise à zéro est faite",
@@ -113,7 +113,7 @@
    ]
   ],
   "method": "Multiple justifié de l'actif net tangible (Gordon)",
-  "explain": "Une banque vaut (RoTE − g) / (coût des fonds propres − g) fois son actif net tangible. Nous utilisons un actif net tangible par action de 98,7 € à juin 2026 (estimation tierce : le communiqué de la banque ne le donne pas), une croissance de long terme de 2 % et un coût des fonds propres qui baisse à mesure que la prime de risque française se normalise.",
+  "explain": "Une banque vaut (RoTE − g) / (coût des fonds propres − g) fois son actif net tangible. Nous partons de l’actif net tangible réévalué publié par la banque, 93,50 € par action au 31 décembre 2025 (Document d’enregistrement universel 2025), auquel nous ajoutons 40 % du BPA 2026E (BPA 9 mois de 9,36 € annualisé, 60 % distribués) : 98,5 € fin 2026. Croissance de long terme 2 % ; le coût des fonds propres baisse à mesure que la prime de risque française se normalise.",
   "stories": [
    "RoTE à 10 % ; l'écart souverain s'élargit",
    "RoTE à l'objectif 2026 ; écart stable",

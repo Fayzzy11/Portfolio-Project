@@ -21,11 +21,11 @@
   "horizon": "12-18 months",
   "role": "Conviction idea",
   "headline": "The cash pile and the finance arm cover the market value: the car business comes almost free",
-  "one_liner": "Renault trades at about €7.7bn while its car business holds €6.6bn of net cash and its captive bank earns roughly €1.5bn of operating profit a year. The market prices the 2026 margin trough as permanent; we think the reset is done and a product cycle is starting.",
+  "one_liner": "Renault trades at about €8.1bn while its car business holds €6.6bn of net cash and its captive bank earns roughly €1.5bn of operating profit a year. The market prices the 2026 margin trough as permanent; we think the reset is done and a product cycle is starting.",
   "key_stats": [
    [
     "Market cap",
-    "€7.7bn"
+    "€8.1bn"
    ],
    [
     "Automotive net cash",
@@ -43,7 +43,7 @@
   "thesis": [
    [
     "The balance sheet is the floor",
-    "Automotive net cash of €6.6bn at June 2026 equals about 86% of the market value. Mobilize Financial Services (the former RCI Banque) adds about €1.5bn of annual operating margin and pays dividends to the car business."
+    "Automotive net cash of €6.6bn at June 2026 equals about 80% of the market value. Mobilize Financial Services (the former RCI Banque) adds about €1.5bn of annual operating margin and pays dividends to the car business."
    ],
    [
     "The reset is done",
@@ -83,7 +83,7 @@
    ],
    [
     "Nissan stake",
-    "About 35% after the 2023-2025 Alliance restructuring, according to press reports. Carried at fair value through equity since June 2025."
+    "About 34% of Nissan at end-2025: 15% held directly (lock-up at 10%) and 18.7% in a French trust free to sell (URD 2025). Carried at fair value through equity since June 2025."
    ],
    [
     "Geography",
@@ -164,7 +164,7 @@
     [
      "Automotive net cash (period end)",
      "—",
-     "€7.3bn",
+     "€7.4bn",
      "€6.6bn",
      "—"
     ],
@@ -176,7 +176,7 @@
      "—"
     ]
    ],
-   "note": "*Includes a €9.3bn non-cash loss on the Nissan stake. FY2024 revenue derived from the +3.0% growth reported for 2025. Sources: Renault FY2025 and H1 2026 releases."
+   "note": "*Includes a €9.3bn non-cash loss on the Nissan stake. Sources: Renault FY2025 and H1 2026 releases."
   },
   "valuation": {
    "method": "P/E on 2027 earnings, cross-checked with a sum of the parts",
@@ -269,7 +269,7 @@
    "business_long": [
     "Renault Group sells about 2.3 million vehicles a year (2.337m in 2025) under three brands. Renault is the core volume brand, Dacia is the low-cost brand built around simple platforms and low equipment levels, and Alpine is a small sports-car brand. Most sales are in Europe; Renault has no US business.",
     "The group has two reporting segments since 2026. Automotive makes and sells cars. Mobilize Financial Services (MFS, the former RCI Banque) lends to customers and dealers to finance those cars. MFS is a bank: it takes deposits, funds itself in the bond market and earns a spread. This is why enterprise-value multiples on Renault mislead: you cannot add a bank's debt to a carmaker's equity value and call it an enterprise value.",
-    "The third asset is a stake of roughly 35% in Nissan, according to press reports. After the 2023-2025 Alliance restructuring, the stake is held at fair value through equity. Renault took a €9.3bn non-cash accounting loss on it in 2025, which is why reported net income was about −€10.9bn even though the business made an operating margin of 6.3%."
+    "The third asset is a stake of about 34% in Nissan (15% direct, 18.7% in a French trust, URD 2025). After the 2023-2025 Alliance restructuring, the stake is held at fair value through equity. Renault took a €9.3bn non-cash accounting loss on it in 2025, which is why reported net income was about −€10.9bn even though the business made an operating margin of 6.3%."
    ],
    "macro_long": [
     "European car demand is flat. The pressure comes from Chinese manufacturers such as BYD and Geely, which sell electric cars at prices European brands struggle to match. Dacia is the most exposed because it competes on price: its volumes fell 12.8% in Q3 2026 while the group fell 6.0%.",
@@ -379,7 +379,7 @@
    }
   ],
   "rating_consistent": true,
-  "mcap_bn": 7.66,
+  "mcap_bn": 8.15,
   "facts": {
    "ticker": "RNO FP Equity",
    "name": "RENAULT SA",
@@ -459,54 +459,49 @@
   },
   "sources": [
    {
-    "tag": "S1",
+    "tag": "1",
     "label": "Renault Group, \"H1 2026 results\" press release, 29/07/2026, via MFN/GlobeNewswire",
     "url": "https://mfn.se/one/a/renault/renault-group-delivers-robust-performance-confirms-its-2026-fy-guidance-and-rapidly-implements-futuready-be6781a8"
    },
    {
-    "tag": "S2",
+    "tag": "2",
     "label": "Renault Group, \"Renault Group delivers resilient Q3 revenue and confirms its 2026 financial guidance\", 29/10/2026",
     "url": "https://media.renaultgroup.com/renault-group-delivers-resilient-q3-revenue-and-confirms-its-2026-financial-guidance/?lang=eng"
    },
    {
-    "tag": "S3",
-    "label": "Ideal Investisseur, summary of Renault FY2025 results, 19/02/2026",
-    "url": "https://www.ideal-investisseur.fr/en/stock-news/renault-reports-operating-margin-of-63-in-2025-despite-nissan-impact/14111.html"
-   },
-   {
-    "tag": "S4",
-    "label": "NewMobility News, \"Renault's good results overshadowed by recalculation of participation in Nissan\", 19/02/2026",
-    "url": "https://newmobility.news/en/2026/02/19/renaults-good-results-overshadowed-by-recalculation-of-participation-in-nissan/"
-   },
-   {
-    "tag": "S5",
-    "label": "Profit warning and CEO change: Invezz, 16/07/2025",
-    "url": "https://invezz.com/news/2025/07/16/renault-shares-tumble-after-profit-warning-leadership-shake-up-analysts-slash-pts/"
-   },
-   {
-    "tag": "S6",
+    "tag": "3",
     "label": "Renault Group, \"Renault Group launches futuREady, opening a new strategic era\", 10/03/2026",
     "url": "https://mfn.se/one/a/renault/renault-group-launches-futuready-opening-a-new-strategic-era-a4dac7eb"
    },
    {
-    "tag": "S7",
-    "label": "Investing.com via Yahoo Finance, \"Renault revenue beats estimates as automaker reaffirms 2026 outlook\", 29/10/2026",
+    "tag": "4",
+    "label": "Investing.com via Yahoo Finance, \"Renault revenue beats estimates as automaker reaffirms 2026 outlook\", 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://finance.yahoo.com/markets/stocks/articles/renault-revenue-beats-estimates-automaker-070552213.html"
    },
    {
-    "tag": "S8",
-    "label": "MarketScreener, Renault finances/consensus page, data 29/10/2026",
+    "tag": "5",
+    "label": "MarketScreener, Renault finances/consensus page, data 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://www.marketscreener.com/quote/stock/RENAULT-4688/finances/"
    },
    {
-    "tag": "S9",
-    "label": "StockAnalysis, Renault statistics, data 29/10/2026",
+    "tag": "6",
+    "label": "StockAnalysis, Renault statistics, data 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://stockanalysis.com/quote/epa/RNO/statistics/"
    },
    {
-    "tag": "S10",
-    "label": "ad-hoc-news, \"Renault reports Q3 growth. Renault stock is valued at EUR 8.1 billion\", 29/10/2026",
-    "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/renault-reports-q3-growth-renault-stock-is-valued-at-eur-8-1-billion/70427294"
+    "tag": "7",
+    "label": "Renault Group, 2025 full-year results press release, 19 Feb 2026",
+    "url": "https://www.renaultgroup.com/en/finance/"
+   },
+   {
+    "tag": "8",
+    "label": "Renault Group, 2025 FY financial results presentation, 19 Feb 2026",
+    "url": "https://www.renaultgroup.com/en/finance/"
+   },
+   {
+    "tag": "9",
+    "label": "Renault Group, Document d'enregistrement universel 2025 (filed with the AMF on 18 Mar 2026): Nissan shareholding, share count, July 2025 guidance revision",
+    "url": "https://www.renaultgroup.com/en/finance/"
    }
   ]
  },
@@ -696,9 +691,9 @@
   },
   "valuation": {
    "method": "Justified price to tangible book (Gordon growth)",
-   "explain": "A bank is worth (RoTE − g) / (cost of equity − g) times its tangible book. We use the third-party tangible book per share of €98.7 at June 2026 (third-party estimate: the bank's release does not state it), long-term growth of 2%, and a cost of equity that falls as the French risk premium normalises.",
+   "explain": "A bank is worth (RoTE − g) / (cost of equity − g) times its tangible book. We start from the bank's revalued tangible net book value of €93.50 per share at 31 December 2025 (Universal Registration Document 2025) and add 40% of 2026E EPS (9M EPS of €9.36 annualised, 60% distributed): €98.5 at end-2026. Long-term growth 2%; the cost of equity falls as the French risk premium normalises.",
    "kind": "ptbv",
-   "tbvps": 98.7,
+   "tbvps": 98.5,
    "g": 0.02,
    "scenarios": [
     [
@@ -849,28 +844,28 @@
     ]
    ]
   },
-  "target": 103.89,
-  "upside": 0.1853,
+  "target": 103.68,
+  "upside": 0.1829,
   "scenarios_out": [
    {
     "name": "Bear",
     "inputs": "RoTE 10.0%, CoE 12.0% → 0.80x TBV",
-    "value": 78.96,
-    "upside": -0.0991,
+    "value": 78.8,
+    "upside": -0.101,
     "story": "RoTE slips to 10%; French spread widens"
    },
    {
     "name": "Base",
     "inputs": "RoTE 12.0%, CoE 11.5% → 1.05x TBV",
-    "value": 103.89,
-    "upside": 0.1853,
+    "value": 103.68,
+    "upside": 0.1829,
     "story": "RoTE at the 2026 target; spread stable"
    },
    {
     "name": "Bull",
     "inputs": "RoTE 13.5%, CoE 10.5% → 1.35x TBV",
-    "value": 133.54,
-    "upside": 0.5235,
+    "value": 133.26,
+    "upside": 0.5204,
     "story": "2028 targets met; spread normalises"
    }
   ],
@@ -951,49 +946,49 @@
   },
   "sources": [
    {
-    "tag": "B1",
+    "tag": "1",
     "label": "BNP Paribas, \"Third quarter 2026 results\" press release, Paris, 28/10/2026",
     "url": "https://invest.bnpparibas/en/document/3q26-pr"
    },
    {
-    "tag": "B2",
+    "tag": "2",
     "label": "BNP Paribas, \"4th quarter and full year 2025\" results press release, 05/02/2026, via WebDisclosure",
     "url": "https://webdisclosure.com/press-release/bnp-paribas-epa-bnp-4th-quarter-and-full-year-2025-pLf3lKIYRLP"
    },
    {
-    "tag": "B3",
+    "tag": "3",
     "label": "Sudan litigation: BNP Paribas statement, 08/01/2026",
     "url": "https://www.nasdaq.com/press-release/statement-bnp-paribas-sudan-litigation-2026-01-08"
    },
    {
-    "tag": "B4",
-    "label": "MarketScreener, BNP Paribas finances/consensus page, data 29/10/2026",
+    "tag": "4",
+    "label": "MarketScreener, BNP Paribas finances/consensus page, data 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://www.marketscreener.com/quote/stock/BNP-PARIBAS-4618/finances/"
    },
    {
-    "tag": "B5",
-    "label": "Teleborsa, Q2 2026 results summary, 23/07/2026",
-    "url": "https://www.teleborsa.it/News/2026/07/23/bnp-paribas-utile-netto-balza-a-4-35-miliardi-33-4percent-in-crescita-i-ricavi-di-tutte-le-divisioni-33.html"
-   },
-   {
-    "tag": "B6",
-    "label": "StockAnalysis, BNP Paribas statistics, data 29/10/2026",
+    "tag": "5",
+    "label": "StockAnalysis, BNP Paribas statistics, data 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://stockanalysis.com/quote/epa/BNP/statistics/"
    },
    {
-    "tag": "B7",
-    "label": "Ideal Investisseur, BNP Paribas stock page and news feed, data 29/10/2026",
+    "tag": "6",
+    "label": "Ideal Investisseur, BNP Paribas stock page and news feed, data 29/10/2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://www.ideal-investisseur.fr/actions/bnp-paribas-act-a-FR0000131104.html"
    },
    {
-    "tag": "B8",
-    "label": "KoalaGains, BNP fair value page (third-party TBVPS, Q2 2026)",
-    "url": "https://koalagains.com/stocks/XETRA/BNP/fair-value"
+    "tag": "7",
+    "label": "Trading Economics, \"BNP Paribas shares hit 19-week low\", 08/10/2026 (and 22/10/2026 update, market data panel) (third-party market data; to be replaced by Bloomberg, Dec 2026)",
+    "url": "https://tradingeconomics.com/bnp:fp/news/590438"
    },
    {
-    "tag": "B9",
-    "label": "Trading Economics, \"BNP Paribas shares hit 19-week low\", 08/10/2026 (and 22/10/2026 update, market data panel)",
-    "url": "https://tradingeconomics.com/bnp:fp/news/590438"
+    "tag": "8",
+    "label": "BNP Paribas, 2025 Universal Registration Document and annual financial report (revalued tangible net book value per share €93.50 at 31 Dec 2025)",
+    "url": "https://invest.bnpparibas/en/document/universal-registration-document-and-annual-financial-report-2025"
+   },
+   {
+    "tag": "9",
+    "label": "BNP Paribas, second quarter 2026 results, conference call transcript, 23 Jul 2026",
+    "url": "https://invest.bnpparibas/"
    }
   ]
  },
@@ -1489,23 +1484,28 @@
    },
    {
     "tag": "9",
-    "label": "stockanalysis.com, Carrefour SA (EPA:CA) quote page, data as of 29 Oct 2026 (third-party)",
+    "label": "stockanalysis.com, Carrefour SA (EPA:CA) quote page, data as of 29 Oct 2026 (third-party) (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://stockanalysis.com/quote/epa/CA/"
    },
    {
     "tag": "10",
-    "label": "Rallies.ai, \"Carrefour Q1 like-for-like sales rise 2.2% to €21.14bn, confirms 2026 targets\", Apr 2026 (secondary; TO VERIFY against company release)",
-    "url": "https://rallies.ai/news/carrefour-q1-like-for-like-sales-rise-22-to-2114bn-confirms-2026-targets"
+    "label": "Carrefour, \"Carrefour announces the sale of Carrefour Romania to Paval Holding\", press release, Feb 2026",
+    "url": "https://www.carrefour.com/sites/default/files/2026-02/Press%20release%20-%20Carrefour%20announces%20the%20sale%20of%20Carrefour%20Romania%20to%20Paval%20Holding_0.pdf"
    },
    {
     "tag": "11",
-    "label": "ESM Magazine, \"Carrefour to sell Italian unit to NewPrinces Group\", Jul 2025",
-    "url": "https://www.esmmagazine.com/retail/carrefour-to-sell-italian-unit-to-newprinces-group-293057"
+    "label": "Carrefour, \"First-quarter 2026 sales\" press release, 22 Apr 2026 (sales €21.1bn, +2.2% LFL)",
+    "url": "https://www.carrefour.com/en/finance"
    },
    {
     "tag": "12",
-    "label": "Carrefour, \"Carrefour announces the sale of Carrefour Romania to Paval Holding\", press release, Feb 2026",
-    "url": "https://www.carrefour.com/sites/default/files/2026-02/Press%20release%20-%20Carrefour%20announces%20the%20sale%20of%20Carrefour%20Romania%20to%20Paval%20Holding_0.pdf"
+    "label": "Carrefour, 2026 Interim Financial Report (H1 2026)",
+    "url": "https://www.carrefour.com/en/finance"
+   },
+   {
+    "tag": "13",
+    "label": "Carrefour, consolidated financial statements at 31 Dec 2025 with the auditors' report (Note 4: disposal of Carrefour Italy to NewPrinces, effective 1 Dec 2025)",
+    "url": "https://www.carrefour.com/en/finance"
    }
   ]
  },
@@ -1776,7 +1776,7 @@
     ],
     [
      "2 Feb 2026",
-     "CEO Enrique Lores leaves for PayPal; Bruce Broussard interim CEO"
+     "CEO Enrique Lores steps down; board member Bruce Broussard named interim CEO"
     ],
     [
      "20 Feb 2026",
@@ -1943,59 +1943,54 @@
   },
   "sources": [
    {
-    "tag": "S1",
+    "tag": "1",
     "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2025 Full Year and Fourth Quarter Results\", 25 Nov 2025",
     "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721725000068/hp103125exhibit991q425.htm"
    },
    {
-    "tag": "S2",
+    "tag": "2",
     "label": "HP Inc., Form 10-K for the fiscal year ended 31 Oct 2025, filed 10 Dec 2025",
     "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721725000071/hpq-20251031.htm"
    },
    {
-    "tag": "S3",
+    "tag": "3",
     "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2026 First Quarter Results\", 24 Feb 2026",
     "url": "https://www.sec.gov/Archives/edgar/data/47217/000004721726000009/hp13126exhibit991q126.htm"
    },
    {
-    "tag": "S4",
+    "tag": "4",
     "label": "HP Inc., Form 10-Q for the quarter ended 31 Jul 2026",
     "url": "https://www.sec.gov/Archives/edgar/data/0000047217/000004721726000051/hpq-20260731.htm"
    },
    {
-    "tag": "S5",
+    "tag": "5",
     "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2026 Third Quarter Results\", 26 Aug 2026",
     "url": "https://www.sec.gov/Archives/edgar/data/0000047217/000004721726000048/hp73126exhibit991q326.htm"
    },
    {
-    "tag": "S6",
-    "label": "Coverage of HP 8-K on CEO transition, 3 Feb 2026: Action-Intell",
-    "url": "https://www.action-intell.com/2026/02/03/hp-names-bruce-broussard-interim-ceo-as-enrique-lores-steps-down/"
-   },
-   {
-    "tag": "S7",
-    "label": "investingLive, \"HP Q4 revenue beats; 2026 EPS guidance trails, 4k-6k jobs to go\", 25 Nov 2025",
-    "url": "https://investinglive.com/stocks/hp-q4-revenue-beats-2026-eps-guidance-trails-4k-6k-jobs-to-go-20251125/"
-   },
-   {
-    "tag": "S8",
+    "tag": "6",
     "label": "Plante Moran, \"Supreme Court strikes down IEEPA tariffs\", Feb 2026",
     "url": "https://plantemoran.com/explore-our-thinking/insight/2026/02/supreme-court-strikes-down-ieepa-tariffs"
    },
    {
-    "tag": "S9",
-    "label": "Futurum Group, \"HP Q2 FY 2026 Earnings Emphasize AI PC Mix Shift Amid Cost Pressure\", May 2026",
-    "url": "https://futurumgroup.com/insights/hp-q2-fy-2026-earnings-emphasize-ai-pc-mix-shift-amid-cost-pressure/"
-   },
-   {
-    "tag": "S10",
-    "label": "Massive, HPQ quote page (delayed quote, 52-week range, market cap, ratios), snapshot 29 Oct 2026 11:51 EDT",
+    "tag": "7",
+    "label": "Massive, HPQ quote page (delayed quote, 52-week range, market cap, ratios), snapshot 29 Oct 2026 11:51 EDT (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://massive.com/quote/hpq"
    },
    {
-    "tag": "S11",
-    "label": "Earnings Whispers, HPQ earnings page (Q3 consensus; next report date)",
+    "tag": "8",
+    "label": "Earnings Whispers, HPQ earnings page (Q3 consensus; next report date) (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://www.earningswhispers.com/epsdetails/HPQ"
+   },
+   {
+    "tag": "9",
+    "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Announces Leadership Transition\", 3 Feb 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/47217/000114036126003514/ef20064653_ex99-1.htm"
+   },
+   {
+    "tag": "10",
+    "label": "HP Inc., Form 8-K Exh. 99.1, \"HP Inc. Reports Fiscal 2026 Second Quarter Results\", 27 May 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0000047217/000004721726000027/hp43026exhibit991q226.htm"
    }
   ]
  },
@@ -2441,69 +2436,49 @@
   },
   "sources": [
    {
-    "tag": "N1",
+    "tag": "1",
     "label": "Nippon Steel Corp., \"Q1 FY2026 Financial Results\" (presentation), 4 Aug 2026",
     "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20260804_200.pdf"
    },
    {
-    "tag": "N2",
+    "tag": "2",
     "label": "Nippon Steel Corp., \"FY2025 Financial Results\" (presentation), 13 May 2026",
     "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20260513_200.pdf"
    },
    {
-    "tag": "N3",
+    "tag": "3",
     "label": "Nippon Steel Corp., IR presentation for individual investors, 23 Jun 2026 (not read in full)",
     "url": "https://www.nipponsteel.com/en/ir/individual/pdf/20260623_nipponsteel_presentation.pdf"
    },
    {
-    "tag": "N4",
+    "tag": "4",
     "label": "Nippon Steel Corp., 2030 Medium- to Long-term Management Plan, 12 Dec 2025",
     "url": "https://www.nipponsteel.com/en/ir/library/strategy/pdf/20251212_100.pdf"
    },
    {
-    "tag": "N5",
+    "tag": "5",
     "label": "Nippon Steel newsroom 2026 (press releases index)",
     "url": "https://www.nipponsteel.com/en/newsroom/news/2026/"
    },
    {
-    "tag": "N6",
-    "label": "Hunton Andrews Kurth, \"Nippon Steel Completes Acquisition of US Steel Under National Security Agreement\", Jun 2025",
-    "url": "https://www.hunton.com/insights/legal/nippon-steel-completes-acquisition-of-us-steel-under-national-security-agreement"
-   },
-   {
-    "tag": "N7",
-    "label": "BusinessDay / Reuters (K. Golubkova), \"Nippon Steel plans Japan's biggest convertible bond offer yet\", 24 Feb 2026",
-    "url": "https://www.businessday.co.za/world/asia/2026-02-24-nippon-steel-plans-japans-biggest-convertible-bond-offer-yet"
-   },
-   {
-    "tag": "N8",
-    "label": "MarketScreener, Nippon Steel quotes and valuation pages (close 29 Oct 2026, 52-week range, market cap, multiples)",
+    "tag": "6",
+    "label": "MarketScreener, Nippon Steel quotes and valuation pages (close 29 Oct 2026, 52-week range, market cap, multiples) (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://www.marketscreener.com/quote/stock/NIPPON-STEEL-CORPORATION-6491235/quotes/"
    },
    {
-    "tag": "N9",
-    "label": "SteelOrbis, \"Nippon Steel to strengthen European and specialty steel operations with new strategic moves\", May 2026",
-    "url": "https://www.steelorbis.com/steel-news/latest-news/nippon-steel-to-strengthen-european-and-specialty-steel-operations-with-new-strategic-moves-1453204.htm"
-   },
-   {
-    "tag": "N10",
-    "label": "SteelOrbis, \"Nippon Steel swings to net profit in Q1 FY 2026-27…\", 4 Aug 2026",
-    "url": "https://www.steelorbis.com/steel-news/latest-news/nippon-steel-swings-to-net-profit-in-q1-fy-2026-27-warns-of-china-driven-oversupply-and-middle-east-risks-1468803.htm"
-   },
-   {
-    "tag": "N11",
-    "label": "GMK Center, \"Nippon Steel increased steel production by 27.5% y/y in FY2025/2026\", 14 May 2026",
-    "url": "https://gmk.center/en/news/nippon-steel-increased-steel-production-by-27-5-y-y-in-the-fy2025-2026/"
-   },
-   {
-    "tag": "N12",
-    "label": "GMK Center, \"Nippon Steel to raise $5.6 billion to finance deal with U.S. Steel\", 3 Jul 2025",
-    "url": "https://gmk.center/en/news/nippon-steel-to-raise-5-6-billion-to-finance-deal-with-u-s-steel/"
-   },
-   {
-    "tag": "N13",
+    "tag": "7",
     "label": "Nippon Steel Q2 FY2025 presentation, 5 Nov 2025 (D/E 0.74 at Sep-2025; financing policy)",
     "url": "https://www.nipponsteel.com/en/ir/library/settlement/pdf/20251105_500.pdf"
+   },
+   {
+    "tag": "8",
+    "label": "Nippon Steel, Integrated Report 2026 (U. S. Steel acquisition; ¥500bn hybrid loan Sep 2025, ¥600bn convertible bonds Mar 2026, ¥900bn JBIC syndicated loan Mar 2026)",
+    "url": "https://www.nipponsteel.com/en/ir/library/"
+   },
+   {
+    "tag": "9",
+    "label": "Nippon Steel, Consolidated Financial Results for the Nine Months Ended 31 Dec 2025 (IFRS), 24 Feb 2026",
+    "url": "https://www.nipponsteel.com/en/ir/library/"
    }
   ]
  },
@@ -2974,38 +2949,38 @@
    },
    {
     "tag": "6",
-    "label": "Centene, \"Centene Corporation Reports First Quarter 2026 Results\", 8-K Ex. 99.1, 28 Apr 2026 (content via search excerpt)",
-    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000099/a20260428ex991pressrelease.htm"
-   },
-   {
-    "tag": "7",
     "label": "Centene, \"Centene Corporation Reports Second Quarter 2026 Results\", 8-K Ex. 99.1, 28 Jul 2026",
     "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000154/a20260728ex991pressrelease.htm"
    },
    {
-    "tag": "8",
+    "tag": "7",
     "label": "Fierce Healthcare, \"CMS gives Medicare Advantage rates a 2.48% bump for 2027 plan year in final rule\", Apr 2026",
     "url": "https://www.fiercehealthcare.com/regulatory/cms-gives-medicare-advantage-rates-248-bump-2027-plan-year-final-rule"
    },
    {
-    "tag": "9",
+    "tag": "8",
     "label": "American Hospital Association, \"CMS releases 2027 Medicare Advantage, Part D star ratings\", 9 Oct 2026; Becker's Payer Issues, 2027 star ratings coverage, Oct 2026",
     "url": "https://www.aha.org/news/headline/2026-10-09-cms-releases-2027-medicare-advantage-part-d-star-ratings"
    },
    {
-    "tag": "10",
+    "tag": "9",
     "label": "Fierce Healthcare, \"Centene posts $71M loss, $50.6B in revenue for Q3\", Oct 2026 (page blocked; content via search excerpt)",
     "url": "https://www.fiercehealthcare.com/payers/centene-posts-71m-loss-506b-revenue-q3"
    },
    {
-    "tag": "11",
+    "tag": "10",
     "label": "Becker's Payer Issues, ACA enhanced subsidy coverage (expiry 31 Dec 2025; talks collapsed per WSJ, 5 Feb 2026); Fierce Healthcare, \"Centene, Oscar Health outline 2027 ACA marketplace plans\" (KFF 15% median 2027 increase), 2026",
     "url": "https://www.beckerspayer.com/payer/aca/page/7/"
    },
    {
-    "tag": "12",
-    "label": "stockanalysis.com, Centene (CNC) quote page, data as of 29 Oct 2026 (third-party)",
+    "tag": "11",
+    "label": "stockanalysis.com, Centene (CNC) quote page, data as of 29 Oct 2026 (third-party) (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://stockanalysis.com/stocks/cnc/"
+   },
+   {
+    "tag": "12",
+    "label": "Centene, \"Centene Corporation Reports First Quarter 2026 Results\", 8-K Ex. 99.1, 28 Apr 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/0001071739/000107173926000099/a20260428ex991pressrelease.htm"
    }
   ]
  },
@@ -3466,79 +3441,79 @@
   },
   "sources": [
    {
-    "tag": "O1",
+    "tag": "1",
     "label": "OOIL, *Announcement of Interim Results for the six months ended 30 June 2026*, HKEX, 27 Aug 2026",
     "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0827/2026082701643.pdf"
    },
    {
-    "tag": "O2",
+    "tag": "2",
     "label": "OOIL, *Annual Report 2025*: financial highlights, Chairman's statement, ship operations, dividend policy, 10-year summary, substantial shareholders. HKEX, 22 Apr 2026",
     "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0422/2026042200995.pdf"
    },
    {
-    "tag": "O3",
+    "tag": "3",
     "label": "OOIL, *2019 Annual Results Announcement*, HKEX, 20 Mar 2020",
     "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2020/0320/2020032000935.pdf"
    },
    {
-    "tag": "O4",
+    "tag": "4",
     "label": "OOIL, *2022 Annual Results Announcement*, HKEX, 22 Mar 2023 (cross-check of 2021–22 profit)",
     "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2023/0322/2023032200448.pdf"
    },
    {
-    "tag": "O5",
-    "label": "OOIL, *2024 Annual Results Announcement*, HKEX, 13 Mar 2025 (not opened; 2023–24 figures taken from [O2])",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/0313/2025031301239.pdf"
-   },
-   {
-    "tag": "O6",
+    "tag": "5",
     "label": "Container News, \"OOCL reports 45% revenue surge in third quarter of 2026\", 9 Oct 2026",
     "url": "https://container-news.com/oocl-reports-45-revenue-surge-in-third-quarter-of-2026/"
    },
    {
-    "tag": "O7",
+    "tag": "6",
     "label": "Tiger Brokers news, OOIL shares after the Q3 update, 12 Oct 2026",
     "url": "https://www.itiger.com/news/1126944002"
    },
    {
-    "tag": "O8",
+    "tag": "7",
     "label": "Container News, FY2025 results (13 Mar 2026) and H1 2026 results (28 Aug 2026)",
     "url": "https://container-news.com/oocl-announces-2025-full-year-results/"
    },
    {
-    "tag": "O9",
+    "tag": "8",
     "label": "Tiger Brokers news, \"Faulkner sells 469 million shares to COSCO SHIP HOLD Hong Kong\", 11 Dec 2025",
     "url": "https://www.itiger.com/news/1182616808"
    },
    {
-    "tag": "O10",
+    "tag": "9",
     "label": "Holland & Knight, \"USTR Port Fee Suspension: What You Need to Know\", 12 Nov 2025",
     "url": "https://www.hklaw.com/en/insights/publications/2025/11/ustr-port-fee-suspension-what-you-need-to-know"
    },
    {
-    "tag": "O11",
+    "tag": "10",
     "label": "FreightWaves, \"No mention of U.S.-China ship taxes in trade truce\", 28 Sep 2026",
     "url": "https://www.freightwaves.com/news/no-mention-of-u-s-china-ship-taxes-in-trade-truce"
    },
    {
-    "tag": "O12",
+    "tag": "11",
     "label": "gCaptain / Bloomberg, \"Asia-to-US container rates spike 109% since Iran war started\", 6 Jun 2026",
     "url": "https://gcaptain.com/asia-to-us-container-rates-spike-109-since-iran-war-started/"
    },
    {
-    "tag": "O13",
+    "tag": "12",
     "label": "Samsung SDS Cello Square, *Ocean Container Market Outlook, October 2026*, 15–16 Oct 2026",
     "url": "https://www.cello-square.com/en/whitepaper/view-640.do"
    },
    {
-    "tag": "O14",
+    "tag": "13",
     "label": "Cyprus Shipping News, \"Drewry World Container Index – 22 Oct\", 26 Oct 2026",
     "url": "https://cyprusshippingnews.com/2026-10-26/drewry-world-container-index-22-oct/"
    },
    {
-    "tag": "O15",
+    "tag": "14",
     "label": "StockAnalysis.com, 0316 quote and statistics (third-party, delayed), 29 Oct 2026",
     "url": "https://stockanalysis.com/quote/hkg/0316/statistics/"
+   },
+   {
+    "tag": "15",
+    "label": "OOIL, 2024 Annual Results Announcement, HKEX, 13 Mar 2025",
+    "url": "https://www.ooilgroup.com/investor-relations"
    }
   ]
  },
@@ -4019,7 +3994,7 @@
    },
    {
     "tag": "K9",
-    "label": "StockAnalysis.com, 9503 quote and statistics (third-party, delayed), 29 Oct 2026",
+    "label": "StockAnalysis.com, 9503 quote and statistics (third-party, delayed), 29 Oct 2026 (third-party market data; to be replaced by Bloomberg, Dec 2026)",
     "url": "https://stockanalysis.com/quote/tyo/9503/statistics/"
    }
   ]
