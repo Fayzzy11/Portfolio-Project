@@ -185,7 +185,7 @@ def build_home(lang):
         f'<p>{esc(pf(s, lang, "headline"))}</p></div><span>{rating(s["rating"], lang)}</span></a>' for s in PITCHES[:4])
     notes = research_notes(lang)[:2]
     body = f"""
-<section class="hero"><div class="wrap">
+<section class="hero hero3d"><div class="wrap">
  <div>
   <div class="eyebrow">{L(lang, "Equity research · Systematic strategies · Open data", "Recherche actions · Stratégies systématiques · Données ouvertes")}</div>
   <h1>{L(lang, "Rules written before results. <em>Every number traceable.</em>", "Des règles écrites avant les résultats. <em>Chaque chiffre traçable.</em>")}</h1>
@@ -193,15 +193,17 @@ def build_home(lang):
                      "Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Thoth Ledger est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.")}</p>
   <div class="btns"><a class="btn primary" href="strategies/">{L(lang, "Explore the strategies", "Découvrir les stratégies")}</a><a class="btn" href="pitches/">{L(lang, "Read the stock pitches", "Lire les stock pitches")}</a></div>
  </div>
- <div class="panel"><header><span>{L(lang, "Key figures", "Chiffres clés")}</span><span>{L(lang, "backtests, net of costs", "backtests, nets de frais")}</span></header>
-  <div class="kpis">
+ {allocation_scene(lang)}
+</div></section>
+
+<section class="kstrip"><div class="wrap">
+  <div class="kpis4">
    <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">{pct(hp["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2007 vs", "par an depuis 2007 vs")} {pct(HS["b"]["cagr"], 1, lang=lang)}</div></div>
    <div class="kpi"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><div class="v">{pct(ETF["value"]["stats"]["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2006 vs", "par an depuis 2006 vs")} {pct(ETF["value"]["bench_stats"]["cagr"], 1, lang=lang)} (MSCI World Value)</div></div>
    <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies, 1 Sell", "Surpondérer, 2 cas d'école, 1 Vendre")}</div></div>
    <div class="kpi"><div class="k">{L(lang, "Securities researched", "Titres étudiés")}</div><div class="v">1 990</div><div class="s">{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</div></div>
   </div>
-  <footer>{L(lang, "Hypothetical backtests. Past performance does not guarantee future returns.", "Backtests hypothétiques. Les performances passées ne préjugent pas des performances futures.")}</footer>
- </div>
+  <p class="cap">{L(lang, "Hypothetical backtests, net of costs. Past performance does not guarantee future returns.", "Backtests hypothétiques, nets de frais. Les performances passées ne préjugent pas des performances futures.")}</p>
 </div></section>
 
 <section class="sec"><div class="wrap">
@@ -234,6 +236,32 @@ def build_home(lang):
     page("index.html", lang, SITE, body, "index",
          L(lang, "Equity research by Noah Doose: ETF-replicable strategies, stock pitches and data.",
            "Recherche actions de Noah Doose : stratégies réplicables en ETF, stock pitches et données."))
+
+
+def allocation_scene(lang):
+    """3D board of the value strategy's latest allocation: 8 ETF lines (core) and 8 stocks (satellite), block height = weight."""
+    h = ETF["value"]["holdings"]; expo = h.get("exposure", 1.0); P = lambda x: pct(x, 2, lang=lang)
+    wc, ws = 0.7 / 8 * expo, 0.3 / 8 * expo
+    out = []
+    for i, ln in enumerate(h["selection"]):
+        kind = L(lang, "Country ETF", "ETF pays") if ln.startswith("C_") else L(lang, "Sector ETF", "ETF secteur")
+        cap = f"<b>{esc(tr(lang, LINE_NAMES.get(ln, ln)))}</b> · {kind} · {P(wc)}"
+        out.append(f'<div class="blk" style="--x:{26 + (i % 4) * 92}px;--y:{26 + (i // 4) * 92}px;--w:72px;--h:{wc * 1200:.0f}px;--i:{i}" data-cap="{esc(cap)}"><i class="k"></i><i class="l"></i><i class="r"></i><i class="f"></i><i class="t">{esc(ln[2:])}</i></div>')
+    core = "".join(out); out = []
+    for i, st in enumerate(h["satellite"]):
+        tk = st["ticker"].split()[0]
+        cap = f"<b>{esc(st['name'])}</b> · {esc(tr(lang, st['sector']))} · {P(ws)}" + (L(lang, " · pitch on this site", " · pitch sur ce site") if st.get("pitch") else "")
+        out.append(f'<div class="blk{" pitch" if st.get("pitch") else ""}" style="--x:{21 + (i % 4) * 70}px;--y:{21 + (i // 4) * 70}px;--w:48px;--h:{ws * 1200:.0f}px;--i:{i + 8}" data-cap="{esc(cap)}"><i class="k"></i><i class="l"></i><i class="r"></i><i class="f"></i><i class="t">{esc(tk[:4])}</i></div>')
+    sat = "".join(out)
+    label = L(lang, f"Allocation of the Global Value Rotation strategy at the end of {month_name(h['date'], 'en')}", f"Allocation de la stratégie Rotation Value mondiale à fin {month_name(h['date'], 'fr')}")
+    idle = L(lang, f"Allocation at the end of {month_name(h['date'], 'en')} · block height = weight", f"Allocation à fin {month_name(h['date'], 'fr')} · hauteur des blocs = poids")
+    return f"""<div class="scene" data-scene role="img" aria-label="{esc(label)}">
+  <div class="float"><div class="tilt"><div class="board">
+   <div class="plate core"><span class="plab">{L(lang, "ETF core · 70%", "Cœur ETF · 70 %")}</span>{core}</div>
+   <div class="plate sat"><span class="plab">{L(lang, "Stock satellite · 30%", "Satellite actions · 30 %")}</span>{sat}</div>
+  </div></div></div>
+  <div class="scap"><span class="lg">{L(lang, "8 country and sector ETFs", "8 ETF pays et secteurs")} · {P(wc)}</span><span class="lg s">{L(lang, "8 stocks", "8 actions")} · {P(ws)}</span><span class="now">{idle}</span></div>
+ </div>"""
 
 
 def strategy_cards(lang, lr):
@@ -734,6 +762,18 @@ def build_pitch_index(lang):
     page("pitches/index.html", lang, t(lang, "pitches"), body, "pitches", L(lang, "Stock pitches with downloadable decks.", "Stock pitches avec decks téléchargeables."))
 
 
+def scenario_cols(s, lang):
+    """Price and the three scenario values as 3D columns (height proportional to value)."""
+    sym = s["sym"]; sc = s["scenarios_out"]; top = max([s["price"]] + [r["value"] for r in sc])
+    cols = [("px", t(lang, "price"), s["price"], None)] + [(r["name"].lower(), t(lang, r["name"]), r["value"], r["upside"]) for r in sc]
+    out = ""
+    for i, (cls, nm, v, up) in enumerate(cols):
+        sub = f'<small class="{cls_sign(up)}">{pct(up, 0, True, lang)}</small>' if up is not None else "<small>&nbsp;</small>"
+        out += (f'<div class="scol"><div class="val">{money(sym, v, lang)}{sub}</div>'
+                f'<div class="col3 {cls}" style="--v:{v / top * 120:.0f};--i:{i}"><i class="f"></i><i class="r"></i><i class="t"></i></div><div class="nm">{esc(nm)}</div></div>')
+    return f'<div class="sc3d" role="img" aria-label="{L(lang, "Price against the bear, base and bull values", "Cours face aux valeurs pessimiste, centrale et optimiste")}">{out}</div>'
+
+
 def build_pitch(s, lang):
     v = s["valuation"]
     sym = s["sym"]
@@ -741,7 +781,7 @@ def build_pitch(s, lang):
     lr = "../../"
     dl = deck_links(f, lr if lang == "en" else "../../../", small=False, lang=lang)
     up = s["upside"]
-    head = f"""<header class="pitchhead"><div class="wrap"><div>
+    head = f"""<header class="pitchhead dark"><div class="wrap"><div>
 <div class="crumbs"><a href="../">{t(lang, "pitches")}</a> / {esc(s["ticker"])}</div>
 <div class="eyebrow" style="margin-top:12px">{esc(pf(s, lang, "industry"))} · {esc(tr(lang, s["country"]))} · {esc(tr(lang, s["exchange"]))}: {esc(s["ticker"])}</div>
 <h1>{esc(s["name"])}</h1><p class="headline">{esc(pf(s, lang, "headline"))}</p>
@@ -751,7 +791,7 @@ def build_pitch(s, lang):
 <div class="row"><span>{t(lang, "price")}</span><b class="big">{money(sym, s["price"], lang)}</b></div>
 <div class="row"><span>{L(lang, "Base-case value", "Valeur centrale")}<small>{esc(pf(s, lang, "method"))}</small></span><b class="big">{money(sym, s["target"], lang)}</b></div>
 <div class="row"><span>{t(lang, "upside")}</span><b class="big {cls_sign(up)}">{pct(up, 0, True, lang)}</b></div>
-<div class="row"><span>{L(lang, "52-week range", "Plus bas / plus haut 52 sem.")}</span><b>{money(sym, s["low52"], lang)} – {money(sym, s["high52"], lang)}</b></div></div>
+<div class="row"><span>{L(lang, "52-week range", "Plus bas / plus haut 52 sem.")}</span><b>{money(sym, s["low52"], lang)} – {money(sym, s["high52"], lang)}</b></div>{scenario_cols(s, lang)}</div>
 </div></header>"""
     ks = pf(s, lang, "key_stats")
     stats = '<div class="stats" style="margin-top:22px">' + "".join(stat(esc(k), esc(x)) for k, x in ks) + "</div>"
@@ -1079,7 +1119,7 @@ def build_factsheets(lang):
 def main():
     clean_docs()
     (DOCS / "assets").mkdir(parents=True, exist_ok=True)
-    for f in ("site.css", "site.js"):
+    for f in ("site.css", "site.js", "fx.js"):
         shutil.copy(HERE / "static" / f, DOCS / "assets" / f)
     shutil.copytree(HERE / "static" / "brand", DOCS / "assets" / "brand", dirs_exist_ok=True)
     shutil.copytree(HERE / "static" / "factsheets", DOCS / "assets" / "factsheets", dirs_exist_ok=True)

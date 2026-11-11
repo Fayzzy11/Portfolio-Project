@@ -140,11 +140,13 @@
         lastY = y;
       });
       if (mode === "nav") g += '<line stroke-dasharray="3 3" class="axis" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(100) + '" y2="' + Y(100) + '"/>';
+      g += '<g class="lines">';
       keys.slice().reverse().forEach(function (k) {
         var p = series[k].map(function (v, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); }).join("");
         var bench = (D.bench || []).indexOf(k) >= 0;
         g += '<path d="' + p + '" fill="none" stroke="' + css(colors[k]) + '" stroke-width="' + (k === D.main ? 2.4 : 1.6) + '"' + (bench ? ' stroke-dasharray="5 3"' : "") + "/>";
       });
+      g += "</g>";
       g += '<line id="cx" class="axis" style="opacity:0" y1="' + m.t + '" y2="' + (H - m.b) + '" x1="-10" x2="-10"/><g id="dots"></g>';
       host.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Cumulative performance">' + g + '<rect x="' + m.l + '" y="' + m.t + '" width="' + (W - m.l - m.r) + '" height="' + (H - m.t - m.b) + '" fill="transparent" id="hit"/></svg>';
       var svg = host.querySelector("svg"), hit = svg.querySelector("#hit"), cx = svg.querySelector("#cx"), dots = svg.querySelector("#dots");
@@ -164,6 +166,7 @@
       hit.addEventListener("mouseleave", function () { tip.style.opacity = 0; dots.innerHTML = ""; cx.style.opacity = 0; });
     }
     function niceStep(x) { var p = Math.pow(10, Math.floor(Math.log10(x))), f = x / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; }
+    host.classList.add("first"); setTimeout(function () { host.classList.remove("first"); }, 1700);
     draw();
   }
 })();

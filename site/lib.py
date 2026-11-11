@@ -215,6 +215,7 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
 <link rel="stylesheet" href="{r}assets/site.css">
 <link rel="icon" type="image/png" href="{r}assets/brand/favicon.png">
 <script src="{r}assets/site.js"></script>
+<script src="{r}assets/fx.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">{t(lang, "skip")}</a>
