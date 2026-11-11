@@ -178,7 +178,7 @@ def doc_layout(lang, toc, sections):
 
 def phead(eyebrow, title, lede, crumbs=""):
     c = f'<div class="crumbs">{crumbs}</div>' if crumbs else ""
-    return (f'<header class="phead"><div class="wrap">{c}<div class="eyebrow">{eyebrow}</div><h1>{title}</h1>'
+    return (f'<header class="phead dk"><div class="wrap">{c}<div class="eyebrow">{eyebrow}</div><h1>{title}</h1>'
             f'<p class="lede">{lede}</p></div></header>')
 
 
@@ -210,12 +210,10 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
 <title>{esc(full_title)}</title>
 <meta name="description" content="{esc(desc)}">
 <link rel="alternate" hreflang="{alt_lang}" href="{other}">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="{r}assets/site.css">
 <link rel="icon" type="image/png" href="{r}assets/brand/favicon.png">
 <script src="{r}assets/site.js"></script>
-<script src="{r}assets/fx.js" defer></script>
+<script src="{r}assets/fx.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">{t(lang, "skip")}</a>
@@ -224,6 +222,7 @@ def page(rel, lang, title, body, active, desc="", scripts=""):
  <nav class="nav" id="nav" aria-label="Main">{nav}</nav>
  <div class="tools">
   <a class="tbtn" href="{other}" hreflang="{alt_lang}" title="{t(lang, "lang_label")}">{t(lang, "lang_other")}</a>
+  <button class="tbtn" id="theme" type="button" aria-label="{"Mode sombre ou clair" if lang == "fr" else "Dark or light mode"}" title="{"Mode sombre ou clair" if lang == "fr" else "Dark or light mode"}"><svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
   <button class="tbtn menu" id="menu" aria-label="{t(lang, "menu")}" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
  </div>
 </div></header>

@@ -173,95 +173,264 @@ HORUS_ETF = {"IWM": ("US small caps", "Petites cap. US"), "IJH": ("US mid caps",
              "LQD": ("US investment-grade corporates", "Crédit IG US"), "RXRGEX": ("German government bonds", "État allemand")}
 
 
+# ---------------------------------------------------------------- GRAPHICS
+import math
+
+
+def _nice(x):
+    p = 10 ** math.floor(math.log10(x)); f = x / p
+    return (1 if f < 1.5 else 2 if f < 3 else 5 if f < 7 else 10) * p
+
+
+def linechart(dates, series, w, h, fmt, m=(14, 16, 26, 44), zero_top=False, area=None, ends=False, marks=(), ystep=5, label=""):
+    """Inline SVG line chart. series: [(values, css class, end label, end value text)]. Colours come from CSS so both themes work."""
+    t_, r_, b_, l_ = m
+    lo = min(min(v) for v, *_ in series); hi = max(max(v) for v, *_ in series)
+    if zero_top:
+        hi = 0
+    step = _nice((hi - lo) / 4); y0 = math.floor(lo / step) * step; y1 = hi if zero_top else math.ceil(hi / step) * step
+    n = len(dates)
+    X = lambda i: l_ + i / (n - 1) * (w - l_ - r_)
+    Y = lambda v: t_ + (1 - (v - y0) / (y1 - y0)) * (h - t_ - b_)
+    g = ""; v = y0
+    while v <= y1 + 1e-9:
+        g += f'<line class="gl" x1="{l_}" x2="{w - r_}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/><text x="{l_ - 8}" y="{Y(v) + 4:.1f}" text-anchor="end">{fmt(v)}</text>'
+        v += step
+    for i, d in enumerate(dates):
+        if d[5:7] == "01" and int(d[:4]) % ystep == 0 and i > 0:
+            g += f'<text x="{X(i):.1f}" y="{h - 6}" text-anchor="middle">{d[:4]}</text>'
+    pos = sorted(((Y(vals[-1]), k) for k, (vals, *_) in enumerate(series)))
+    ly = {}; prev = -1e9
+    for y, k in pos:                       # keep end labels at least 46px apart
+        y = max(y, prev + 46); ly[k] = y; prev = y
+    for k in reversed(range(len(series))):
+        vals, cls, lab, endv = series[k]
+        d = "M" + "L".join(f"{X(i):.1f} {Y(x):.1f}" for i, x in enumerate(vals))
+        if area == cls:
+            g += f'<path class="ar {cls}" d="{d}L{X(n - 1):.1f} {Y(y1 if zero_top else y0):.1f}L{X(0):.1f} {Y(y1 if zero_top else y0):.1f}Z"/>'
+        g += f'<path class="ln {cls}" pathLength="1" d="{d}"/>'
+        if ends:
+            g += f'<text class="el {cls}" x="{w - r_ + 12}" y="{ly[k] - 4:.1f}">{lab}</text><text class="ev" x="{w - r_ + 12}" y="{ly[k] + 18:.1f}">{endv}</text>'
+    for i, val, txt, cls, dy in marks:
+        g += f'<circle cx="{X(i):.1f}" cy="{Y(val):.1f}" r="3.5" class="ln {cls}" style="stroke-dasharray:none;animation:none;stroke-dashoffset:0"/><text class="mk {cls}" x="{X(i) + 8:.1f}" y="{Y(val) + dy:.1f}">{txt}</text>'
+    return f'<svg class="vz" viewBox="0 0 {w} {h}" role="img" aria-label="{esc(label)}">{g}</svg>'
+
+
+def hero_series():
+    """Growth of 100 from December 2006: value strategy, Horus hedged to EUR, MSCI World Value. Monthly, EUR."""
+    v = ETF["value"]; hh = ETF["horus_eur_hedged"]
+    i0 = v["dates"].index("2006-12"); dates = v["dates"][i0:]
+    val = [x / v["nav"][i0] * 100 for x in v["nav"][i0:]]; ben = [x / v["bench"][i0] * 100 for x in v["bench"][i0:]]
+    assert hh["dates"][0] == "2007-01"
+    hor = [100.0]
+    for r in hh["r"][:len(dates) - 1]:
+        hor.append(hor[-1] * (1 + r))
+    return dates, val, hor, ben
+
+
+def hero_chart(lang):
+    dates, val, hor, ben = hero_series()
+    X = lambda v: "×" + num(v / 100, 1, lang)
+    lab = L(lang, "Growth of 100 since December 2006, in euros", "Croissance de 100 depuis décembre 2006, en euros")
+    ser = [(val, "a", L(lang, "Global Value Rotation", "Rotation Value mondiale"), X(val[-1])), (hor, "b", "Horus Smart Beta 60/40", X(hor[-1])),
+           (ben, "c", "MSCI World Value", X(ben[-1]))]
+    f = lambda v: f"{v:.0f}"
+    lg = f'<div class="lgd only-m" style="margin-top:10px"><span><i></i>{ser[0][2]} {ser[0][3]}</span><span><i class="b"></i>{ser[1][2]} {ser[1][3]}</span><span><i class="c"></i>{ser[2][2]} {ser[2][3]}</span></div>'
+    return (f'<figure class="draw"><figcaption><span><b>{lab}</b></span><span>{L(lang, "Hypothetical backtests, net of costs. Horus hedged into euros.", "Backtests hypothétiques, nets de frais. Horus couvert en euros.")}</span></figcaption>'
+            f'<div class="only-d">{linechart(dates, ser, 1160, 400, f, m=(14, 214, 28, 44), ends=True, label=lab)}</div>'
+            f'<div class="only-m">{linechart(dates, ser, 390, 260, f, m=(10, 6, 24, 34), ystep=10, label=lab)}</div>{lg}</figure>')
+
+
+def underwater(dates, nav_p, nav_b, name_p, name_b, lang, cls="a"):
+    def dd(nav):
+        out, pk = [], -1e9
+        for x in nav:
+            pk = max(pk, x); out.append((x / pk - 1) * 100)
+        return out
+    a, b = dd(nav_p), dd(nav_b); ia, ib = a.index(min(a)), b.index(min(b))
+    f = lambda v: f"{v:.0f}%".replace("-", "−")
+    P = lambda v: pct(v / 100, 0, lang=lang)
+    lab = L(lang, "Loss from the previous peak", "Perte depuis le dernier sommet")
+    svg = lambda w, h, ys: linechart(dates, [(a, cls, "", ""), (b, "c", "", "")], w, h, f, zero_top=True, area=cls, ystep=ys, label=lab,
+                                     marks=[(ia, a[ia], P(a[ia]), cls, -8), (ib, b[ib], P(b[ib]), "c", 16)])
+    return (f'<figure class="ch"><figcaption><span>{lab} <small>· %</small></span><span class="lgd"><span><i class="{cls}"></i>{esc(name_p)}</span><span><i class="c"></i>{esc(name_b)}</span></span></figcaption>'
+            f'<div class="only-d">{svg(860, 260, 2)}</div><div class="only-m">{svg(390, 220, 5)}</div></figure>')
+
+
+def g_universe(lang):
+    sel = set(ETF["value"]["holdings"]["selection"])
+    cell = lambda pre, code, nm: f'<i class="{"on" if pre + code in sel else ""}" title="{esc(tr(lang, nm))}">{code}</i>'
+    return (f'<div class="g-uni"><div><span>{len(COUNTRIES)} {L(lang, "countries", "pays")}</span><div class="cells">{"".join(cell("C_", c, nm) for c, nm, *_ in COUNTRIES)}</div></div>'
+            f'<div><span>{len(SECTORS)} {L(lang, "sectors", "secteurs")}</span><div class="cells">{"".join(cell("S_", c, nm) for c, nm, _ in SECTORS)}</div></div>'
+            f'<div class="g-cap">{L(lang, "In gold, the eight lines held at the end of", "En or, les huit lignes détenues à fin")} {month_name(ETF["value"]["holdings"]["date"], lang)}</div></div>')
+
+
+def g_alloc_value(lang):
+    h = ETF["value"]["holdings"]
+    core = "".join(f'<i title="{esc(tr(lang, LINE_NAMES.get(ln, ln)))}">{ln[2:]}</i>' for ln in h["selection"])
+    sat = "".join(f'<i title="{esc(x["name"])}"></i>' for x in h["satellite"])
+    short = lambda nm: re.sub(r"^The |\s+(SpA|plc|Inc|Corp|Group|SA|AG|NV|Ltd|Co)\b\.?", "", nm).strip()
+    names = ", ".join(esc(short(x["name"])) for x in h["satellite"])
+    return (f'<div class="g-alloc"><div class="bar"><div class="core" style="flex:70">{core}</div><div class="sat" style="flex:30">{sat}</div></div>'
+            f'<div class="lab"><span style="flex:70"><b>{L(lang, "ETF core 70%", "Cœur ETF 70 %")}</b><br>{L(lang, "8 funds at 8.75%", "8 fonds à 8,75 %")}</span>'
+            f'<span style="flex:30"><b>{L(lang, "Stocks 30%", "Actions 30 %")}</b><br>{L(lang, "8 at 3.75%", "8 à 3,75 %")}</span></div>'
+            f'<div class="g-cap" style="margin-top:8px">{L(lang, "Stocks held", "Actions détenues")}{L(lang, ":", " :")} {names}</div></div>')
+
+
+def g_risk(lang):
+    h = ETF["value"]["holdings"]; ind = h.get("indicators", {}); expo = h.get("exposure", 1.0)
+    nm = {"trend": L(lang, "Trend", "Tendance"), "credit": L(lang, "Credit", "Crédit"), "breadth": L(lang, "Breadth", "Largeur")}
+    lamps = "".join(f'<span class="lamp{" red" if x else ""}"><i></i>{nm.get(k, k)}</span>' for k, x in ind.items())
+    return (f'<div class="g-risk"><div class="lamps">{lamps}</div><div class="sw"><span class="{"on" if expo >= 1 else ""}">{L(lang, "100% equities", "100 % actions")}</span>'
+            f'<span class="{"on" if expo < 1 else ""}">{L(lang, "50% equities, 50% cash", "50 % actions, 50 % monétaire")}</span></div>'
+            f'<div class="g-cap">{L(lang, "State at the end of", "État à fin")} {month_name(h["date"], lang)}</div></div>')
+
+
+def value_flow(lang, wide=False):
+    steps = [
+        (L(lang, "Rank 25 markets, hold the 8 cheapest", "Classer 25 marchés, détenir les 8 moins chers"),
+         L(lang, "Each country and sector is compared with its own 10-year history on earnings, book value and dividends. The four cheapest countries and four cheapest sectors are held through ETFs.",
+           "Chaque pays et chaque secteur est comparé à son propre historique sur 10 ans : bénéfices, valeur comptable, dividendes. Les quatre pays et les quatre secteurs les moins chers sont détenus via des ETF."), g_universe(lang)),
+        (L(lang, "Add the 8 cheapest stocks inside them", "Ajouter les 8 actions les moins chères à l'intérieur"),
+         L(lang, "Within those countries and sectors, the eight stocks that are cheapest against their own sector take 30% of the portfolio.",
+           "Dans ces pays et secteurs, les huit actions les moins chères par rapport à leur secteur prennent 30 % du portefeuille."), g_alloc_value(lang)),
+        (L(lang, "Halve the risk when the market turns", "Diviser le risque par deux quand le marché se retourne"),
+         L(lang, "Three indicators are read at each month end. When two are red, equities go to 50% and the rest to euro money market.",
+           "Trois indicateurs sont lus à chaque fin de mois. Quand deux sont rouges, les actions passent à 50 % et le reste va en monétaire euro."), g_risk(lang))]
+    return f'<ol class="flow{" wide" if wide else ""}">' + "".join(f'<li><div><h4>{a}</h4><p>{b}</p></div><div class="gx">{c}</div></li>' for a, b, c in steps) + "</ol>"
+
+
+def horus_grid(lang, compact=False):
+    years = sorted(HORUS["sel"]); eq, bd = [], []
+    for y in years:
+        for k, w_ in HORUS["sel"][y].items():
+            (eq if w_ >= .3 - 1e-9 else bd).append(k)
+    order = lambda xs: sorted(set(xs), key=lambda k: (-xs.count(k), k))
+    rows = [(k, "e") for k in order(eq)] + [(k, "d") for k in order(bd)]
+    cw, rh, lw = (19, 15, 46) if compact else (36, 24, 250)
+    w = lw + len(years) * cw; h = len(rows) * rh + 22
+    g = ""
+    for j, y in enumerate(years):
+        if compact and int(y) % 5:
+            continue
+        g += f'<text x="{lw + j * cw + cw / 2:.1f}" y="12" text-anchor="middle">{y if compact else "’" + y[2:]}</text>'
+    for i, (k, kind) in enumerate(rows):
+        y_ = 20 + i * rh
+        nm = "" if compact else f' <tspan>{esc(HORUS_ETF.get(k, (k, k))[1 if lang == "fr" else 0])}</tspan>'
+        g += f'<text class="rl" x="0" y="{y_ + rh * .68:.1f}">{k if k != "RXRGEX" else "RXR"}{nm}</text>'
+        for j, y in enumerate(years):
+            on = k in HORUS["sel"][y]
+            g += f'<rect class="{"cellon " + kind if on else "cell"}" x="{lw + j * cw}" y="{y_}" width="{cw - 2}" height="{rh - 3}" rx="1.5"/>'
+    lab = L(lang, "Funds held each year since 2007", "Fonds détenus chaque année depuis 2007")
+    return f'<svg class="vz" viewBox="0 0 {w} {h}" role="img" aria-label="{lab}" style="min-width:{0 if compact else 720}px">{g}</svg>'
+
+
+def horus_flow(lang, wide=False):
+    y = max(HORUS["sel"]); cur = HORUS["sel"][y]
+    eq = [k for k, w_ in cur.items() if w_ >= .3 - 1e-9]; bd = [k for k, w_ in cur.items() if w_ < .3 - 1e-9]
+    tk = lambda k: "RXR" if k == "RXRGEX" else k
+    g1 = (f'<div class="g-alloc"><div class="bar"><div class="core" style="flex:60"><i>{L(lang, "Equities 60%", "Actions 60 %")}</i></div><div class="bond" style="flex:40"><i>{L(lang, "Bonds 40%", "Obligations 40 %")}</i></div></div></div>')
+    g2 = (f'<div class="g-alloc"><div class="bar"><div class="sat" style="flex:60">{"".join(f"<i>{tk(k)}<small> 30%</small></i>" for k in eq)}</div><div class="bond" style="flex:40">{"".join(f"<i>{tk(k)}<small> 20%</small></i>" for k in bd)}</div></div>'
+          f'<div class="g-cap" style="margin-top:8px">{L(lang, "Portfolio for", "Portefeuille")} {y}{L(lang, ":", " :")} {", ".join(esc(HORUS_ETF.get(k, (k, k))[1 if lang == "fr" else 0]) for k in eq + bd)}</div></div>')
+    g3 = f'{horus_grid(lang, compact=True)}<div class="g-cap" style="margin-top:6px">{L(lang, "Each row is a fund, each column a year. Gold: equities. Blue: bonds.", "Une ligne par fonds, une colonne par année. Or : actions. Bleu : obligations.")}</div>'
+    steps = [
+        (L(lang, "Keep a permanent 60/40", "Garder un 60/40 permanent"),
+         L(lang, "The split between equities and bonds never moves. Only the funds inside it change.", "La répartition entre actions et obligations ne bouge jamais. Seuls les fonds à l'intérieur changent."), g1),
+        (L(lang, "Each January, pick the funds that carry the factors", "Chaque janvier, choisir les fonds qui portent les facteurs"),
+         L(lang, "Twelve equity ETFs are scored on size, growth and momentum over three years: the best two get 30% each. The two bond ETFs with the best Sharpe ratio get 20% each.",
+           "Douze ETF actions sont notés sur la taille, la croissance et le momentum sur trois ans : les deux meilleurs reçoivent 30 % chacun. Les deux ETF obligataires au meilleur ratio de Sharpe reçoivent 20 % chacun."), g2),
+        (L(lang, "Hold four funds for twelve months", "Détenir quatre fonds pendant douze mois"),
+         L(lang, "No trading during the year. The factors stay the same; the funds that carry them rotate.", "Aucune transaction en cours d'année. Les facteurs restent les mêmes ; les fonds qui les portent tournent."), g3)]
+    return f'<ol class="flow{" wide" if wide else ""}">' + "".join(f'<li><div><h4>{a}</h4><p>{b}</p></div><div class="gx">{c}</div></li>' for a, b, c in steps) + "</ol>"
+
+
+def chapter(kind, lang, lr, alt=False):
+    """One strategy presented as a full-width chapter: what it is, three numbers, and how it works in pictures."""
+    P = lambda x, n=1: pct(x, n, lang=lang)
+    if kind == "value":
+        v = ETF["value"]; st, bs = v["stats"], v["bench_stats"]
+        kick = L(lang, "Equities, monthly, in euros", "Actions, mensuel, en euros"); name = L(lang, "Global Value Rotation", "Rotation Value mondiale"); href = lr + "strategies/value-rotation/"
+        say = L(lang, "Buy what is cheap against its own history, first by country and sector, then stock by stock, and hold less of it when the market turns.",
+                "Acheter ce qui est bon marché par rapport à son propre historique, d'abord par pays et secteur, puis titre par titre, et en détenir moins quand le marché se retourne.")
+        trio = [(P(st["cagr"]), L(lang, "a year since 2006", "par an depuis 2006") + f'<br>MSCI World Value {P(bs["cagr"])}'), (num(st["sharpe"], 2, lang), f'Sharpe<br>{L(lang, "benchmark", "benchmark")} {num(bs["sharpe"], 2, lang)}'),
+                (P(st["mdd"], 0), L(lang, "worst loss", "perte maximale") + f'<br>{L(lang, "benchmark", "benchmark")} {P(bs["mdd"], 0)}')]
+        flow = value_flow(lang)
+    else:
+        hp, hb = HS["p"], HS["b"]
+        kick = L(lang, "Equities and bonds, yearly, in dollars", "Actions et obligations, annuel, en dollars"); name = "Horus Smart Beta 60/40"; href = lr + "strategies/horus-smart-beta/"
+        say = L(lang, "A classic 60/40 whose funds are chosen once a year for their exposure to small companies, growth and momentum.",
+                "Un 60/40 classique dont les fonds sont choisis une fois par an pour leur exposition aux petites sociétés, à la croissance et au momentum.")
+        trio = [(P(hp["cagr"]), L(lang, "a year since 2007", "par an depuis 2007") + f'<br>60/40 {P(hb["cagr"])}'), (num(hp["sharpe"], 2, lang), f'Sharpe<br>60/40 {num(hb["sharpe"], 2, lang)}'),
+                (f'{HS["ahead"]}/{len(HS["years"])}', L(lang, "years ahead<br>of the 60/40", "années devant<br>le 60/40"))]
+        flow = horus_flow(lang)
+    return f"""<section class="chap{' alt' if alt else ''}"><div class="wrap">
+ <div><div class="kick">{kick}</div><h2><a href="{href}">{name}</a></h2><p class="say">{say}</p>
+  <div class="trio">{"".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in trio)}</div>
+  <a class="btn primary" href="{href}">{L(lang, "Read the full strategy", "Lire la stratégie complète")}</a></div>
+ <div>{flow}</div>
+</div></section>"""
+
+
+def pitch_ranges(lang, lr):
+    """All pitches on one scale: bear-to-bull range and base case, as a distance from the current price."""
+    lo, hi = -0.75, 0.95
+    X = lambda x: f"{(min(max(x, lo), hi) - lo) / (hi - lo) * 100:.1f}%"
+    rows = ""
+    for s in sorted(PITCHES, key=lambda s: -s["upside"]):
+        sc = s["scenarios_out"]; a, b = sc[0]["upside"], sc[-1]["upside"]
+        rows += (f'<div class="pr"><a class="nm" href="{lr}pitches/{s["slug"]}/">{esc(s["name"])}</a>{rating(s["rating"], lang)}'
+                 f'<div class="trk"><i class="zero" style="left:{X(0)}"></i><i class="rg" style="left:{X(a)};width:{(min(b, hi) - max(a, lo)) / (hi - lo) * 100:.1f}%"></i><i class="bs {cls_sign(s["upside"])}" style="left:{X(s["upside"])}"></i></div>'
+                 f'<b class="up {cls_sign(s["upside"])}">{pct(s["upside"], 0, True, lang)}</b></div>')
+    hd = (f'<div class="pr hd"><span>{L(lang, "Company", "Société")}</span><span>{L(lang, "Call", "Avis")}</span><div class="trk"><span style="left:{X(-.5)}">{pct(-.5, 0, True, lang)}</span>'
+          f'<span style="left:{X(0)}">{L(lang, "price today", "cours actuel")}</span><span style="left:{X(.5)}">{pct(.5, 0, True, lang)}</span></div><span style="text-align:right">{L(lang, "Base case", "Central")}</span></div>')
+    cap = L(lang, "Grey bar: from the bear to the bull value. Coloured mark: base case. All measured as a distance from the price on the pitch date.",
+            "Barre grise : de la valeur pessimiste à la valeur optimiste. Repère coloré : scénario central. Le tout mesuré en écart au cours à la date du pitch.")
+    return f'<div class="prs">{hd}{rows}</div><p class="cap" style="margin-top:14px">{cap}</p>'
+
+
 # ---------------------------------------------------------------- HOME
 def build_home(lang):
-    lr = "" if lang == "en" else ""
-    ew = H["EW"]
-    hp = HS["p"]
+    hp = HS["p"]; v = ETF["value"]
     ow = sum(1 for s in PITCHES if s["rating"] == "Overweight")
-    cards = strategy_cards(lang, "")
-    pitch_rows = "".join(
-        f'<a class="noteitem" style="grid-template-columns:1fr auto" href="pitches/{s["slug"]}/"><div><h3>{esc(s["name"])}</h3>'
-        f'<p>{esc(pf(s, lang, "headline"))}</p></div><span>{rating(s["rating"], lang)}</span></a>' for s in PITCHES[:4])
-    notes = research_notes(lang)[:2]
+    notes = research_notes(lang)[:3]
     body = f"""
-<section class="hero hero3d"><div class="wrap">
- <div>
-  <div class="eyebrow">{L(lang, "Equity research · Systematic strategies · Open data", "Recherche actions · Stratégies systématiques · Données ouvertes")}</div>
-  <h1>{L(lang, "Rules written before results. <em>Every number traceable.</em>", "Des règles écrites avant les résultats. <em>Chaque chiffre traçable.</em>")}</h1>
-  <p class="lede">{L(lang, "I am Noah Doose, an MSc Financial Markets & Investments student at SKEMA and a CFA Level II candidate. Thoth Ledger is my research ledger: strategies anyone can replicate with ETFs, stock pitches that test them name by name, and the data behind every result.",
-                     "Je suis Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II. Thoth Ledger est mon carnet de recherche : des stratégies réplicables par tous avec des ETF, des stock pitches qui les testent titre par titre, et les données derrière chaque résultat.")}</p>
-  <div class="btns"><a class="btn primary" href="strategies/">{L(lang, "Explore the strategies", "Découvrir les stratégies")}</a><a class="btn" href="pitches/">{L(lang, "Read the stock pitches", "Lire les stock pitches")}</a></div>
+<section class="hero dk"><div class="wrap">
+ <div class="head"><h1>{L(lang, "Rules written before results. <span>Every number traceable.</span>", "Des règles écrites avant les résultats. <span>Chaque chiffre traçable.</span>")}</h1>
+ <div class="intro">
+  <p class="lede">{L(lang, "Thoth Ledger is the research ledger of Noah Doose, MSc Financial Markets & Investments student at SKEMA and CFA Level II candidate: two strategies anyone can replicate with ETFs, nine stock pitches that test them company by company, and the data behind every result.",
+                     "Thoth Ledger est le carnet de recherche de Noah Doose, étudiant en MSc Financial Markets & Investments à SKEMA et candidat au CFA niveau II : deux stratégies réplicables par tous avec des ETF, neuf stock pitches qui les testent société par société, et les données derrière chaque résultat.")}</p>
+  <div class="btns" style="margin-bottom:22px"><a class="btn primary" href="strategies/">{L(lang, "See the two strategies", "Voir les deux stratégies")}</a><a class="btn" href="pitches/">{L(lang, "Read the stock pitches", "Lire les stock pitches")}</a></div>
+ </div></div>
+ {hero_chart(lang)}
+ <div class="knum">
+  <div><b>{pct(v["stats"]["cagr"], 1, lang=lang)}</b><span>{L(lang, "Global Value Rotation, a year", "Rotation Value mondiale, par an")}</span><small>2006-2026 · MSCI World Value {pct(v["bench_stats"]["cagr"], 1, lang=lang)}</small></div>
+  <div><b>{pct(hp["cagr"], 1, lang=lang)}</b><span>{L(lang, "Horus Smart Beta 60/40, a year", "Horus Smart Beta 60/40, par an")}</span><small>2007-2026 · 60/40 {pct(HS["b"]["cagr"], 1, lang=lang)} · USD</small></div>
+  <div><b>{len(PITCHES)}</b><span>{L(lang, "stock pitches with decks", "stock pitches avec decks")}</span><small>{ow} {L(lang, "Overweight, 1 Sell", "Surpondérer, 1 Vendre")}</small></div>
+  <div><b>1 990</b><span>{L(lang, "stocks screened", "actions passées au crible")}</span><small>{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</small></div>
  </div>
- {allocation_scene(lang)}
 </div></section>
-
-<section class="kstrip"><div class="wrap">
-  <div class="kpis4">
-   <div class="kpi"><div class="k">Horus Smart Beta 60/40</div><div class="v">{pct(hp["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2007 vs", "par an depuis 2007 vs")} {pct(HS["b"]["cagr"], 1, lang=lang)}</div></div>
-   <div class="kpi"><div class="k">{L(lang, "Global Value Rotation", "Rotation Value mondiale")}</div><div class="v">{pct(ETF["value"]["stats"]["cagr"], 1, lang=lang)}</div><div class="s">{L(lang, "a year since 2006 vs", "par an depuis 2006 vs")} {pct(ETF["value"]["bench_stats"]["cagr"], 1, lang=lang)} (MSCI World Value)</div></div>
-   <div class="kpi"><div class="k">{L(lang, "Stock pitches", "Stock pitches")}</div><div class="v">{len(PITCHES)}</div><div class="s">{ow} {L(lang, "Overweight, 2 case studies, 1 Sell", "Surpondérer, 2 cas d'école, 1 Vendre")}</div></div>
-   <div class="kpi"><div class="k">{L(lang, "Securities researched", "Titres étudiés")}</div><div class="v">1 990</div><div class="s">{L(lang, "developed markets, 10 dates", "marchés développés, 10 dates")}</div></div>
-  </div>
-  <p class="cap">{L(lang, "Hypothetical backtests, net of costs. Past performance does not guarantee future returns.", "Backtests hypothétiques, nets de frais. Les performances passées ne préjugent pas des performances futures.")}</p>
-</div></section>
-
+{chapter("value", lang, "")}
+{chapter("horus", lang, "", alt=True)}
 <section class="sec"><div class="wrap">
- <div class="shead"><h2>{L(lang, "Two strategies, one discipline", "Deux stratégies, une même discipline")}</h2>
- <p>{L(lang, "Each strategy is held mostly through UCITS ETFs, is rebalanced on a fixed calendar and was specified before its backtest was run.", "Chaque stratégie se détient surtout via des ETF UCITS, se rebalance à date fixe et a été spécifiée avant que son backtest ne tourne.")}</p></div>
- {cards}
+ <div class="shead"><h2>{L(lang, "Nine companies, one scale", "Neuf sociétés, une même échelle")}</h2>
+ <p>{L(lang, "The strategy says a stock is cheap. Each pitch asks whether cheap means mispriced, and how far the value sits from the price.", "La stratégie dit qu'une action est bon marché. Chaque pitch demande si bon marché veut dire mal valorisé, et à quelle distance du cours se trouve la valeur.")}</p></div>
+ {pitch_ranges(lang, "")}
+ <div class="btns" style="margin-top:22px"><a class="btn" href="pitches/">{L(lang, "Open the nine pitches", "Ouvrir les neuf pitches")}</a></div>
 </div></section>
-
-<section class="sec alt"><div class="wrap">
- <div class="cols2" style="gap:48px;align-items:start">
-  <div><div class="shead"><h2>{L(lang, "From top-down to bottom-up", "Du top-down au bottom-up")}</h2>
-   <p>{L(lang, "The value strategy holds cheap countries and sectors through ETFs, then the cheapest companies inside them. The pitches check, one company at a time, whether cheap means mispriced.", "La stratégie value détient les pays et secteurs bon marché via des ETF, puis les sociétés les moins chères à l'intérieur. Les pitches vérifient, une société à la fois, si bon marché veut dire mal valorisé.")}</p></div>
-   <div class="btns"><a class="btn" href="pitches/">{L(lang, "All pitches", "Tous les pitches")} →</a></div></div>
-  <div class="notes">{pitch_rows}</div>
- </div>
-</div></section>
-
-<section class="sec"><div class="wrap">
- <div class="horus">
-  <div><div class="eyebrow">{L(lang, "Also by me", "Mon autre projet")}</div><h3>Horus Asset Management</h3>
-   <p>{L(lang, "A student investment boutique I built with four classmates for the SKEMA Portfolio Management course. Its flagship, Horus Smart Beta 60/40, is also in my strategies.", "Une boutique de gestion étudiante créée avec quatre camarades pour le cours de Portfolio Management de SKEMA. Sa stratégie phare, Horus Smart Beta 60/40, figure aussi parmi mes stratégies.")}</p></div>
-  <div class="btns"><a class="btn" href="{HORUS_URL}">{L(lang, "Visit Horus AM", "Visiter Horus AM")} {ICON_EXT}</a><a class="btn ghost" href="strategies/horus-smart-beta/">{L(lang, "The strategy", "La stratégie")}</a></div>
- </div>
-</div></section>
-
 <section class="sec alt"><div class="wrap">
  <div class="shead"><h2>{L(lang, "Latest research", "Dernières notes de recherche")}</h2></div>
- <div class="notes">{"".join(f'<a class="noteitem" href="research/{n["slug"]}/"><span class="d">{esc(n["date"])}</span><div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div><span class="go">{t(lang, "read")} →</span></a>' for n in notes)}</div>
+ <div class="notes">{"".join(f'<a class="noteitem" href="research/{n["slug"]}/"><span class="d">{esc(n["date"])}</span><div><h3>{esc(n["title"])}</h3><p>{esc(n["summary"])}</p></div><span class="go">{t(lang, "read")}</span></a>' for n in notes)}</div>
+</div></section>
+<section class="sec"><div class="wrap">
+ <div class="horus">
+  <div><h3>Horus Asset Management</h3>
+   <p>{L(lang, "A student investment boutique I built with four classmates for the SKEMA Portfolio Management course. Its flagship, Horus Smart Beta 60/40, is also in my strategies.", "Une boutique de gestion étudiante créée avec quatre camarades pour le cours de Portfolio Management de SKEMA. Sa stratégie phare, Horus Smart Beta 60/40, figure aussi parmi mes stratégies.")}</p></div>
+  <div class="btns"><a class="btn" href="{HORUS_URL}">{L(lang, "Visit Horus AM", "Visiter Horus AM")} {ICON_EXT}</a></div>
+ </div>
 </div></section>"""
     page("index.html", lang, SITE, body, "index",
          L(lang, "Equity research by Noah Doose: ETF-replicable strategies, stock pitches and data.",
            "Recherche actions de Noah Doose : stratégies réplicables en ETF, stock pitches et données."))
-
-
-def allocation_scene(lang):
-    """3D board of the value strategy's latest allocation: 8 ETF lines (core) and 8 stocks (satellite), block height = weight."""
-    h = ETF["value"]["holdings"]; expo = h.get("exposure", 1.0); P = lambda x: pct(x, 2, lang=lang)
-    wc, ws = 0.7 / 8 * expo, 0.3 / 8 * expo
-    out = []
-    for i, ln in enumerate(h["selection"]):
-        kind = L(lang, "Country ETF", "ETF pays") if ln.startswith("C_") else L(lang, "Sector ETF", "ETF secteur")
-        cap = f"<b>{esc(tr(lang, LINE_NAMES.get(ln, ln)))}</b> · {kind} · {P(wc)}"
-        out.append(f'<div class="blk" style="--x:{26 + (i % 4) * 92}px;--y:{26 + (i // 4) * 92}px;--w:72px;--h:{wc * 1200:.0f}px;--i:{i}" data-cap="{esc(cap)}"><i class="k"></i><i class="l"></i><i class="r"></i><i class="f"></i><i class="t">{esc(ln[2:])}</i></div>')
-    core = "".join(out); out = []
-    for i, st in enumerate(h["satellite"]):
-        tk = st["ticker"].split()[0]
-        cap = f"<b>{esc(st['name'])}</b> · {esc(tr(lang, st['sector']))} · {P(ws)}" + (L(lang, " · pitch on this site", " · pitch sur ce site") if st.get("pitch") else "")
-        out.append(f'<div class="blk{" pitch" if st.get("pitch") else ""}" style="--x:{21 + (i % 4) * 70}px;--y:{21 + (i // 4) * 70}px;--w:48px;--h:{ws * 1200:.0f}px;--i:{i + 8}" data-cap="{esc(cap)}"><i class="k"></i><i class="l"></i><i class="r"></i><i class="f"></i><i class="t">{esc(tk[:4])}</i></div>')
-    sat = "".join(out)
-    label = L(lang, f"Allocation of the Global Value Rotation strategy at the end of {month_name(h['date'], 'en')}", f"Allocation de la stratégie Rotation Value mondiale à fin {month_name(h['date'], 'fr')}")
-    idle = L(lang, f"Allocation at the end of {month_name(h['date'], 'en')} · block height = weight", f"Allocation à fin {month_name(h['date'], 'fr')} · hauteur des blocs = poids")
-    return f"""<div class="scene" data-scene role="img" aria-label="{esc(label)}">
-  <div class="float"><div class="tilt"><div class="board">
-   <div class="plate core"><span class="plab">{L(lang, "ETF core · 70%", "Cœur ETF · 70 %")}</span>{core}</div>
-   <div class="plate sat"><span class="plab">{L(lang, "Stock satellite · 30%", "Satellite actions · 30 %")}</span>{sat}</div>
-  </div></div></div>
-  <div class="scap"><span class="lg">{L(lang, "8 country and sector ETFs", "8 ETF pays et secteurs")} · {P(wc)}</span><span class="lg s">{L(lang, "8 stocks", "8 actions")} · {P(ws)}</span><span class="now">{idle}</span></div>
- </div>"""
 
 
 def strategy_cards(lang, lr):
@@ -306,9 +475,9 @@ def build_strategies(lang):
     body = phead(t(lang, "strategies"), L(lang, "Strategies anyone can replicate", "Des stratégies réplicables par tous"),
                  L(lang, "Two rules-based strategies, built mainly from UCITS ETFs and rebalanced on a fixed calendar, plus the stock-level research engine that feeds the value satellite and the pitches.",
                    "Deux stratégies systématiques, construites surtout avec des ETF UCITS et rebalancées à date fixe, plus le moteur de recherche titre par titre qui alimente le satellite value et les pitches."))
-    body += f'<section class="sec"><div class="wrap">{strategy_cards(lang, "../")}<p class="cap" style="margin-top:16px"><a href="../factsheets/">' + L(lang, "Monthly factsheets, all issues", "Factsheets mensuelles, tous les numéros") + ' →</a></p></div></section>'
-    body += f'<section class="sec alt"><div class="wrap">{combination_block(lang)}</div></section>'
-    body += f"""<section class="sec"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
+    body += chapter("value", lang, "../") + chapter("horus", lang, "../", alt=True)
+    body += f'<section class="sec"><div class="wrap">{combination_block(lang)}<p class="cap" style="margin-top:16px"><a href="../factsheets/">' + L(lang, "Monthly factsheets, all issues", "Factsheets mensuelles, tous les numéros") + '</a></p></div></section>'
+    body += f"""<section class="sec alt"><div class="wrap"><div class="shead"><h2>{L(lang, "Research behind the strategies", "La recherche derrière les stratégies")}</h2></div>
 <div class="grid">
  <article class="card"><div class="meta">{L(lang, "Stock level · 1,990 developed-market stocks · 2021-2026", "Titres · 1 990 actions de pays développés · 2021-2026")}</div>
   <h3><a href="value-developed/">{L(lang, "Stock-level value screen", "Screen value titre par titre")}</a></h3>
@@ -548,6 +717,10 @@ def build_value_rotation(lang):
  <div class="box"><h4>{L(lang, "Growth markets", "Marchés de croissance")}</h4><p>{L(lang, "When expensive growth leads, as in 2023-24, a value strategy lags MSCI World even when it beats MSCI World Value.", "Quand la croissance chère mène, comme en 2023-24, une stratégie value fait moins bien que le MSCI World, même quand elle bat le MSCI World Value.")}</p></div>
 </div>"""),
     ]
+    toc.insert(0, ("how", L(lang, "How it works", "Comment ça marche")))
+    secs.insert(0, section("how", L(lang, "How it works, in three steps", "Comment ça marche, en trois étapes"), value_flow(lang, wide=True)
+                           + underwater(v["dates"], v["nav"], v["bench"], L(lang, "Global Value Rotation", "Rotation Value mondiale"), "MSCI World Value", lang)
+                           + f'<p class="cap">{L(lang, "The risk rule is what the third step buys: the strategy fell about half as far as its benchmark in 2008-2009.", "La règle de risque, c’est ce qu’achète la troisième étape : la stratégie a baissé environ deux fois moins que son benchmark en 2008-2009.")}</p>'))
     _fs = factsheet_section("value", lang)
     if _fs:
         toc.insert(1, ("factsheet", L(lang, "Monthly factsheet", "Factsheet mensuelle")))
@@ -597,15 +770,11 @@ def build_horus(lang):
  {stat(L(lang, "Max drawdown", "Perte maximale"), pct(hp["mdd"], 1, lang=lang), L(lang, "vs", "vs") + " " + pct(hb["mdd"], 1, lang=lang))}
  {stat(L(lang, "Years ahead", "Années devant"), f'{HS["ahead"]}/{len(HS["years"])}', L(lang, "calendar years", "années civiles"))}
 </div>{chart}<h3>{L(lang, "Statistics, January 2007 to", "Statistiques, janvier 2007 à")} {month_name(HORUS["end"], lang)}</h3>{stats_tbl}
-<p class="cap">{L(lang, "Hypothetical backtest in USD, out of sample: each January the rule uses only the three previous years. Benchmark: 60% MSCI World, 40% Bloomberg Global Aggregate. Sharpe ratios use the US 3-month T-bill.", "Backtest hypothétique en USD, hors échantillon : chaque janvier, la règle n’utilise que les trois années précédentes. Benchmark : 60 % MSCI World, 40 % Bloomberg Global Aggregate. Ratios de Sharpe calculés avec le T-bill américain à 3 mois.")}</p>"""),
-        section("process", L(lang, "Process", "Processus"), f"""<div class="steps">
- <div class="box"><h4>{L(lang, "Measure", "Mesurer")}</h4><p>{L(lang, "A Carhart regression for each of 12 equity ETFs on the last 36 months: exposure to size, value and momentum.", "Une régression de Carhart pour chacun des 12 ETF actions sur les 36 derniers mois : exposition à la taille, au value et au momentum.")}</p></div>
- <div class="box"><h4>{L(lang, "Score", "Noter")}</h4><p>{L(lang, "z(size) + z(−value) + z(momentum): small, growth and momentum count equally.", "z(taille) + z(−value) + z(momentum) : petites capitalisations, croissance et momentum comptent à égalité.")}</p></div>
- <div class="box"><h4>{L(lang, "Select", "Sélectionner")}</h4><p>{L(lang, "The two best-scored equity ETFs at 30% each, and the two bond ETFs with the best 3-year Sharpe ratio at 20% each.", "Les deux ETF actions les mieux notés à 30 % chacun, et les deux ETF obligataires au meilleur Sharpe sur 3 ans à 20 % chacun.")}</p></div>
- <div class="box"><h4>{L(lang, "Hold", "Détenir")}</h4><p>{L(lang, "Four funds for twelve months, then start again each January.", "Quatre fonds pendant douze mois, puis on recommence chaque janvier.")}</p></div>
-</div>"""),
+{underwater(HS["dates"], hp["nav"], hb["nav"], nameP, nameB, lang)}<p class="cap">{L(lang, "Hypothetical backtest in USD, out of sample: each January the rule uses only the three previous years. Benchmark: 60% MSCI World, 40% Bloomberg Global Aggregate. Sharpe ratios use the US 3-month T-bill.", "Backtest hypothétique en USD, hors échantillon : chaque janvier, la règle n’utilise que les trois années précédentes. Benchmark : 60 % MSCI World, 40 % Bloomberg Global Aggregate. Ratios de Sharpe calculés avec le T-bill américain à 3 mois.")}</p>"""),
+        section("process", L(lang, "How it works, in three steps", "Comment ça marche, en trois étapes"), horus_flow(lang, wide=True)
+                + f'<p class="cap">{L(lang, "Score: z(size) + z(−value) + z(momentum) from a Carhart regression on the last 36 months. Small, growth and momentum count equally.", "Note : z(taille) + z(−value) + z(momentum) issus d’une régression de Carhart sur les 36 derniers mois. Petites capitalisations, croissance et momentum comptent à égalité.")}</p>'),
         section("years", L(lang, "Year by year", "Année par année"), f'<figure class="ch"><figcaption><span>{L(lang, "Calendar-year returns", "Rendements par année civile")} <small>· %</small></span></figcaption>{ann}</figure>'),
-        section("holdings", L(lang, "Holdings", "Portefeuilles"), sel_tbl, L(lang, "The factors never change; the funds that carry them do.", "Les facteurs ne changent jamais ; les fonds qui les portent, si.")),
+        section("holdings", L(lang, "Holdings", "Portefeuilles"), f'<figure class="ch"><figcaption><span>{L(lang, "Funds held each year", "Fonds détenus chaque année")}</span><span class="lgd"><span><i></i>{L(lang, "Equities, 30% each", "Actions, 30 % chacune")}</span><span><i class="b"></i>{L(lang, "Bonds, 20% each", "Obligations, 20 % chacune")}</span></span></figcaption><div class="scrollx">{horus_grid(lang)}</div></figure>' + sel_tbl, L(lang, "The factors never change; the funds that carry them do.", "Les facteurs ne changent jamais ; les fonds qui les portent, si.")),
         section("risks", L(lang, "Risks", "Risques"), f"""<div class="cols3">
  <div class="box"><h4>{L(lang, "Mega-cap years", "Années des méga-capitalisations")}</h4><p>{L(lang, "When a few giants lead, small caps lag: 2023 to 2025 were behind the benchmark.", "Quand quelques géants mènent, les petites capitalisations décrochent : 2023 à 2025 ont été en retard sur le benchmark.")}</p></div>
  <div class="box"><h4>{L(lang, "Momentum reversals", "Retournements du momentum")}</h4><p>{L(lang, "Momentum can crash, as in 2009; it is one factor of three for that reason.", "Le momentum peut s’effondrer, comme en 2009 ; c’est pour cela qu’il ne pèse qu’un tiers.")}</p></div>
@@ -754,6 +923,7 @@ def build_pitch_index(lang):
                  L(lang, "Holdings of the December 2025 value portfolio, researched from company filings in October 2026, plus one short idea from the Equity Research course (Intel). Each pitch has a twelve-slide deck in a buy-side format, in English and French.",
                    "Des titres du portefeuille value de décembre 2025, étudiés à partir des publications des sociétés en octobre 2026, plus une idée de vente issue du cours d’Equity Research (Intel). Chaque pitch a un deck de douze slides au format buy-side, en anglais et en français."))
     body += f"""<section class="sec"><div class="wrap" data-filter-scope>
+{pitch_ranges(lang, "../")}<div style="height:44px"></div>
 <div class="filters">{filt}<input class="search" type="search" placeholder="{L(lang, 'Search a company, a sector…', 'Chercher une société, un secteur…')}" data-search aria-label="Search"><span class="count"></span></div>
 <div class="grid">{"".join(cards)}</div><div class="empty">{L(lang, "No pitch matches these filters.", "Aucun pitch ne correspond à ces filtres.")}</div>
 <p class="cap" style="margin-top:20px">{L(lang, "Prices as of 29 October 2026 (Intel: 6 November 2026). Calls: Overweight above +15% upside to the base case, Neutral between −10% and +15%, Underweight below −10%. Intel uses the course scale (Buy / Hold / Sell, Sell below −10%). Student research, not investment advice.",
@@ -762,16 +932,15 @@ def build_pitch_index(lang):
     page("pitches/index.html", lang, t(lang, "pitches"), body, "pitches", L(lang, "Stock pitches with downloadable decks.", "Stock pitches avec decks téléchargeables."))
 
 
-def scenario_cols(s, lang):
-    """Price and the three scenario values as 3D columns (height proportional to value)."""
-    sym = s["sym"]; sc = s["scenarios_out"]; top = max([s["price"]] + [r["value"] for r in sc])
-    cols = [("px", t(lang, "price"), s["price"], None)] + [(r["name"].lower(), t(lang, r["name"]), r["value"], r["upside"]) for r in sc]
-    out = ""
-    for i, (cls, nm, v, up) in enumerate(cols):
-        sub = f'<small class="{cls_sign(up)}">{pct(up, 0, True, lang)}</small>' if up is not None else "<small>&nbsp;</small>"
-        out += (f'<div class="scol"><div class="val">{money(sym, v, lang)}{sub}</div>'
-                f'<div class="col3 {cls}" style="--v:{v / top * 120:.0f};--i:{i}"><i class="f"></i><i class="r"></i><i class="t"></i></div><div class="nm">{esc(nm)}</div></div>')
-    return f'<div class="sc3d" role="img" aria-label="{L(lang, "Price against the bear, base and bull values", "Cours face aux valeurs pessimiste, centrale et optimiste")}">{out}</div>'
+def scenario_scale(s, lang):
+    """Price against the bear, base and bull values on one line."""
+    sym = s["sym"]; sc = s["scenarios_out"]; vals = [r["value"] for r in sc]
+    lo, hi = min(vals + [s["price"]]), max(vals + [s["price"]])
+    X = lambda v: f"{(v - lo) / (hi - lo) * 100:.1f}%"
+    ends = "".join(f'<div>{esc(t(lang, r["name"]))}<b>{money(sym, r["value"], lang)}</b><span class="{cls_sign(r["upside"])}">{pct(r["upside"], 0, True, lang)}</span></div>' for r in sc)
+    return (f'<div class="scs" role="img" aria-label="{L(lang, "Price against the bear, base and bull values", "Cours face aux valeurs pessimiste, centrale et optimiste")}">'
+            f'<div class="trk"><i class="rg" style="left:{X(vals[0])};width:{(vals[-1] - vals[0]) / (hi - lo) * 100:.1f}%"></i><i class="bs" style="left:{X(vals[1])}"></i>'
+            f'<i class="px" style="left:{X(s["price"])}"></i><i class="pl" style="left:{X(s["price"])};font-style:normal">{t(lang, "price")} {money(sym, s["price"], lang)}</i></div><div class="ends">{ends}</div></div>')
 
 
 def build_pitch(s, lang):
@@ -781,7 +950,7 @@ def build_pitch(s, lang):
     lr = "../../"
     dl = deck_links(f, lr if lang == "en" else "../../../", small=False, lang=lang)
     up = s["upside"]
-    head = f"""<header class="pitchhead dark"><div class="wrap"><div>
+    head = f"""<header class="pitchhead dk"><div class="wrap"><div>
 <div class="crumbs"><a href="../">{t(lang, "pitches")}</a> / {esc(s["ticker"])}</div>
 <div class="eyebrow" style="margin-top:12px">{esc(pf(s, lang, "industry"))} · {esc(tr(lang, s["country"]))} · {esc(tr(lang, s["exchange"]))}: {esc(s["ticker"])}</div>
 <h1>{esc(s["name"])}</h1><p class="headline">{esc(pf(s, lang, "headline"))}</p>
@@ -791,7 +960,7 @@ def build_pitch(s, lang):
 <div class="row"><span>{t(lang, "price")}</span><b class="big">{money(sym, s["price"], lang)}</b></div>
 <div class="row"><span>{L(lang, "Base-case value", "Valeur centrale")}<small>{esc(pf(s, lang, "method"))}</small></span><b class="big">{money(sym, s["target"], lang)}</b></div>
 <div class="row"><span>{t(lang, "upside")}</span><b class="big {cls_sign(up)}">{pct(up, 0, True, lang)}</b></div>
-<div class="row"><span>{L(lang, "52-week range", "Plus bas / plus haut 52 sem.")}</span><b>{money(sym, s["low52"], lang)} – {money(sym, s["high52"], lang)}</b></div>{scenario_cols(s, lang)}</div>
+<div class="row"><span>{L(lang, "52-week range", "Plus bas / plus haut 52 sem.")}</span><b>{money(sym, s["low52"], lang)} – {money(sym, s["high52"], lang)}</b></div>{scenario_scale(s, lang)}</div>
 </div></header>"""
     ks = pf(s, lang, "key_stats")
     stats = '<div class="stats" style="margin-top:22px">' + "".join(stat(esc(k), esc(x)) for k, x in ks) + "</div>"
@@ -1020,7 +1189,7 @@ def build_tracker(lang):
  </div>
  <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">{L(lang, "Mix: both strategies in euros, brought back to the chosen weights every month. By default Horus is hedged into euros (dollar return − dollar cash rate + euro cash rate), so only the strategies are compared. Tick “include the currency effect” to see what an unhedged euro investor got: Horus converted at the month-end EUR/USD rate, helped by a stronger dollar over 2007-2026 and in the 2008 crash. Horus AM publishes its figures in dollars (8.9% a year, worst loss −22.6%). Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark, treated the same way.", "Mix : les deux stratégies en euros, ramenées aux poids choisis chaque mois. Par défaut, Horus est couvert en euros (rendement en dollars − taux monétaire dollar + taux monétaire euro) : seules les stratégies sont comparées. Cochez « inclure l’effet de change » pour voir ce qu’a obtenu un investisseur en euros non couvert : Horus converti au cours EUR/USD de fin de mois, aidé par la hausse du dollar sur 2007-2026 et pendant le krach de 2008. Horus AM publie ses chiffres en dollars (8,9 % par an, perte maximale −22,6 %). Indice : le même mélange du MSCI World Value et de l’indice 60/40 d’Horus, traité de la même façon.")}</p>
  <div class="stats" id="trk-stats"></div>
- <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
+ <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--c-b)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>{L(lang, "Amount invested", "Montant investi")}</span></span></figcaption>
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
  <h3>{L(lang, "Year by year", "Année par année")}</h3>
  <div class="tbl-wrap"><table class="t" id="trk-tbl"></table></div>
@@ -1061,7 +1230,7 @@ function draw(){
  var g="";for(var j=0;j<=4;j++){var v=mn+(mx-mn)*j/4;g+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(l-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+money(v,S.ccy)+'</text>'}
  var yr=null;for(var i=0;i<n;i++){var y=S.dates[i0+i].slice(0,4);if(y!==yr&&(+y)%(n>120?5:n>36?2:1)===0&&S.dates[i0+i].slice(5)==="01"){g+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle">'+y+'</text>'}yr=y}
  function path(A,c,w,dash){return '<path d="'+A.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)}).join("")+'" fill="none" stroke="'+c+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="4 4"':'')+'/>'}
- g+=path(P.map(function(p){return p[1]}),"var(--gold)",1.5,1)+path(B.map(function(p){return p[0]}),"var(--bench)",1.8)+path(P.map(function(p){return p[0]}),"var(--navy)",2.4);
+ g+=path(P.map(function(p){return p[1]}),"var(--gold)",1.5,1)+path(B.map(function(p){return p[0]}),"var(--bench)",1.8)+path(P.map(function(p){return p[0]}),"var(--c-b)",2.4);
  g+='<line id="trk-x" y1="'+t+'" y2="'+(H-b)+'" stroke="var(--line2)" style="display:none"/><rect x="'+l+'" y="'+t+'" width="'+(W-l-r)+'" height="'+(H-t-b)+'" fill="transparent" id="trk-hit"/>';
  var svg=$("trk-svg");svg.innerHTML=g;var tip=$("trk-tip");
  $("trk-hit").onmousemove=function(e){var bb=svg.getBoundingClientRect(),xx=(e.clientX-bb.left)*W/bb.width,i=Math.max(0,Math.min(n-1,Math.round((xx-l)/(W-l-r)*(n-1))));
@@ -1124,6 +1293,7 @@ def main():
     shutil.copytree(HERE / "static" / "brand", DOCS / "assets" / "brand", dirs_exist_ok=True)
     shutil.copytree(HERE / "static" / "factsheets", DOCS / "assets" / "factsheets", dirs_exist_ok=True)
     shutil.copytree(HERE / "static" / "notes", DOCS / "assets" / "notes", dirs_exist_ok=True)
+    shutil.copytree(HERE / "static" / "fonts", DOCS / "assets" / "fonts", dirs_exist_ok=True)
     (DOCS / ".nojekyll").touch()
     for lang in LANGS:
         build_home(lang)

@@ -8,8 +8,7 @@
     // theme
     var tb = document.getElementById("theme");
     if (tb) tb.addEventListener("click", function () {
-      var dark = root.getAttribute("data-theme") === "dark" ||
-        (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+      var dark = root.getAttribute("data-theme") === "dark";
       var next = dark ? "light" : "dark"; root.setAttribute("data-theme", next); store("rl-theme", next);
       document.dispatchEvent(new Event("themechange"));
     });

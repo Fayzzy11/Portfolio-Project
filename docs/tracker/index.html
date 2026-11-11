@@ -6,12 +6,10 @@
 <title>Portfolio tracker · Thoth Ledger</title>
 <meta name="description" content="Simulate an investment in either strategy, or a mix of both, from any start month.">
 <link rel="alternate" hreflang="fr" href="../fr/tracker/">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <link rel="icon" type="image/png" href="../assets/brand/favicon.png">
 <script src="../assets/site.js"></script>
-<script src="../assets/fx.js" defer></script>
+<script src="../assets/fx.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -20,11 +18,12 @@
  <nav class="nav" id="nav" aria-label="Main"><a href="../" class="">Home</a><a href="../strategies/" class="">Strategies</a><a href="../pitches/" class="">Stock pitches</a><a href="../research/" class="">Research</a><a href="../tracker/" class="on">Tracker</a><a href="../database/" class="">Database</a><a href="../about/" class="">About</a><a href="https://fayzzy11.github.io/HORUS_AM/" rel="noopener">Horus AM ↗</a></nav>
  <div class="tools">
   <a class="tbtn" href="../fr/tracker/" hreflang="fr" title="Version française">FR</a>
+  <button class="tbtn" id="theme" type="button" aria-label="Dark or light mode" title="Dark or light mode"><svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
   <button class="tbtn menu" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
  </div>
 </div></header>
 <main id="main">
-<header class="phead"><div class="wrap"><div class="eyebrow">Simulation · net of costs</div><h1>Portfolio tracker</h1><p class="lede">Pick a strategy, a start month and an amount: see what the position would be worth today, month by month, against its benchmark.</p></div></header>
+<header class="phead dk"><div class="wrap"><div class="eyebrow">Simulation · net of costs</div><h1>Portfolio tracker</h1><p class="lede">Pick a strategy, a start month and an amount: see what the position would be worth today, month by month, against its benchmark.</p></div></header>
 <section class="sec"><div class="wrap">
  <div class="filters" id="trk-form">
   <div class="fgroup"><span>Strategy</span><select id="trk-s" class="search" style="min-width:300px"><option value="value">Global Value Rotation · EUR · from 2006-02</option><option value="horus">Horus Smart Beta 60/40 · USD · from 2007-01</option><option value="mix">Both strategies (mix) · EUR · from 2007-01</option></select></div>
@@ -35,7 +34,7 @@
  </div>
  <p class="cap" id="trk-mixnote" style="display:none;margin:-12px 0 18px">Mix: both strategies in euros, brought back to the chosen weights every month. By default Horus is hedged into euros (dollar return − dollar cash rate + euro cash rate), so only the strategies are compared. Tick “include the currency effect” to see what an unhedged euro investor got: Horus converted at the month-end EUR/USD rate, helped by a stronger dollar over 2007-2026 and in the 2008 crash. Horus AM publishes its figures in dollars (8.9% a year, worst loss −22.6%). Benchmark: the same mix of MSCI World Value and the Horus 60/40 benchmark, treated the same way.</p>
  <div class="stats" id="trk-stats"></div>
- <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--navy)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>Amount invested</span></span></figcaption>
+ <figure class="ch" style="margin-top:20px"><figcaption><span id="trk-title"></span><span class="legend"><span><i style="background:var(--c-b)"></i><span id="trk-l1"></span></span><span><i style="background:var(--bench)"></i><span id="trk-l2"></span></span><span><i style="background:var(--gold)"></i>Amount invested</span></span></figcaption>
   <div class="chartbox"><svg id="trk-svg" viewBox="0 0 900 340" role="img"></svg><div class="tip" id="trk-tip"></div></div></figure>
  <h3>Year by year</h3>
  <div class="tbl-wrap"><table class="t" id="trk-tbl"></table></div>
@@ -80,7 +79,7 @@ function draw(){
  var g="";for(var j=0;j<=4;j++){var v=mn+(mx-mn)*j/4;g+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(l-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+money(v,S.ccy)+'</text>'}
  var yr=null;for(var i=0;i<n;i++){var y=S.dates[i0+i].slice(0,4);if(y!==yr&&(+y)%(n>120?5:n>36?2:1)===0&&S.dates[i0+i].slice(5)==="01"){g+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle">'+y+'</text>'}yr=y}
  function path(A,c,w,dash){return '<path d="'+A.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)}).join("")+'" fill="none" stroke="'+c+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="4 4"':'')+'/>'}
- g+=path(P.map(function(p){return p[1]}),"var(--gold)",1.5,1)+path(B.map(function(p){return p[0]}),"var(--bench)",1.8)+path(P.map(function(p){return p[0]}),"var(--navy)",2.4);
+ g+=path(P.map(function(p){return p[1]}),"var(--gold)",1.5,1)+path(B.map(function(p){return p[0]}),"var(--bench)",1.8)+path(P.map(function(p){return p[0]}),"var(--c-b)",2.4);
  g+='<line id="trk-x" y1="'+t+'" y2="'+(H-b)+'" stroke="var(--line2)" style="display:none"/><rect x="'+l+'" y="'+t+'" width="'+(W-l-r)+'" height="'+(H-t-b)+'" fill="transparent" id="trk-hit"/>';
  var svg=$("trk-svg");svg.innerHTML=g;var tip=$("trk-tip");
  $("trk-hit").onmousemove=function(e){var bb=svg.getBoundingClientRect(),xx=(e.clientX-bb.left)*W/bb.width,i=Math.max(0,Math.min(n-1,Math.round((xx-l)/(W-l-r)*(n-1))));
